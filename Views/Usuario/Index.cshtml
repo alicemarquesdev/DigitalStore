@@ -1,0 +1,31 @@
+﻿@model UsuarioModel
+@{
+    ViewData["Title"] = "Miha Conta";
+}
+
+<div class="container p-2 justify-content-center">
+    <h1 class="mb-4 mt-5">Bem vindo, @Model.Nome!</h1>
+</div>
+
+<div class="container m-5">
+    <div class="row justify-content-center">
+            <div class="col-md-3 btn-group-vertical" role="group" aria-label="Vertical button group">
+            <a asp-controller="Usuario" asp-action="" class="btn btn-dark">Meus Pedidos</a>
+            <a asp-controller="Usuario" asp-action="Editar" class="btn btn-dark">Editar dados</a>
+            <a asp-controller="Usuario" asp-action="RedefinirSenha" class="btn btn-dark">Redefinir Senha</a>
+            <a asp-controller="Usuario" asp-action="ApagarConta" class="btn btn-dark">Apagar Conta</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-dark">Sair</a>
+        </div>
+        <div class="col-md-6 m-2 text-center">
+            <h4>Seus Dados</h4>
+            <h6>Nome</h6>
+            <p>@Model.Nome</p>
+            <h6>Email</h6>
+            <p>@Model.Nome</p>
+            <h6>Endereço</h6>
+            <p>@Model.Nome</p>
+
+        </div>
+    </div>
+    
+</div>

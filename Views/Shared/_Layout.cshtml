@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - DigitalStore</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"/>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DigitalStore.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div class="container-fluid p-0 m-0">
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow m-0 p-1">
+                <div class="container-fluid">
+                    <a class="digital-store" asp-area="" asp-controller="Home" asp-action="Index">DigitalStore</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="d-flex justify-content-between">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Loja</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Smartphones">Smartphones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Notebooks">Notebooks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Headphones">Headphones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Relogios">Relógios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Acessorios">Acessórios</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <ul class="nav">
+                            <li class="nav-icon">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-search"></i>
+                                </a>
+                            </li>
+
+                            <li class="nav-icon">
+                                <a role="button" class="nav-link" asp-controller="Home" asp-action="Favoritos">
+                                    <i class="bi bi-heart"></i>
+                                </a>
+                            </li>
+
+                            <li class="nav-icon">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Carrinho">
+                                    <i class="bi bi-cart3"></i>
+                                </a>
+                            </li>
+                            <li class="nav-user dropdown">
+                                <a class="nav-link dropdown-toggle no-caret text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end ">
+                                    <li><a class="dropdown-item fw-bold fst-italic" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Login" asp-action="Login">Minha Conta</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="CriarConta">Criar Conta</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="container-fluid m-0 p-0">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer>
+            <div class="container-fluid p-0 m-0">
+
+                <div class="footer-row row d-flex justify-content-between mt-5 ms-5">
+                    <div class="col d-flex text-center">
+                        <i class="bi bi-truck"></i>
+                        <p class="pt-3"><b>FRETE GRÁTIS</b><br />Em produtos selecionados</p>
+                    </div>
+                    <div class="col d-flex text-center">
+                        <i class="bi bi-stopwatch"></i>
+                        <p class="pt-3"><b>ENTREGA EXPRESSA</b><br />A partir de 2 dias úteis</p>
+                    </div>
+                    <div class="col d-flex text-center">
+                        <i class="bi bi-credit-card"></i>
+                        <p class="pt-3"><b>EM ATÉ 10X SEM JUROS</b><br />no cartão de crédito</p>
+                    </div>
+                </div>
+
+
+                <div class="footer-info row d-flex align-items-start text-start justify-content-between mt-3 mb-4">
+                    <div class="col flex-column ms-5">
+                        <h6>Produtos</h6>
+                        <a>Smartphones</a>
+                        <a>Notebooks</a>
+                        <a>Headphones</a>
+                        <a>Relógios</a>
+                        <a>Acessórios</a>
+                    </div>
+                    <div class="col flex-column">
+                        <h6>Suporte</h6>
+                        <a>Suporte de Produtos</a>
+                        <a>Agendar Reparo</a>
+                        <a>Acompanhar Reparo</a>
+                        <a>Informações de Garantia</a>
+                    </div>
+                    <div class="col flex-column">
+                        <h6>DigitalStore Empresas</h6>
+                        <a>Informações da empresa</a>
+                        <a>Área de negócios</a>
+                        <a>Eventos</a>
+                        <a>Blog</a>
+                    </div>
+                    <div class="col flex-column">
+                        <h6>Ajuda</h6>
+                        <a>Trocas e Devoluções</a>
+                        <a>Minha Conta</a>
+                        <a>Meus Pedidos</a>
+                        <a>Cancelamentos</a>
+                        <a>Entregas</a>
+                        <a>Acessibilidade</a>
+                    </div>
+                    <div class="col flex-column">
+                        <h6>Central de Relacionamentos</h6>
+                        <a>Tire suas dúvidas</a>
+                        <div class="mt-5 pt-5 text-center">
+                            <a><i class="bi bi-facebook me-3"></i></a>
+                            <a><i class="bi bi-instagram me-3"></i></a>
+                            <a><i class="bi bi-twitter me-3"></i></a>
+                            <a><i class="bi bi-youtube me-3"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="container-fluid ps-4 pb-2 text-center">
+                    &copy; DigitalStore. Todos os direitos reservados.
+                </div>
+
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+   
+</body>
+</html>

@@ -1,0 +1,41 @@
+﻿@model UsuarioModel
+
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="container p-2">
+    <h1 class="mb-4 mt-5">Crie sua conta</h1>
+</div>
+
+<div class="container p-2">
+    <form method="post">
+        <div>
+            <label for="nome">Nome</label>
+            <input class="form-control" type="text" placeholder="*Digite o seu Nome" />
+            @Html.ValidationMessageFor(x => x.Nome)
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input class="form-control" type="email"  placeholder="*Digite o seu Email" />
+            @Html.ValidationMessageFor(x => x.Email)
+        </div>
+
+        <div>
+            <label for="endereco">Endereço</label>
+            <input class="form-control" type="text" placeholder="*Digite o seu endereço" />
+            @Html.ValidationMessageFor(x => x.Endereço)
+        </div>
+        <div>
+                    <label for="senha">Senha</label>
+                    <input class="form-control" type="password" placeholder="*Digite sua senha" />
+                    @Html.ValidationMessageFor(x => x.Senha)
+        </div>
+
+
+                <button type="submit" class="btn btn-dark mb-2 mt-3 d-block w-100" >Criar Conta</button>
+                <a class="btn btn-dark d-block" role="button">Voltar</a>
+
+    </form>
+
+</div>
