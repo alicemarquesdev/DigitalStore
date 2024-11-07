@@ -8,6 +8,10 @@ namespace DigitalStore.Repositorio
 
         Task<ProdutoModel> BuscarProdutoPorIdAsync(int id);
 
+        Task<List<ProdutoModel>> BuscarProdutoPorCategoriaAsync(ProdutoModel categoria);
+
+        Task<List<ProdutoModel>> BuscarCategoriasAsync();
+
         Task AddProdutoAsync(ProdutoModel produto);
 
         Task AtualizarProdutoAsync(ProdutoModel produto);

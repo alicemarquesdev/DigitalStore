@@ -1,4 +1,5 @@
 using DigitalStore.Models;
+using DigitalStore.Repositorio;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,47 +8,32 @@ namespace DigitalStore.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IProdutoRepositorio _produtoRepositorio;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IProdutoRepositorio produtoRepositorio)
         {
             _logger = logger;
+            _produtoRepositorio = produtoRepositorio;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<ProdutoModel> produtos = await _produtoRepositorio.BuscarTodosProdutosAsync();
+            return View(produtos);
         }
 
-        public IActionResult Smartphones()
+        public async Task<IActionResult> Categoria(ProdutoModel categoriaProdutos)
         {
-            return View();
-        }
-
-        public IActionResult Notebooks()
-        {
-            return View();
-        }
-
-        public IActionResult Headphones()
-        {
-            return View();
-        }
-
-        public IActionResult Relogios()
-        {
-            return View();
-        }
-
-        public IActionResult Acessorios()
-        {
-
-            return View();
+            List<ProdutoModel> produtosPorIdioma = await _produtoRepositorio.BuscarProdutoPorCategoriaAsync(categoriaProdutos);
+            ViewBag.CategoriaSelecionada = categoriaProdutos.Categoria;
+            return View(produtosPorIdioma);
         }
 
         public IActionResult Favoritos()
         {
             return View();
         }
+
         public IActionResult Carrinho()
         {
             return View();
@@ -57,8 +43,6 @@ namespace DigitalStore.Controllers
         {
             return View();
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

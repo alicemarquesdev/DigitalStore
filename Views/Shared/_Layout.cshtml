@@ -24,29 +24,7 @@
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="d-flex justify-content-between">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Loja</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Smartphones">Smartphones</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Notebooks">Notebooks</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Headphones">Headphones</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Relogios">Relógios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Acessorios">Acessórios</a>
-                            </li>
-                        </ul>
-
-                    </div>
+                        @await Component.InvokeAsync("Categoria")
                     <div class="d-flex justify-content-end">
                         <ul class="nav">
                             <li class="nav-icon">

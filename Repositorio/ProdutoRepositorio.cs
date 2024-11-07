@@ -33,6 +33,23 @@ namespace DigitalStore.Repositorio
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<ProdutoModel>> BuscarCategoriasAsync()
+        {
+            var categorias = await _context.Produtos.Select(x => x.Categoria).Distinct().ToListAsync();
+
+            var categoriaList = categorias.Select(categoria => new ProdutoModel
+            {
+                Categoria = categoria
+            }).ToList();
+
+            return categoriaList;
+        }
+
+        public async Task<List<ProdutoModel>> BuscarProdutoPorCategoriaAsync(ProdutoModel categoria)
+        {
+            return await _context.Produtos.Where(c => c.Categoria == categoria.Categoria).ToListAsync();
+        }
+
         public async Task<ProdutoModel> BuscarProdutoPorIdAsync(int id)
         {
             return await _context.Produtos.FirstOrDefaultAsync(x => x.Id == id);
