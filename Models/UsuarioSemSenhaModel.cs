@@ -7,13 +7,13 @@ namespace DigitalStore.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Digite o seu nome.")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Digite o seu email.")]
-        public string Email { get; set; }
+        [EmailAddress(ErrorMessage = "Email inválido.")]
+        public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Digite o seu endereço.")]
-        public string Endereço { get; set; }
-
+        [Required(ErrorMessage = "Digite o nome do seu site.")]
+        public string NomeSite { get; set; } = string.Empty;
     }
 }

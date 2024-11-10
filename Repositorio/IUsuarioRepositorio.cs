@@ -4,13 +4,14 @@ namespace DigitalStore.Repositorio
 {
     public interface IUsuarioRepositorio
     {
-        UsuarioModel ListarPorId(int id);
-        UsuarioModel BuscarPorEmail(string email);
+        Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id);
 
-        UsuarioModel Criar(UsuarioModel usuario);
-        UsuarioModel Atualizar(UsuarioModel usuario);
+        Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email);
 
-        bool Apagar(int id);
+        Task AddUsuarioAsync(UsuarioModel usuario);
 
+        Task AtualizarUsuarioAsync(UsuarioSemSenhaModel usuario);
+
+        Task<bool> RemoverUsuarioAsync(int id);
     }
 }

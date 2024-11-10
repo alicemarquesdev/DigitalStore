@@ -14,7 +14,8 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
-
+builder.Services.AddScoped<IFavoritosRepositorio, FavoritosRepositorio>();
+builder.Services.AddScoped<ICarrinhoRepositorio, CarrinhoRepositorio>();
 builder.Services.AddScoped<ISessao, Sessao>();
 
 builder.Services.AddSession(o =>
@@ -41,7 +42,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.UseSession();
-
 
 app.MapControllerRoute(
     name: "default",

@@ -21,7 +21,7 @@ namespace DigitalStore.Repositorio
 
         public async Task AtualizarProdutoAsync(ProdutoModel produto)
         {
-            ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.Id);
+            ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
             if (produtoDb == null) throw new Exception("Houve um erro, ao tentar atualizar os dados do produto.");
 
             produtoDb.NomeProduto = produto.NomeProduto;
@@ -29,7 +29,7 @@ namespace DigitalStore.Repositorio
             produtoDb.Categoria = produto.Categoria;
             produtoDb.ImagemUrl = produto.ImagemUrl;
 
-            _context.Update(produtoDb);
+            _context.Produtos.Update(produtoDb);
             await _context.SaveChangesAsync();
         }
 
@@ -52,7 +52,7 @@ namespace DigitalStore.Repositorio
 
         public async Task<ProdutoModel> BuscarProdutoPorIdAsync(int id)
         {
-            return await _context.Produtos.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
         }
 
         public async Task<List<ProdutoModel>> BuscarTodosProdutosAsync()

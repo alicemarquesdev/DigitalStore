@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace DigitalStore.Filters
 {
@@ -23,12 +22,10 @@ namespace DigitalStore.Filters
                 if (usuario != null)
                 {
                     context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Login" }, { "action", "Login" } });
-
                 }
             }
 
             base.OnActionExecuting(context);
-
         }
     }
 }

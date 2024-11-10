@@ -1,6 +1,5 @@
 ﻿using DigitalStore.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace DigitalStore.Data
 {
@@ -20,6 +19,32 @@ namespace DigitalStore.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CarrinhoModel>()
+             .HasKey(ec => new { ec.UsuarioId, ec.ProdutoId });
+
+            modelBuilder.Entity<CarrinhoModel>()
+                .HasOne(ec => ec.Usuario)
+                .WithMany(e => e.Carrinho)
+                .HasForeignKey(ec => ec.UsuarioId);
+
+            modelBuilder.Entity<CarrinhoModel>()
+                .HasOne(ec => ec.Produto)
+                .WithMany(c => c.Carrinho)
+                .HasForeignKey(ec => ec.ProdutoId);
+
+            modelBuilder.Entity<FavoritosModel>()
+             .HasKey(ec => new { ec.UsuarioId, ec.ProdutoId });
+
+            modelBuilder.Entity<FavoritosModel>()
+                .HasOne(ec => ec.Usuario)
+                .WithMany(e => e.Favoritos)
+                .HasForeignKey(ec => ec.UsuarioId);
+
+            modelBuilder.Entity<FavoritosModel>()
+                .HasOne(ec => ec.Produto)
+                .WithMany(c => c.Favoritos)
+                .HasForeignKey(ec => ec.ProdutoId);
+
             // Configurar o tipo de coluna da propriedade 'Preco' com precisão e escala
             modelBuilder.Entity<ProdutoModel>()
                 .Property(p => p.Preco)

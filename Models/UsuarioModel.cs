@@ -5,22 +5,28 @@ namespace DigitalStore.Models
 {
     public class UsuarioModel
     {
-        public int Id { get; set; }
+        [Key]
+        public int UsuarioId { get; set; }
 
         [Required(ErrorMessage = "Digite o seu nome.")]
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Digite o seu email.")]
+        [EmailAddress(ErrorMessage = "Email inválido.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Cria uma senha.")]
+        [Required(ErrorMessage = "Digite a sua senha.")]
         public string Senha { get; set; } = string.Empty;
 
-        public PerfilEnum Perfil { get; set; } = PerfilEnum.Usuario;
+        [Required(ErrorMessage = "Digite o nome do seu site.")]
+        public string NomeSite { get; set; } = string.Empty;
 
-        public CarrinhoModel Carrinho { get; set; } = new CarrinhoModel();
+        [Required(ErrorMessage = "Informe o perfil.")]
+        public PerfilEnum Perfil { get; set; } = PerfilEnum.Cliente;
 
-        public FavoritosModel Favoritos { get; set; } = new FavoritosModel();
+        public virtual List<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
+
+        public virtual List<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();
 
         public bool SenhaValida(string senha)
         {

@@ -9,7 +9,7 @@ namespace DigitalStore.Controllers
 
         public FavoritoController(IProdutoRepositorio produtoRepositorio)
         {
-            _produtoRepositorio = produtoRepositorio;  
+            _produtoRepositorio = produtoRepositorio;
         }
 
         public IActionResult Index()

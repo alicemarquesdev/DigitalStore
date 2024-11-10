@@ -1,7 +1,5 @@
 ﻿using DigitalStore.Models;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-
 
 namespace DigitalStore.Helper
 {
@@ -19,14 +17,13 @@ namespace DigitalStore.Helper
             string sessaoDoUsuario = _httpContext.HttpContext.Session.GetString("SessaoDoUsuarioLogado");
             if (string.IsNullOrEmpty(sessaoDoUsuario)) return null;
 
-            return JsonConvert.DeserializeObject<UsuarioModel>("SessaoDoUsuarioLogado");
+            return JsonConvert.DeserializeObject<UsuarioModel>(sessaoDoUsuario);
         }
 
         public void CriarSessaoDoUsuario(UsuarioModel usuario)
         {
             string valor = JsonConvert.SerializeObject(usuario);
             _httpContext.HttpContext.Session.SetString("SessaoDoUsuarioLogado", valor);
-
         }
 
         public void RemoverSessaoDoUsuario()

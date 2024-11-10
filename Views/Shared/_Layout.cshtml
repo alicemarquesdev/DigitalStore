@@ -17,49 +17,7 @@
 <body>
     <div class="container-fluid p-0 m-0">
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow m-0 p-1">
-                <div class="container-fluid">
-                    <a class="digital-store" asp-area="" asp-controller="Home" asp-action="Index">DigitalStore</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                        @await Component.InvokeAsync("Categoria")
-                    <div class="d-flex justify-content-end">
-                        <ul class="nav">
-                            <li class="nav-icon">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                    <i class="bi bi-search"></i>
-                                </a>
-                            </li>
-
-                            <li class="nav-icon">
-                                <a role="button" class="nav-link" asp-controller="Home" asp-action="Favoritos">
-                                    <i class="bi bi-heart"></i>
-                                </a>
-                            </li>
-
-                            <li class="nav-icon">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Carrinho">
-                                    <i class="bi bi-cart3"></i>
-                                </a>
-                            </li>
-                            <li class="nav-user dropdown">
-                                <a class="nav-link dropdown-toggle no-caret text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end ">
-                                    <li><a class="dropdown-item fw-bold fst-italic" asp-controller="Admin" asp-action="Index">Admin</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Login" asp-action="Login">Minha Conta</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="CriarConta">Criar Conta</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+                    @await Component.InvokeAsync("Categoria")
         </header>
 
         <div class="container-fluid m-0 p-0">
@@ -145,6 +103,9 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
    
 </body>

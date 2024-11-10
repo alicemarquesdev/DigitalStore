@@ -1,0 +1,48 @@
+﻿@model List<ProdutoModel>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Loja";
+}
+
+<div class="container text-center mb-5 mt-5 fw-bold fst-italic">
+    <h1>Tudo que você precisa em um só lugar</h1>
+</div>
+
+
+
+<div class="products row text-center justify-content-evenly m-4">
+    @foreach(var produto in Model.Take(12))
+    {
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <img src="@Url.Content(produto.ImagemUrl)" />
+            <h6>@produto.NomeProduto</h6>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <p class="price">R$@produto.Preco</p>
+        </div>
+    }
+</div>
+
+
+<div class="newsletter container d-flex flex-column align-items-start justify-content-center">
+    <h1 class="mb-2">NewsLetter</h1>
+    <h6>Fique por dentro das novidades, receba descontos exclusivos e muito mais.</h6>
+    <div class="d-flex w-100">
+        <input type="email" placeholder="Digite o seu email..." class="email w-75 me-1  mb-1 ps-2"  />
+        <button type="submit" class="btn btn-dark">Cadastre-se</button>
+    </div>
+    <div class=" d-flex align-content-center p-0 m-0">
+        <input class="checkbox me-2" type="checkbox"/>
+        <p class="p-0 m-0">
+            Ao se cadastrar você concorda em receber ofertas e novidades da loja DigitalStore por e-mail conforme a <u>Política de Privacidade</u>.
+        </p>
+    </div>
+</div>
+
+
+
+

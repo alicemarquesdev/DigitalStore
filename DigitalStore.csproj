@@ -8,19 +8,15 @@
 
   <ItemGroup>
     <Compile Remove="Views\Favoritos\**" />
-    <Compile Remove="Views\Login\**" />
     <Compile Remove="wwwroot\image\Imagens\**" />
     <Compile Remove="wwwroot\image\products\**" />
     <Content Remove="Views\Favoritos\**" />
-    <Content Remove="Views\Login\**" />
     <Content Remove="wwwroot\image\Imagens\**" />
     <Content Remove="wwwroot\image\products\**" />
     <EmbeddedResource Remove="Views\Favoritos\**" />
-    <EmbeddedResource Remove="Views\Login\**" />
     <EmbeddedResource Remove="wwwroot\image\Imagens\**" />
     <EmbeddedResource Remove="wwwroot\image\products\**" />
     <None Remove="Views\Favoritos\**" />
-    <None Remove="Views\Login\**" />
     <None Remove="wwwroot\image\Imagens\**" />
     <None Remove="wwwroot\image\products\**" />
   </ItemGroup>
@@ -34,10 +30,6 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\image\banner-row2.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Views\Login\Login.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

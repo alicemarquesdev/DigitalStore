@@ -1,64 +1,57 @@
 ﻿using DigitalStore.Data;
 using DigitalStore.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Update.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
 {
     public class UsuarioRepositorio : IUsuarioRepositorio
     {
-       private readonly BancoContext _bancoContext;
+        private readonly BancoContext _context;
 
-        public UsuarioRepositorio(BancoContext bancoContext)
+        public UsuarioRepositorio(BancoContext context)
         {
-            _bancoContext = bancoContext;
+            _context = context;
         }
 
-
-        public UsuarioModel Criar(UsuarioModel usuario)
+        public async Task AddUsuarioAsync(UsuarioModel usuario)
         {
-            _bancoContext.Add(usuario);
-            _bancoContext.SaveChanges();
-            return usuario;
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
         }
 
-        public UsuarioModel ListarPorId(int id)
+        public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
         {
-            return _bancoContext.Usuarios.FirstOrDefault(x => x.Id == id);
-
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
         }
 
-        public UsuarioModel Atualizar(UsuarioModel usuario)
+        public async Task AtualizarUsuarioAsync(UsuarioSemSenhaModel usuario)
         {
-            UsuarioModel usuarioDb = ListarPorId(usuario.Id);
+            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(usuario.Id);
 
-            if(usuarioDb == null) throw new Exception("Houve um erro na alteração");
+            if (usuarioDb == null) throw new Exception("Houve um erro na alteração");
 
             usuarioDb.Nome = usuario.Nome;
             usuarioDb.Email = usuario.Email;
-            usuarioDb.Endereço = usuario.Endereço;
-            usuarioDb.Senha = usuario.Senha;
+            usuarioDb.NomeSite = usuario.NomeSite;
 
-            _bancoContext.Update(usuarioDb);
-            _bancoContext.SaveChanges();
-            return usuarioDb;
-
+            _context.Usuarios.Update(usuarioDb);
+            await _context.SaveChangesAsync();
         }
 
-        public bool Apagar(int id)
+        public async Task<bool> RemoverUsuarioAsync(int id)
         {
-            UsuarioModel usuarioDb = ListarPorId(id);
+            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(id);
 
-            if(usuarioDb == null) return false;
+            if (usuarioDb == null) return false;
 
-            _bancoContext.Remove(usuarioDb);
-            _bancoContext.SaveChanges();
+            _context.Usuarios.Remove(usuarioDb);
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public UsuarioModel BuscarPorEmail(string email)
+        public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
         {
-            return _bancoContext.Usuarios.FirstOrDefault(x => x.Email.ToUpper() == email.ToUpper());
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
         }
     }
 }
