@@ -4,17 +4,17 @@ namespace DigitalStore.Repositorio
 {
     public interface IProdutoRepositorio
     {
-        Task<List<ProdutoModel>> BuscarTodosProdutosAsync();
-
-        Task<ProdutoModel> BuscarProdutoPorIdAsync(int id);
-
-        Task<List<ProdutoModel>> BuscarProdutoPorCategoriaAsync(ProdutoModel categoria);
-
-        Task<List<ProdutoModel>> BuscarCategoriasAsync();
-
         Task AddProdutoAsync(ProdutoModel produto);
 
         Task AtualizarProdutoAsync(ProdutoModel produto);
+
+        Task<List<ProdutoModel>> BuscarCategoriasAsync();
+
+        Task<List<ProdutoModel>> BuscarProdutoPorCategoriaAsync(ProdutoModel categoria);
+
+        Task<ProdutoModel> BuscarProdutoPorIdAsync(int id);
+
+        Task<List<ProdutoModel>> BuscarTodosProdutosAsync();
 
         Task<bool> RemoverProdutoAsync(int id);
     }

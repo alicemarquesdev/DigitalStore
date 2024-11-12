@@ -9,13 +9,10 @@ namespace DigitalStore.Data
         {
         }
 
-        public DbSet<UsuarioModel> Usuarios { get; set; }
-
-        public DbSet<ProdutoModel> Produtos { get; set; }
-
         public DbSet<CarrinhoModel> Carrinho { get; set; }
-
         public DbSet<FavoritosModel> Favoritos { get; set; }
+        public DbSet<ProdutoModel> Produtos { get; set; }
+        public DbSet<UsuarioModel> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

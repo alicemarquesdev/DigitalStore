@@ -6,18 +6,18 @@
 
     <title>@ViewData["Title"] - DigitalStore</title>
 
+    <link rel="icon" type="image/x-icon" href="assets-bootstrap/favicon.ico" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"/>
 
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DigitalStore.styles.css" asp-append-version="true" />
+    <link href="css-bootstrap/styles.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div class="container-fluid p-0 m-0">
         <header>
-                    @await Component.InvokeAsync("Categoria")
+                    @await Component.InvokeAsync("NavBar")
         </header>
 
         <div class="container-fluid m-0 p-0">
@@ -25,84 +25,55 @@
                 @RenderBody()
             </main>
         </div>
-
-        <footer>
-            <div class="container-fluid p-0 m-0">
-
-                <div class="footer-row row d-flex justify-content-between mt-5 ms-5">
-                    <div class="col d-flex text-center">
-                        <i class="bi bi-truck"></i>
-                        <p class="pt-3"><b>FRETE GRÁTIS</b><br />Em produtos selecionados</p>
-                    </div>
-                    <div class="col d-flex text-center">
-                        <i class="bi bi-stopwatch"></i>
-                        <p class="pt-3"><b>ENTREGA EXPRESSA</b><br />A partir de 2 dias úteis</p>
-                    </div>
-                    <div class="col d-flex text-center">
-                        <i class="bi bi-credit-card"></i>
-                        <p class="pt-3"><b>EM ATÉ 10X SEM JUROS</b><br />no cartão de crédito</p>
-                    </div>
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Coluna 1 - Sobre a empresa -->
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-uppercase">Sobre nós</h6>
+                    <p class="small">
+                        A Digital Store oferece uma ampla variedade de eletrônicos de alta qualidade com entrega rápida e suporte excepcional.
+                        Nossa missão é fornecer os melhores produtos com a melhor experiência de compra online.
+                    </p>
                 </div>
 
-
-                <div class="footer-info row d-flex align-items-start text-start justify-content-between mt-3 mb-4">
-                    <div class="col flex-column ms-5">
-                        <h6>Produtos</h6>
-                        <a>Smartphones</a>
-                        <a>Notebooks</a>
-                        <a>Headphones</a>
-                        <a>Relógios</a>
-                        <a>Acessórios</a>
-                    </div>
-                    <div class="col flex-column">
-                        <h6>Suporte</h6>
-                        <a>Suporte de Produtos</a>
-                        <a>Agendar Reparo</a>
-                        <a>Acompanhar Reparo</a>
-                        <a>Informações de Garantia</a>
-                    </div>
-                    <div class="col flex-column">
-                        <h6>DigitalStore Empresas</h6>
-                        <a>Informações da empresa</a>
-                        <a>Área de negócios</a>
-                        <a>Eventos</a>
-                        <a>Blog</a>
-                    </div>
-                    <div class="col flex-column">
-                        <h6>Ajuda</h6>
-                        <a>Trocas e Devoluções</a>
-                        <a>Minha Conta</a>
-                        <a>Meus Pedidos</a>
-                        <a>Cancelamentos</a>
-                        <a>Entregas</a>
-                        <a>Acessibilidade</a>
-                    </div>
-                    <div class="col flex-column">
-                        <h6>Central de Relacionamentos</h6>
-                        <a>Tire suas dúvidas</a>
-                        <div class="mt-5 pt-5 text-center">
-                            <a><i class="bi bi-facebook me-3"></i></a>
-                            <a><i class="bi bi-instagram me-3"></i></a>
-                            <a><i class="bi bi-twitter me-3"></i></a>
-                            <a><i class="bi bi-youtube me-3"></i></a>
-                        </div>
-                    </div>
-
+                <!-- Coluna 2 - Links úteis -->
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-uppercase">Links úteis</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Política de Devoluções</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Ajuda & Suporte</a></li>
+                    </ul>
                 </div>
 
-                <div class="container-fluid ps-4 pb-2 text-center">
-                    &copy; DigitalStore. Todos os direitos reservados.
+                <!-- Coluna 3 - Contato -->
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-uppercase">Contato</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Telefone:</strong> (81) 4002-1234</li>
+                        <li><strong>E-mail:</strong> <a href="mailto:suporte@digitalstore.com" class="text-white text-decoration-none">suporte@digitalstore.com</a></li>
+                        <li><strong>WhatsApp:</strong> <a href="https://wa.me/5511999998888" target="_blank" class="text-white text-decoration-none">(11) 99999-8888</a></li>
+                    </ul>
                 </div>
-
             </div>
-        </footer>
-    </div>
+
+            <hr class="my-4" />
+
+            <div class="text-center">
+                <p class="small mb-0">&copy; 2024 Digital Store. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js-bootstrap/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 

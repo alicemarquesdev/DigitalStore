@@ -3,30 +3,54 @@
 @{
     ViewData["Title"] = "Loja";
 }
-
-<div class="container text-center mb-5 mt-5 fw-bold fst-italic">
-    <h1>Tudo que você precisa em um só lugar</h1>
-</div>
-
-
-
-<div class="products row text-center justify-content-evenly m-4">
-    @foreach(var produto in Model.Take(12))
-    {
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-            <img src="@Url.Content(produto.ImagemUrl)" />
-            <h6>@produto.NomeProduto</h6>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <p class="price">R$@produto.Preco</p>
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Shop in style</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Melhores preços em um só lugar</p>
         </div>
-    }
+    </div>
+</header>
+
+
+
+<div class="container px-4 px-lg-5 mt-5">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        @foreach (var produto in Model.Take(12))
+        {
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <img class="card-img-top" src="@Url.Content(produto.ImagemUrl)" alt="..." />
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <h5 class="fw-bolder">@produto.NomeProduto</h5>
+                            R$@produto.Preco
+                        </div>
+                    </div>
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+
+                            @if (ViewBag.Sessao != null)
+                            {
+                            <div class="container d-flex justify-content-center gap-2">
+                                <form asp-controller="Favorito" asp-action="AddFavorito" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="id" value="@produto.ProdutoId" />
+                                    <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                    <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-heart"></i></button>
+                                </form>
+                                <form asp-controller="Carrinho" asp-action="AddCarrinho" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="id" value="@produto.ProdutoId" />
+                                    <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                    <button type="submit" class="btn btn-dark mt-auto d-block w-100"><i class="bi bi-cart3"></i></button>
+                                </form>
+                            </div>
+                            }
+                            
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
-
-
-
-
 

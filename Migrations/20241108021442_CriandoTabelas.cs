@@ -8,6 +8,22 @@ namespace DigitalStore.Migrations
     public partial class CriandoTabelas : Migration
     {
         /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Carrinho");
+
+            migrationBuilder.DropTable(
+                name: "Favoritos");
+
+            migrationBuilder.DropTable(
+                name: "Produtos");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+        }
+
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -106,22 +122,6 @@ namespace DigitalStore.Migrations
                 name: "IX_Favoritos_ProdutoId",
                 table: "Favoritos",
                 column: "ProdutoId");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "Carrinho");
-
-            migrationBuilder.DropTable(
-                name: "Favoritos");
-
-            migrationBuilder.DropTable(
-                name: "Produtos");
-
-            migrationBuilder.DropTable(
-                name: "Usuarios");
         }
     }
 }

@@ -1,0 +1,62 @@
+﻿@using DigitalStore.Enum
+@model UsuarioModel
+
+@{
+    ViewData["Title"] = "Editar Dados";
+}
+
+
+<div class="container">
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-dark btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
+            @TempData["MensagemSucesso"]
+        </div>
+    }
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
+            @TempData["MensagemErro"]
+        </div>
+    }
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">Editar Dados</h3></div>
+
+                <div class="card-body">
+                    <form asp-controller="Usuario" asp-action="EditarUsuario" method="post">
+                        <input type="hidden" asp-for="UsuarioId" />
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" asp-for="Nome" />
+                            <label for="Nome">Nome</label>
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Nome) </span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="email" asp-for="Email" />
+                            <label for="Email">Email</label>
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Email) </span>
+                        </div>
+
+                      
+                        <div class="mt-4 mb-0">
+                            <div class="d-grid"><button class="btn btn-dark btn-block mb-1" type="submit">Editar</button></div>
+                            <a class="btn btn-dark d-block w-100" asp-controller="Home" asp-action="Index">Voltar</a>
+
+                        </div>
+                    </form>
+                </div>
+               
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+

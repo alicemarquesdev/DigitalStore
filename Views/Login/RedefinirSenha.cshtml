@@ -1,0 +1,49 @@
+﻿@model UsuarioModel
+
+@{
+    ViewData["Title"] = "Redefinir Senha";
+}
+
+
+<div class="container">
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-dark" role="alert">
+            <button type="button" class="btn btn-success btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
+            @TempData["MensagemSucesso"]
+        </div>
+    }
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-dark" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
+            @TempData["MensagemErro"]
+        </div>
+    }
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">Esqueceu sua senha?</h3></div>
+                <div class="card-body">
+                    <div class="small mb-3 text-muted">Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.</div>
+                    <form asp-controller="Login" asp-action="EnviarLinkParaRedefinirSenha" method="post">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="inputEmail" type="email" asp-for="Email" />
+                            <label for="inputEmail">Email</label>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <a class="small" asp-controller="Login" asp-action="Index">Voltar ao login</a>
+                            <button type="submit" class="btn btn-dark">Redefinir Senha</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    <div class="small"><a asp-controller ="Usuario" asp-action="CriarUsuario">Precisa de uma conta? Cadastre-se!</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

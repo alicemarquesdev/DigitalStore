@@ -1,41 +1,51 @@
 ﻿@model List<ProdutoModel>
 
 @{
-    ViewData["Title"] = "Teste" + @ViewBag.CategoriaSelecionada;
+    ViewData["Title"] = @ViewBag.CategoriaSelecionada;
 }
 
 
 <div class="container p-2">
     <h1 class="mb-4 mt-5">@ViewBag.CategoriaSelecionada</h1>
-    <h4></h4>
-    <p class="mb-5">
-        Explore nossa seleção de smartphones e descubra os últimos lançamentos em tecnologia mobile.
-        Desde modelos de alto desempenho até opções mais acessíveis, temos o dispositivo ideal para atender às suas necessidades.
-        Desempenho, design e inovação ao seu alcance — escolha o seu próximo smartphone agora.
-    </p>
 
-    <div class="products row text-center justify-content-evenly m-4">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var produto in Model)
+            {
+                <div class="col mb-5">
+                    <div class="card h-100">
+                            <img class="card-img-top" src="@Url.Content(produto.ImagemUrl)" alt="..." />
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bolder">@produto.NomeProduto</h5>
+                                    R$@produto.Preco
+                                </div>
+                            </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            @if (ViewBag.Sessao != null)
+                            {
+                                <div class="container d-flex justify-content-center gap-2">
+                                    <form asp-controller="Favorito" asp-action="AddFavorito" method="post" class="flex-grow-1">
+                                        <input type="hidden" name="id" value="@produto.ProdutoId" />
+                                        <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
 
-        @foreach (var produto in Model)
-        {
-            <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-4">
-                <img src="@Url.Content(produto.ImagemUrl)" />
-                <h6>@produto.NomeProduto</h6>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-half"></i>
-                <p class="price">R$@produto.Preco</p>
-                <a role="button" class="btn btn-dark" asp-controller="Home" asp-action="Favoritos">
-                    Adicionar ao Carrinho
-                </a>
-                <a role="button" class="btn btn-dark " asp-controller="Home" asp-action="Favoritos">
-                    <i class="bi bi-heart text-white"></i>
-                </a>
-            </div>
-        }
+                                        <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-heart"></i></button>
+                                    </form>
+                                    <form asp-controller="Carrinho" asp-action="AddCarrinho" method="post" class="flex-grow-1">
+                                        <input type="hidden" name="id" value="@produto.ProdutoId" />
+                                        <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                        <button type="submit" class="btn btn-dark mt-auto d-block w-100"><i class="bi bi-cart3"></i></button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
+
 
 
 </div>

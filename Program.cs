@@ -17,6 +17,7 @@ builder.Services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
 builder.Services.AddScoped<IFavoritosRepositorio, FavoritosRepositorio>();
 builder.Services.AddScoped<ICarrinhoRepositorio, CarrinhoRepositorio>();
 builder.Services.AddScoped<ISessao, Sessao>();
+builder.Services.AddScoped<IEmail, Email>();
 
 builder.Services.AddSession(o =>
 {

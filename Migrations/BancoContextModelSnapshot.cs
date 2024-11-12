@@ -70,7 +70,7 @@ namespace DigitalStore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DataCadastro")
+                    b.Property<DateTime?>("DataCadastro")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
@@ -91,7 +91,7 @@ namespace DigitalStore.Migrations
                     b.Property<int>("QuantidadeEstoque")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ProdutoId");
@@ -112,10 +112,6 @@ namespace DigitalStore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeSite")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

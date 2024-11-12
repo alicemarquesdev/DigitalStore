@@ -1,4 +1,5 @@
 ﻿using DigitalStore.Data;
+using DigitalStore.Enums;
 using DigitalStore.Models;
 using Microsoft.EntityFrameworkCore;
 

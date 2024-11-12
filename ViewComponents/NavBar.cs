@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Component
 {
-    public class Categoria : ViewComponent
+    public class NavBar : ViewComponent
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
         private readonly ISessao _sessao;
 
-        public Categoria(IProdutoRepositorio produtoRepositorio, ISessao sessao)
+        public NavBar(IProdutoRepositorio produtoRepositorio, ISessao sessao)
         {
             _produtoRepositorio = produtoRepositorio;
             _sessao = sessao;
@@ -21,14 +21,16 @@ namespace DigitalStore.Component
 
             if (sessao == null)
             {
-                // Se a sessão for null, atribua valores padrão ou faça o tratamento necessário.
                 ViewBag.Sessao = null;
-                ViewBag.UsuarioPerfil = null; // ou defina um valor padrão, se houver
+                ViewBag.UsuarioPerfil = null;
+                ViewBag.NomeSite = null;
+                ViewBag.UsuarioId = null;
             }
             else
             {
                 ViewBag.Sessao = sessao;
                 ViewBag.UsuarioPerfil = sessao?.Perfil;
+                ViewBag.UsuarioId = sessao?.UsuarioId;
             }
 
             var categorias = await _produtoRepositorio.BuscarCategoriasAsync();

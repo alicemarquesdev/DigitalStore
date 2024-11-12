@@ -15,27 +15,50 @@ namespace DigitalStore.Repositorio
 
         public async Task AddUsuarioAsync(UsuarioModel usuario)
         {
+            usuario.SetSenhaHash();
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
+        public async Task<UsuarioModel> AlterarSenhaAsync(AlterarSenhaModel alterarSenhaModel)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
+            UsuarioModel usuarioDB = await BuscarUsuarioPorIdAsync(alterarSenhaModel.Id);
+
+            if (usuarioDB == null) throw new Exception("Houve um erro na atualização da senha, usuário não encontrado!");
+
+            if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual)) throw new Exception("Senha atual não confere!");
+
+            if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha)) throw new Exception("Nova senha deve ser diferente da senha atual!");
+
+            usuarioDB.SetNovaSenha(alterarSenhaModel.NovaSenha);
+
+            _context.Usuarios.Update(usuarioDB);
+            _context.SaveChanges();
+
+            return usuarioDB;
         }
 
-        public async Task AtualizarUsuarioAsync(UsuarioSemSenhaModel usuario)
+        public async Task AtualizarUsuarioAsync(UsuarioModel usuario)
         {
-            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(usuario.Id);
+            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(usuario.UsuarioId);
 
             if (usuarioDb == null) throw new Exception("Houve um erro na alteração");
 
             usuarioDb.Nome = usuario.Nome;
             usuarioDb.Email = usuario.Email;
-            usuarioDb.NomeSite = usuario.NomeSite;
 
             _context.Usuarios.Update(usuarioDb);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
+        }
+
+        public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
         }
 
         public async Task<bool> RemoverUsuarioAsync(int id)
@@ -47,11 +70,6 @@ namespace DigitalStore.Repositorio
             _context.Usuarios.Remove(usuarioDb);
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
-        {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
         }
     }
 }

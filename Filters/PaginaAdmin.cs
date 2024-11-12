@@ -1,4 +1,5 @@
-﻿using DigitalStore.Models;
+﻿using DigitalStore.Enum;
+using DigitalStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ namespace DigitalStore.Filters
 
             if (string.IsNullOrEmpty(sessaoDoUsuario))
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Login" }, { "action", "Login" } });
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
             }
             else
             {
@@ -21,7 +22,11 @@ namespace DigitalStore.Filters
 
                 if (usuario != null)
                 {
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Login" }, { "action", "Login" } });
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
+                }
+                if (usuario.Perfil != PerfilEnum.Admin)
+                {
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Restrito" }, { "action", "Index" } });
                 }
             }
 

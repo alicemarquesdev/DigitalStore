@@ -6,14 +6,14 @@ namespace DigitalStore.Models
     {
         public int FavoritosId { get; set; }
 
-        [ForeignKey("Usuarios")]
-        public int UsuarioId { get; set; }
-
-        public UsuarioModel Usuario { get; set; } = new UsuarioModel();
+        public ProdutoModel Produto { get; set; } = new ProdutoModel();
 
         [ForeignKey("Produtos")]
         public int ProdutoId { get; set; }
 
-        public ProdutoModel Produto { get; set; } = new ProdutoModel();
+        public UsuarioModel Usuario { get; set; } = new UsuarioModel();
+
+        [ForeignKey("Usuarios")]
+        public int UsuarioId { get; set; }
     }
 }

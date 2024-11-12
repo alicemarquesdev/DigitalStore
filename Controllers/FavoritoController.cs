@@ -1,20 +1,36 @@
-﻿using DigitalStore.Repositorio;
+﻿using DigitalStore.Models;
+using DigitalStore.Repositorio;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Controllers
 {
     public class FavoritoController : Controller
     {
-        private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly IFavoritosRepositorio _favoritosRepositorio;
 
-        public FavoritoController(IProdutoRepositorio produtoRepositorio)
+        public FavoritoController(IFavoritosRepositorio favoritosRepositorio)
         {
-            _produtoRepositorio = produtoRepositorio;
+            _favoritosRepositorio = favoritosRepositorio;
         }
 
-        public IActionResult Index()
+        [HttpPost]
+        public async Task<IActionResult> AddFavorito(int produtoId, int usuarioId)
         {
-            return View();
+            await _favoritosRepositorio.AddFavoritoAsync(produtoId, usuarioId);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Index(int usuarioId)
+        {
+            List<FavoritosModel> favoritos = await _favoritosRepositorio.BuscarFavoritosDoUsuarioAsync(usuarioId);
+            return View(favoritos);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoverFavorito(int produtoId, int usuarioId)
+        {
+            await _favoritosRepositorio.RemoverFavoritoAsync(produtoId, usuarioId);
+            return RedirectToAction("Index");
         }
     }
 }
