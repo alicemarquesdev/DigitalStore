@@ -1,5 +1,5 @@
 ﻿using DigitalStore.Helper;
-using DigitalStore.Repositorio;
+using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Component
@@ -29,8 +29,8 @@ namespace DigitalStore.Component
             else
             {
                 ViewBag.Sessao = sessao;
-                ViewBag.UsuarioPerfil = sessao?.Perfil;
-                ViewBag.UsuarioId = sessao?.UsuarioId;
+                ViewBag.UsuarioPerfil = sessao.Perfil;
+                ViewBag.UsuarioId = sessao.UsuarioId;
             }
 
             var categorias = await _produtoRepositorio.BuscarCategoriasAsync();

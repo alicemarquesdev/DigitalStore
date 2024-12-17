@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-5">Meus Pedidos</h2>
+
+    <!-- Lista de Pedidos -->
+    <div class="row">
+        <!-- Card de Pedido 1 -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Pedido #12345</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Data do Pedido:</strong> 15/12/2024</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge bg-success">Entregue</span>
+                    </p>
+                    
+                    <h6 class="mt-4">Produtos:</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto A</span>
+                            <span>R$ 99,90</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto B</span>
+                            <span>R$ 149,90</span>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <p><strong>Total: </strong> R$ 249,80</p>
+                        <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Pedido 2 -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Pedido #12346</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Data do Pedido:</strong> 10/12/2024</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge bg-warning">Em Processamento</span>
+                    </p>
+                    
+                    <h6 class="mt-4">Produtos:</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto C</span>
+                            <span>R$ 89,90</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto D</span>
+                            <span>R$ 119,90</span>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <p><strong>Total: </strong> R$ 209,80</p>
+                        <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Pedido 3 -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Pedido #12347</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Data do Pedido:</strong> 01/12/2024</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge bg-primary">Enviado</span>
+                    </p>
+                    
+                    <h6 class="mt-4">Produtos:</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto E</span>
+                            <span>R$ 59,90</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Produto F</span>
+                            <span>R$ 89,90</span>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <p><strong>Total: </strong> R$ 149,80</p>
+                        <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caso não haja pedidos -->
+   @*  @if (false) <!-- Alterar condição se necessário -->
+    {
+        <div class="alert alert-info text-center mt-4" role="alert">
+            Você ainda não tem pedidos. Comece a comprar agora!
+        </div>
+    } *@
+</div>

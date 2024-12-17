@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Minhas Contas";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Left -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-4">Opções de Conta</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#meusDados" class="btn btn-link w-100 text-start">Meus Dados</a></li>
+                        <li><a href="#alterarSenha" class="btn btn-link w-100 text-start">Alterar Senha</a></li>
+                        <li><a href="#apagarConta" class="btn btn-link w-100 text-start">Apagar Conta</a></li>
+                        <li>
+                            <form method="post" action="/Conta/Sair">
+                                <button type="submit" class="btn btn-link w-100 text-start">
+                                    <i class="bi bi-box-arrow-right"></i> Sair
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: User Data -->
+        <div class="col-md-9">
+            <h2 class="text-center mb-5">Minhas Contas</h2>
+
+            <!-- Dados do Usuário -->
+            <div class="card shadow-sm mb-4" id="meusDados">
+                <div class="card-header">
+                    <h5 class="mb-0">Informações da Conta</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="#" id="formDadosUsuario">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="NomeUsuario" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="NomeUsuario" value="João Silva" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="EmailUsuario" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="EmailUsuario" value="joao.silva@email.com" readonly>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-success">Salvar Informações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Alterar Senha -->
+            <div class="card shadow-sm mb-4" id="alterarSenha">
+                <div class="card-header">
+                    <h5 class="mb-0">Alterar Senha</h5>
+                </div>
+                <div class="card-body">
+                    <p>Altere sua senha de acesso à conta.</p>
+                    <a href="/Conta/AlterarSenha" class="btn btn-primary w-100">
+                        <i class="bi bi-pencil-square"></i> Alterar Senha
+                    </a>
+                </div>
+            </div>
+
+            <!-- Apagar Conta -->
+            <div class="card shadow-sm mb-4" id="apagarConta">
+                <div class="card-header">
+                    <h5 class="mb-0">Apagar Conta</h5>
+                </div>
+                <div class="card-body">
+                    <p>Se você deseja excluir permanentemente sua conta, clique no botão abaixo.</p>
+                    <a href="/Conta/ApagarConta" class="btn btn-danger w-100">
+                        <i class="bi bi-trash"></i> Apagar Conta
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

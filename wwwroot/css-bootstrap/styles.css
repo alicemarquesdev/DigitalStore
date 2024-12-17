@@ -111,6 +111,13 @@ main {
     min-height: 100vh;
 }
 
+.carousel-main img {
+    width: 100%;
+    height: 475px;
+    object-fit: cover;
+    object-position: center;
+}
+
 hr {
     margin: 1rem 0;
     color: inherit;

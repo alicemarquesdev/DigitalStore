@@ -16,31 +16,31 @@ namespace DigitalStore.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CarrinhoModel>()
-             .HasKey(ec => new { ec.UsuarioId, ec.ProdutoId });
-
-            modelBuilder.Entity<CarrinhoModel>()
-                .HasOne(ec => ec.Usuario)
-                .WithMany(e => e.Carrinho)
-                .HasForeignKey(ec => ec.UsuarioId);
-
-            modelBuilder.Entity<CarrinhoModel>()
-                .HasOne(ec => ec.Produto)
-                .WithMany(c => c.Carrinho)
-                .HasForeignKey(ec => ec.ProdutoId);
+            modelBuilder.Entity<FavoritosModel>()
+              .HasKey(ac => new { ac.ProdutoId, ac.UsuarioId });
 
             modelBuilder.Entity<FavoritosModel>()
-             .HasKey(ec => new { ec.UsuarioId, ec.ProdutoId });
+                .HasOne(ac => ac.Produto)
+                .WithMany(a => a.Favoritos)
+                .HasForeignKey(ac => ac.ProdutoId);
 
             modelBuilder.Entity<FavoritosModel>()
-                .HasOne(ec => ec.Usuario)
-                .WithMany(e => e.Favoritos)
-                .HasForeignKey(ec => ec.UsuarioId);
-
-            modelBuilder.Entity<FavoritosModel>()
-                .HasOne(ec => ec.Produto)
+                .HasOne(ac => ac.Usuario)
                 .WithMany(c => c.Favoritos)
-                .HasForeignKey(ec => ec.ProdutoId);
+                .HasForeignKey(ac => ac.UsuarioId);
+
+            modelBuilder.Entity<CarrinhoModel>()
+             .HasKey(ac => new { ac.ProdutoId, ac.UsuarioId });
+
+            modelBuilder.Entity<CarrinhoModel>()
+                .HasOne(ac => ac.Produto)
+                .WithMany(a => a.Carrinho)
+                .HasForeignKey(ac => ac.ProdutoId);
+
+            modelBuilder.Entity<CarrinhoModel>()
+                .HasOne(ac => ac.Usuario)
+                .WithMany(c => c.Carrinho)
+                .HasForeignKey(ac => ac.UsuarioId);
 
             // Configurar o tipo de coluna da propriedade 'Preco' com precisão e escala
             modelBuilder.Entity<ProdutoModel>()

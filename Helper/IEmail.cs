@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace DigitalStore.Helper
+﻿namespace DigitalStore.Helper
 {
     public interface IEmail
     {

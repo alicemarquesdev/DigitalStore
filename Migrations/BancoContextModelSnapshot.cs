@@ -24,36 +24,30 @@ namespace DigitalStore.Migrations
 
             modelBuilder.Entity("DigitalStore.Models.CarrinhoModel", b =>
                 {
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CarrinhoId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
-                    b.HasKey("UsuarioId", "ProdutoId");
+                    b.HasKey("ProdutoId", "UsuarioId");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Carrinho");
                 });
 
             modelBuilder.Entity("DigitalStore.Models.FavoritosModel", b =>
                 {
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FavoritosId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
-                    b.HasKey("UsuarioId", "ProdutoId");
+                    b.HasKey("ProdutoId", "UsuarioId");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Favoritos");
                 });

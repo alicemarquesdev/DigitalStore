@@ -1,0 +1,90 @@
+﻿@model List<CarrinhoModel>
+
+@{
+    ViewData["Title"] = "Confirmar Pagamento";
+}
+
+<div class="container my-lg-5 pb-md-5">
+    <div class="row">
+        <!-- Left Section: Escolher o Frete e Forma de Pagamento -->
+        <div class="col-md-8">
+            <h4 class="mb-4">Escolha o Frete</h4>
+
+            <!-- Opções de Frete -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <select class="form-select" name="frete" required>
+                        <option value="1">Frete Normal - R$ 15,00</option>
+                        <option value="2">Frete Expresso - R$ 30,00</option>
+                        <option value="3">Frete Grátis (para compras acima de R$ 200,00)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pagamento com Cartão de Crédito -->
+            <h4 class="mb-4">Pagar com Cartão de Crédito</h4>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="numeroCartao" class="form-label">Número do Cartão</label>
+                        <input type="text" class="form-control" id="numeroCartao" name="numeroCartao" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validadeCartao" class="form-label">Validade</label>
+                            <input type="month" class="form-control" id="validadeCartao" name="validadeCartao" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cvvCartao" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvvCartao" name="cvvCartao" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagamento com Pix -->
+            <h4 class="mb-4">Pagar com Pix</h4>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <p>Para pagar via Pix, basta escanear o QR Code ou copiar a chave Pix abaixo:</p>
+                    <p><strong>Chave Pix:</strong> exemplo@dominio.com</p>
+                    <input type="hidden" name="chavePix" value="exemplo@dominio.com" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section: Resumo do Pedido e Endereço -->
+        <div class="col-md-4">
+            <h4 class="mb-4">Resumo do Pedido</h4>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Subtotal</p>
+                        <p class="mb-2 fw-bold">R$ 199,99</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Frete</p>
+                        <p class="mb-2 fw-bold">R$ 20,00</p>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold">Total</h6>
+                        <h6 class="fw-bold text-primary">R$ 219,99</h6>
+                    </div>
+                    <a class="btn btn-primary w-100 mt-3" asp-controller="PerfilCliente" asp-action="ConfirmarPagamento">Finalizar Compra</a>
+                </div>
+            </div>
+
+            <!-- Endereço de Entrega -->
+            <h5 class="mt-4">Endereço de Entrega</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Rua Exemplo, 123 - Bairro Exemplo</strong></p>
+                    <p>Cidade - Estado</p>
+                    <p><strong>CEP:</strong> 12345-678</p>
+                    <a href="#" class="btn btn-link">Mudar Endereço</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

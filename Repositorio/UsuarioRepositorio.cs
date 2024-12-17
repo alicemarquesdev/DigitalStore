@@ -1,5 +1,6 @@
 ﻿using DigitalStore.Data;
 using DigitalStore.Models;
+using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
@@ -13,29 +14,21 @@ namespace DigitalStore.Repositorio
             _context = context;
         }
 
+        public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
+        }
+
+        public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
+        }
+
         public async Task AddUsuarioAsync(UsuarioModel usuario)
         {
             usuario.SetSenhaHash();
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<UsuarioModel> AlterarSenhaAsync(AlterarSenhaModel alterarSenhaModel)
-        {
-            UsuarioModel usuarioDB = await BuscarUsuarioPorIdAsync(alterarSenhaModel.Id);
-
-            if (usuarioDB == null) throw new Exception("Houve um erro na atualização da senha, usuário não encontrado!");
-
-            if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual)) throw new Exception("Senha atual não confere!");
-
-            if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha)) throw new Exception("Nova senha deve ser diferente da senha atual!");
-
-            usuarioDB.SetNovaSenha(alterarSenhaModel.NovaSenha);
-
-            _context.Usuarios.Update(usuarioDB);
-            _context.SaveChanges();
-
-            return usuarioDB;
         }
 
         public async Task AtualizarUsuarioAsync(UsuarioModel usuario)
@@ -51,14 +44,20 @@ namespace DigitalStore.Repositorio
             await _context.SaveChangesAsync();
         }
 
-        public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
+        public async Task AlterarSenhaAsync(AlterarSenhaModel alterarSenhaModel)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
-        }
+            UsuarioModel usuarioDB = await BuscarUsuarioPorIdAsync(alterarSenhaModel.Id);
 
-        public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
-        {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
+            if (usuarioDB == null) throw new Exception("Houve um erro na atualização da senha, usuário não encontrado!");
+
+            if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual)) throw new Exception("Senha atual não confere!");
+
+            if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha)) throw new Exception("Nova senha deve ser diferente da senha atual!");
+
+            usuarioDB.SetNovaSenha(alterarSenhaModel.NovaSenha);
+
+            _context.Usuarios.Update(usuarioDB);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> RemoverUsuarioAsync(int id)

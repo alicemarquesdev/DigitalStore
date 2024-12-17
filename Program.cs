@@ -1,6 +1,7 @@
 using DigitalStore.Data;
 using DigitalStore.Helper;
 using DigitalStore.Repositorio;
+using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();

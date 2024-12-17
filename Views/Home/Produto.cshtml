@@ -1,0 +1,109 @@
+﻿@model ProdutoModel
+
+@{
+    ViewData["Title"] = "Produto";
+}
+
+
+<div class="container p-2">
+    <h1 class="mb-4 mt-5">Produto</h1>
+
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="@Model.ImagemUrl" alt="..." /></div>
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder">@Model.NomeProduto</h1>
+                    <div class="fs-5 mb-5">
+                        <h5>R$@Model.Preco</h5>
+                        <p>em 10x sem juros no cartão</p>
+
+                    </div>
+                    <p class="lead">@Model.Descricao</p>
+                    <div class="d-flex">
+                        <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1" style="max-width: 3rem" />
+                        <div class="container d-flex justify-content-center gap-2">
+                            @if (ViewBag.Sessao == null)
+                            {
+                                
+                                        <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-heart"></i></a>
+                                        <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-cart-fill"></i></a>
+
+                                   
+
+                            }
+                            else if (ViewBag.Sessao != null && ViewBag.Perfil == true)
+                            {
+                               
+                                        <form asp-controller="Favorito" asp-action="AddFavorito" method="post" class="flex-grow-1">
+                                            <input type="hidden" name="id" value="@Model.ProdutoId" />
+                                            <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                            <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-heart"></i></button>
+                                        </form>
+                                        <form asp-controller="Carrinho" asp-action="AddCarrinho" method="post" class="flex-grow-1">
+                                            <input type="hidden" name="id" value="@Model.ProdutoId" />
+                                            <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                            <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-cart-fill"></i></button>
+                                        </form>
+                                    
+                            }
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Related items section-->
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">Últimas Novidades</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                @foreach (var produto in ViewBag.ProdutosRelacionados)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="@produto.ImagemUrl" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">@produto.NomeProduto</h5>
+                                    <!-- Product price-->
+                                    R$@produto.Preco
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                @if (ViewBag.Sessao == null)
+                                {
+
+                                    <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-cart-fill"></i></a>
+
+
+
+                                }
+                                else if (ViewBag.Sessao != null && ViewBag.Perfil == true)
+                                {
+
+                                
+                                    <form asp-controller="Carrinho" asp-action="AddCarrinho" method="post" class="flex-grow-1">
+                                        <input type="hidden" name="id" value="@Model.ProdutoId" />
+                                        <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
+
+                                        <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-cart-fill"></i></button>
+                                    </form>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+               
+            </div>
+        </div>
+    </section>
+</div>

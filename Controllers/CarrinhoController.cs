@@ -1,5 +1,4 @@
-﻿using DigitalStore.Models;
-using DigitalStore.Repositorio;
+﻿using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Controllers
@@ -17,13 +16,7 @@ namespace DigitalStore.Controllers
         public async Task<IActionResult> AddCarrinho(int produtoId, int usuarioId)
         {
             await _carrinhoRepositorio.AddAoCarrinhoAsync(produtoId, usuarioId);
-            return RedirectToAction("Index", "Carrinho");
-        }
-
-        public async Task<IActionResult> Index(int usuarioId)
-        {
-            List<CarrinhoModel> favoritos = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(usuarioId);
-            return View(favoritos);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

@@ -1,31 +1,17 @@
-﻿@using DigitalStore.Enum
+﻿    @using DigitalStore.Enum
 @model List<ProdutoModel>
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container px-4 px-lg-5">
-        <a class="navbar-brand">DigitalStore</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container px-4 px-lg-4">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">DigitalStore</a>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index" aria-current="page">Home</a></li>
-                @foreach (var categoria in Model)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria">@categoria.Categoria</a>
-                    </li>
-                }
-            </ul>
 
 
             @if (ViewBag.Sessao == null)
             {
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-lg-1">
-
-                    <li class="nav-item">
-                        <a role="button" class="nav-link" asp-controller="Usuario" asp-action="CriarUsuario">
-                            Criar Conta
-                        </a>
-                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Login" asp-action="Index">
@@ -40,53 +26,47 @@
                 </ul>
 
             }
-            else if ((PerfilEnum)ViewBag.UsuarioPerfil == PerfilEnum.Cliente)
-            {
-                <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0 me-lg-1">
-                    <li class="nav-item">
-                        <form class="nav-link">
-                            <button class="btn btn-outline-dark" type="submit" asp-controller="Favorito" asp-action="Index">
-                                <i class="bi-heart-fill me-1"></i>
-                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                            </button>
-                        </form>
-                    </li>
-                    <li class="nav-item">
-                        <form class="nav-link">
-                            <button class="btn btn-outline-dark" type="submit" asp-controller="Carrinho" asp-action="Index">
-                                <i class="bi-cart-fill me-1"></i>
-                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                            </button>
-                        </form>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Minha Conta</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-Id="@ViewBag.UsuarioId">Editar Dados</a></li>
-                            <li><a class="dropdown-item" asp-controller="AlterarSenha" asp-action="Index" asp-route-Id="@ViewBag.UsuarioId">Alterar Senha</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="ApagarUsuario" asp-route-Id="@ViewBag.UsuarioId">Apagar Conta</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
-                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair">Sair</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-            }
             else
             {
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-lg-1">
+                <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0 me-lg-1">
 
-                    <li class="nav-item">
-                        <a role="button" class="nav-link" asp-controller="Admin" asp-action="Index">Gerenciamento de Produtos</a>
+                    @if (ViewBag.UsuarioPerfil == PerfilEnum.Cliente)
+                    {
 
-                    </li>
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-light nav-link" asp-controller="PerfilCliente" asp-action="Favoritos" asp-route-id="@ViewBag.UsuarioId" style="color: inherit; background-color: transparent; border-color: inherit;">
+                                <i class="bi-heart-fill me-1 text-light"></i>
+                                <span class="badge bg-light text-dark ms-1 rounded-pill">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light nav-link" role="button" asp-controller="PerfilCliente" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId"
+                               style="color: inherit; background-color: transparent; border-color: inherit;">
+                                <i class="bi-cart-fill me-1 text-light"></i>
+                                <span class="badge bg-light text-dark ms-1 rounded-pill">0</span>
+                            </a>
+                        </li>
 
-                    <li class="nav-item dropdown">
+                    }
+                    else
+                    {
+
+                        <li class="nav-item">
+                            <a role="button" class="nav-link" asp-controller="PerfilAdmin" asp-action="GerenciamentoProdutos">Gerenciamento de Produtos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="button" class="nav-link" asp-controller="PerfilAdmin" asp-action="Personalizacao">Personalização</a>
+                        </li>
+                    }
+
+                    <li class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Minha Conta</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-controller="PerfilCliente" asp-action="MeusPedidos" asp-route-Id="@ViewBag.UsuarioId">Meus Pedidos</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@ViewBag.UsuarioId">Minha Conta</a></li>
+
                             <li><a class="dropdown-item" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-Id="@ViewBag.UsuarioId">Editar Dados</a></li>
-                            <li><a class="dropdown-item" asp-controller="AlterarSenha" asp-action="Index">Alterar Senha</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="AlterarSenha" asp-route-Id="@ViewBag.UsuarioId">Alterar Senha</a></li>
                             <li><a class="dropdown-item" asp-controller="Usuario" asp-action="ApagarUsuario" asp-route-Id="@ViewBag.UsuarioId">Apagar Conta</a></li>
                             <li><hr class="dropdown-divider" /></li>
                             <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
@@ -94,9 +74,60 @@
                         </ul>
                     </li>
                 </ul>
+
             }
+
         </div>
 
     </div>
 </nav>
+<nav class="navbar navbar-expand navbar-light bg-light p-0 m-0 shadow-lg">
+    <div class="container-fluid">
+        <!-- Centralização das categorias -->
+        <div class="d-flex justify-content-center flex-grow-1">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        INÍCIO
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        TODAS AS CATEGORIAS
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos">
+                                Todos os produtos
+                            </a>
+                        </li>
+                        @foreach (var categoria in Model)
+                        {
+                            <li>
 
+                                <a class="dropdown-item" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria">
+                                    @categoria.Categoria
+                                </a>
+                            </li>   
+                        }
+                    </ul>
+                </li>
+
+                @foreach (var categoria in Model.Take(5))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria" asp-route-id="@ViewBag.UsuarioId">
+                            @categoria.Categoria.ToUpper()
+                        </a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="UltimasNovidades">
+                        ÚLTIMAS NOVIDADES
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

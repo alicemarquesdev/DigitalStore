@@ -6,16 +6,15 @@ namespace DigitalStore.Models
 {
     public class UsuarioModel
     {
-        public virtual List<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();
+        [Key]
+        public int UsuarioId { get; set; }
+
+        [Required(ErrorMessage = "Digite o seu nome.")]
+        public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Digite o seu email.")]
         [EmailAddress(ErrorMessage = "Email inválido.")]
         public string Email { get; set; } = string.Empty;
-
-        public virtual List<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
-
-        [Required(ErrorMessage = "Digite o seu nome.")]
-        public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Informe o perfil.")]
         public PerfilEnum Perfil { get; set; } = PerfilEnum.Cliente;
@@ -23,8 +22,19 @@ namespace DigitalStore.Models
         [Required(ErrorMessage = "Digite a sua senha.")]
         public string Senha { get; set; } = string.Empty;
 
-        [Key]
-        public int UsuarioId { get; set; }
+        public virtual List<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();
+
+        public virtual List<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
+
+        public bool SenhaValida(string senha)
+        {
+            return Senha == senha.GerarHash();
+        }
+
+        public void SetSenhaHash()
+        {
+            Senha = Senha.GerarHash();
+        }
 
         public string GerarNovaSenha()
         {
@@ -33,19 +43,9 @@ namespace DigitalStore.Models
             return novaSenha;
         }
 
-        public bool SenhaValida(string senha)
-        {
-            return Senha == senha.GerarHash();
-        }
-
         public void SetNovaSenha(string novaSenha)
         {
             Senha = novaSenha.GerarHash();
-        }
-
-        public void SetSenhaHash()
-        {
-            Senha = Senha.GerarHash();
         }
     }
 }

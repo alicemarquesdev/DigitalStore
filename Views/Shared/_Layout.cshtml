@@ -22,11 +22,55 @@
 
         <div class="container-fluid m-0 p-0">
             <main role="main">
+                @if (TempData["MensagemSucesso"] != null)
+                {
+                    <div class="alert alert-dark" role="alert">
+                        <button type="button" class="btn btn-dark btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
+                        @TempData["MensagemSucesso"]
+                    </div>
+                }
+                @if (TempData["MensagemErro"] != null)
+                {
+                    <div class="alert alert-dark" role="alert">
+                        <button type="button" class="btn btn-ou btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
+                        @TempData["MensagemErro"]
+                    </div>
+                }
+
                 @RenderBody()
             </main>
         </div>
     <footer class="bg-dark text-white py-5">
-        <div class="container">
+        <div class="container pb-3">
+            <div class="row text-center align-items-center">
+                <!-- FRETE GRÁTIS -->
+                <div class="col-md-4 d-flex flex-row align-items-center justify-content-center border-end border-white">
+                    <i class="bi bi-truck fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">FRETE GRÁTIS</h6>
+                        <p class="mb-0">Em produtos selecionados</p>
+                    </div>
+                </div>
+                <!-- ENTREGA EXPRESSA -->
+                <div class="col-md-4 d-flex flex-row align-items-center justify-content-center border-end border-white">
+                    <i class="bi bi-lightning-charge fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">ENTREGA EXPRESSA</h6>
+                        <p class="mb-0">A partir de 2 dias úteis</p>
+                    </div>
+                </div>
+                <!-- EM ATÉ 10X SEM JUROS -->
+                <div class="col-md-4 d-flex flex-row align-items-center justify-content-center">
+                    <i class="bi bi-credit-card fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">EM ATÉ 10X SEM JUROS</h6>
+                        <p class="mb-0">Parcelamento facilitado</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
             <div class="row">
                 <!-- Coluna 1 - Sobre a empresa -->
                 <div class="col-md-4 mb-3">

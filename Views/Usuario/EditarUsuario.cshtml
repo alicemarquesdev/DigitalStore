@@ -5,24 +5,6 @@
     ViewData["Title"] = "Editar Dados";
 }
 
-
-<div class="container">
-    @if (TempData["MensagemSucesso"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="btn btn-dark btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
-            @TempData["MensagemSucesso"]
-        </div>
-    }
-    @if (TempData["MensagemErro"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="btn btn-danger btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
-            @TempData["MensagemErro"]
-        </div>
-    }
-</div>
-
 <div class="container mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-5">

@@ -1,7 +1,6 @@
-﻿using DigitalStore.Enum;
-using DigitalStore.Helper;
+﻿using DigitalStore.Helper;
 using DigitalStore.Models;
-using DigitalStore.Repositorio;
+using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Controllers
@@ -19,6 +18,42 @@ namespace DigitalStore.Controllers
             _email = email;
         }
 
+        public IActionResult Index()
+        {
+            if (_sessao.BuscarSessaoDoUsuario() != null) RedirectToAction("Index", "Home");
+            return View();
+        }
+
+        public async Task<IActionResult> RedefinirSenha(int id)
+        {
+            UsuarioModel usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(id);
+            return View(usuario);
+        }
+
+        public IActionResult Sair()
+        {
+            _sessao.RemoverSessaoDoUsuario();
+            return RedirectToAction("Index", "Login");
+        }
+
+        public IActionResult CriarUsuario()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CriarUsuario(UsuarioModel usuario)
+        {
+            if (ModelState.IsValid)
+            {
+                await _usuarioRepositorio.AddUsuarioAsync(usuario);
+                TempData["MensagemSucesso"] = "O usuário foi criado com sucesso!";
+                return RedirectToAction("Index", "Login");
+            }
+
+            return View(usuario);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Entrar(LoginModel loginModel)
         {
@@ -32,23 +67,15 @@ namespace DigitalStore.Controllers
                     {
                         if (usuario.SenhaValida(loginModel.Senha))
                         {
-                            if (usuario.Perfil == PerfilEnum.Admin)
-                            {
-                                _sessao.CriarSessaoDoUsuario(usuario);
-                                return RedirectToAction("Index", "Home");
-                            }
-
                             _sessao.CriarSessaoDoUsuario(usuario);
                             return RedirectToAction("Index", "Home");
                         }
-
                         TempData["MensagemErro"] = "Senha do usuário é inválida, tente novamente.";
                     }
-
-                    TempData["MensagemErro"] = "Usuário e/ou senha inválido(s). Por favor, tente novamente.";
+                    TempData["MensagemErro"] = "Usuário não encontrado. Por favor, tente novamente.";
                 }
-
-                return View("Index");
+                TempData["MensagemErro"] = "Por favor verifique os dados inseridos, tente novamente.";
+                return View("Index", loginModel);
             }
             catch (Exception)
             {
@@ -94,24 +121,6 @@ namespace DigitalStore.Controllers
                 TempData["MensagemErro"] = $"Ops, não conseguimos enviar o email, tente novamante, detalhe do erro: {erro.Message}";
                 return RedirectToAction("Index");
             }
-        }
-
-        public IActionResult Index()
-        {
-            if (_sessao.BuscarSessaoDoUsuario() != null) RedirectToAction("Index", "Home");
-            return View();
-        }
-
-        public async Task<IActionResult> RedefinirSenha(int id)
-        {
-            UsuarioModel usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(id);
-            return View(usuario);
-        }
-
-        public IActionResult Sair()
-        {
-            _sessao.RemoverSessaoDoUsuario();
-            return RedirectToAction("Index", "Home");
         }
     }
 }
