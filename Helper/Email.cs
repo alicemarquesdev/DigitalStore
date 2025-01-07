@@ -1,5 +1,4 @@
 ﻿using System.Net;
-
 using System.Net.Mail;
 
 namespace DigitalStore.Helper
@@ -17,37 +16,41 @@ namespace DigitalStore.Helper
         {
             try
             {
+                // Recupera as configurações do SMTP do arquivo de configuração
                 string host = _configuration.GetValue<string>("SMTP:Host");
                 string nome = _configuration.GetValue<string>("SMTP:Nome");
-                string UserName = _configuration.GetValue<string>("SMTP:UserName");
+                string userName = _configuration.GetValue<string>("SMTP:UserName");
                 string senha = _configuration.GetValue<string>("SMTP:Senha");
                 int porta = _configuration.GetValue<int>("SMTP:Porta");
 
-                MailMessage mail = new MailMessage()
+                // Criação da mensagem de e-mail
+                using (var mail = new MailMessage())
                 {
-                    From = new MailAddress(UserName, nome)
-                };
+                    mail.From = new MailAddress(userName, nome);
+                    mail.To.Add(email);
+                    mail.Subject = assunto;
+                    mail.Body = mensagem;
+                    mail.IsBodyHtml = true; // Marca o corpo como HTML
+                    mail.Priority = MailPriority.High; // Define a prioridade do e-mail
 
-                mail.To.Add(email);
-                mail.Subject = assunto;
-                mail.Body = mensagem;
-                mail.IsBodyHtml = true;
-                mail.Priority = MailPriority.High;
+                    // Envia o e-mail utilizando o SmtpClient
+                    using (var smtp = new SmtpClient(host, porta))
+                    {
+                        smtp.Credentials = new NetworkCredential(userName, senha);
+                        smtp.EnableSsl = true; // Ativa o uso de SSL
 
-                using (SmtpClient smtp = new SmtpClient(host, porta))
-                {
-                    smtp.Credentials = new NetworkCredential(UserName, senha);
-                    smtp.EnableSsl = true;
-
-                    smtp.Send(mail);
-                    return true;
+                        smtp.Send(mail); // Envia a mensagem
+                    }
                 }
-            }
-            catch (System.Exception ex)
-            {
-                // Gravar log de erro ao enviar e-mail
 
-                return false;
+                return true; // E-mail enviado com sucesso
+            }
+            catch (Exception ex)
+            {
+                // Registra o erro em um log (pode ser implementado conforme necessário)
+                // Exemplo: _logger.LogError($"Erro ao enviar e-mail: {ex.Message}");
+
+                return false; // Retorna false em caso de erro
             }
         }
     }

@@ -16,6 +16,7 @@ namespace DigitalStore.Repositorio
             _sistema = sistema.WebRootPath;
         }
 
+        // Método para buscar categorias distintas de produtos
         public async Task<List<ProdutoModel>> BuscarCategoriasAsync()
         {
             var categorias = await _context.Produtos.Select(x => x.Categoria).Distinct().ToListAsync();
@@ -28,21 +29,28 @@ namespace DigitalStore.Repositorio
             return categoriaList;
         }
 
+        // Método para buscar produtos por categoria
         public async Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(ProdutoModel categoria)
         {
-            return await _context.Produtos.Where(c => c.Categoria == categoria.Categoria).ToListAsync();
+            return await _context.Produtos
+                .Where(c => c.Categoria == categoria.Categoria)
+                .ToListAsync();
         }
 
+        // Método para buscar um produto por ID
         public async Task<ProdutoModel> BuscarProdutoPorIdAsync(int id)
         {
-            return await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
+            return await _context.Produtos
+                .FirstOrDefaultAsync(x => x.ProdutoId == id);
         }
 
+        // Método para buscar todos os produtos
         public async Task<List<ProdutoModel>> BuscarTodosProdutosAsync()
         {
             return await _context.Produtos.ToListAsync();
         }
 
+        // Método para gerar caminho de arquivo da imagem do produto
         public async Task<string> GerarCaminhoArquivoAsync(IFormFile imagem)
         {
             // Gera um código único para o arquivo
@@ -55,7 +63,7 @@ namespace DigitalStore.Repositorio
             var nomeCaminhoImagem = codigoUnico + extensao;
 
             // Caminho para salvar a imagem, dentro da pasta "wwwroot/images"
-            var caminhoParaSalvarImagem = Path.Combine(_sistema, "~/image");
+            var caminhoParaSalvarImagem = Path.Combine(_sistema, "image");
 
             // Verifica se a pasta existe e, se não, cria
             if (!Directory.Exists(caminhoParaSalvarImagem))
@@ -73,6 +81,7 @@ namespace DigitalStore.Repositorio
             return Path.Combine("~/image", nomeCaminhoImagem).Replace("\\", "/");
         }
 
+        // Método para adicionar um novo produto
         public async Task AddProdutoAsync(ProdutoModel produto, IFormFile imagem)
         {
             try
@@ -89,19 +98,23 @@ namespace DigitalStore.Repositorio
                     ImagemUrl = caminhoImagem
                 };
 
+                // Adiciona o produto ao banco de dados
                 await _context.Produtos.AddAsync(produtoDb);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception("Erro ao adicionar o produto: " + ex.Message);
             }
         }
 
+        // Método para atualizar um produto
         public async Task AtualizarProdutoAsync(ProdutoModel produto, IFormFile? novaImagem)
         {
             ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
-            if (produtoDb == null) throw new Exception("Houve um erro, ao tentar atualizar os dados do produto.");
+
+            if (produtoDb == null)
+                throw new Exception("Produto não encontrado para atualização.");
 
             produtoDb.NomeProduto = produto.NomeProduto;
             produtoDb.Descricao = produto.Descricao;
@@ -111,8 +124,8 @@ namespace DigitalStore.Repositorio
 
             if (novaImagem != null)
             {
-                // Opcional: Remover a imagem antiga
-                if (!string.IsNullOrEmpty(produtoDb.ImagemUrl) && string.IsNullOrEmpty(produto.ImagemUrl))
+                // Remover a imagem antiga, se necessário
+                if (!string.IsNullOrEmpty(produtoDb.ImagemUrl))
                 {
                     var caminhoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", produtoDb.ImagemUrl.TrimStart('~', '/').Replace("/", "\\"));
                     if (File.Exists(caminhoAntigo))
@@ -126,10 +139,12 @@ namespace DigitalStore.Repositorio
                 produtoDb.ImagemUrl = caminhoImagem;
             }
 
+            // Atualiza o produto no banco de dados
             _context.Produtos.Update(produtoDb);
             await _context.SaveChangesAsync();
         }
 
+        // Método para remover um produto
         public async Task<bool> RemoverProdutoAsync(int id)
         {
             ProdutoModel produto = await BuscarProdutoPorIdAsync(id);
@@ -141,9 +156,12 @@ namespace DigitalStore.Repositorio
             return true;
         }
 
+        // Método para buscar os últimos produtos adicionados
         public async Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionados()
         {
-            return await _context.Produtos.OrderByDescending(p => p.DataCadastro).ToListAsync();
+            return await _context.Produtos
+                .OrderByDescending(p => p.DataCadastro)
+                .ToListAsync();
         }
     }
 }

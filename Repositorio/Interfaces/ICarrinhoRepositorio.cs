@@ -11,5 +11,7 @@ namespace DigitalStore.Repositorio.Interfaces
         Task AddAoCarrinhoAsync(int produtoId, int usuarioId);
 
         Task<bool> RemoverDoCarrinhoAsync(int produtoId, int usuarioId);
+
+        Task<int> TotalProdutosNoCarrinhoDoUsuarioAsync(int usuarioId);
     }
 }

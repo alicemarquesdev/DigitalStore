@@ -11,5 +11,7 @@ namespace DigitalStore.Repositorio.Interfaces
         Task AddFavoritoAsync(int produtoId, int usuarioId);
 
         Task<bool> RemoverFavoritoAsync(int produtoId, int usuarioId);
+
+        Task<int> TotalProdutosNosFavoritos(int usuarioId);
     }
 }

@@ -1,0 +1,56 @@
+﻿@model List<PedidoModel>
+@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-5">Meus Pedidos</h2>
+
+    <!-- Lista de Pedidos -->
+    <div class="row">
+        @foreach (var pedido in Model)
+        {
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Pedido #@pedido.PedidoId</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Data do Pedido:</strong> @pedido.DataDoPedido.ToString("dd/mm/yyyy")</p>
+                        <p>
+                            <strong>Status:</strong>
+                            <span class="badge bg-success">@pedido.StatusDoPedido</span>
+                        </p>
+
+                        <h6 class="mt-4">Produtos:</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span></span>
+                                <span>R$ 99,90</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Produto B</span>
+                                <span>R$ 149,90</span>
+                            </li>
+                        </ul>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <p><strong>Total: </strong> R$ 249,80</p>
+                            <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+
+    <!-- Caso não haja pedidos -->
+    @*  @if (false) <!-- Alterar condição se necessário -->
+    {
+    <div class="alert alert-info text-center mt-4" role="alert">
+    Você ainda não tem pedidos. Comece a comprar agora!
+    </div>
+    } *@

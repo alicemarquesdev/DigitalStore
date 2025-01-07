@@ -31,8 +31,10 @@ namespace DigitalStore.Models
         public StatusEnum? Status { get; set; } = StatusEnum.Ativo;
 
         // Relacionamentos
-        public virtual List<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();
+        public virtual IList<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();
 
-        public virtual List<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
+        public virtual IList<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
+
+        public virtual IList<ItensDoPedidoModel> ItensDoPedido { get; set; }
     }
 }

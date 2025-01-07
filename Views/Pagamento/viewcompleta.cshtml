@@ -1,0 +1,112 @@
+﻿@model List<CarrinhoModel>
+
+@{
+    ViewData["Title"] = "Pagamento";
+
+}
+
+<div class="container my-lg-5 pb-md-5">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none text-dark" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId">
+                <i class="bi bi-arrow-left"></i>Carrinho</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none text-dark" asp-controller="Endereco" asp-action="Endereco" asp-route-id="@ViewBag.UsuarioId">
+                 Endereço de Envio</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Pagamento
+        </li>
+    </ol>
+
+    <div class="row mb-4">
+        <!-- Left Section: Escolher o Frete e Forma de Pagamento -->
+        <div class="col-md-8">
+            <!-- Pagamento com Cartão de Crédito -->
+            <h4 class="mb-4">Pagamento</h4>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-credit-card"></i> Cartão de Crédito</h5>
+
+                   
+
+                </div>
+
+            </div>
+
+            <!-- Pagamento com Pix -->
+
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3 "><i class="bi bi-cash"></i> Pix</h5>
+                    <p class="btn btn-success fw-bold">Aprovação em minutos</p>
+                    <p class="fw-bold fs-5">R$ 209,89</p>
+
+
+                    <div class="mb-3">
+                        <h6>1. Após a finalização do pedido:</h6>
+                        <p class="text-muted">
+                            Abra o app ou banco de sua preferência. Escolha a opção pagar com código Pix “copia e cola” ou código QR. O código tem validade de 2 horas.
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>2. Copie e cole o código ou escaneie:</h6>
+                        <p class="text-muted">
+                            Use a câmera do seu celular para escanear o QR Code, ou copie o código Pix e cole na área de pagamento do seu banco. Confira todas as informações e autorize o pagamento.
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>3. Confirmação do pagamento:</h6>
+                        <p class="text-muted">
+                            Após a autorização, você receberá a confirmação do pagamento no seu e-mail e através dos nossos canais. E pronto!
+                        </p>
+                    </div>
+
+                    <div class="text-end">
+                        <button class="btn btn-primary w-50">Finalizar Pedido com Pix</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Section: Resumo do Pedido e Endereço -->
+        <div class="col-md-4">
+            <h4 class="mb-4">Resumo do Pedido</h4>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Subtotal</p>
+                        <p class="mb-2 fw-bold">R$ 199,99</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Valor do Frete: @* R$ @string.Format("{0:N2}", valorFrete) *@</p>
+                        <p class="mb-2 fw-bold">R$ 20,00</p>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold">Total</h6>
+                        <h6 class="fw-bold text-primary">R$ 219,99</h6>
+                    </div>
+                    <a class="btn btn-primary w-100 mt-3" asp-controller="Pagamento" asp-action="Pagamento">Finalizar Compra</a>
+                </div>
+            </div>
+
+            <!-- Endereço de Entrega -->
+            <h5 class="mt-4">Endereço de Entrega</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Rua Exemplo, 123 - Bairro Exemplo</strong></p>
+                    <p>Cidade - Estado</p>
+                    <p><strong>CEP:</strong> 12345-678</p>
+                    <a href="#" class="btn btn-link">Mudar Endereço</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

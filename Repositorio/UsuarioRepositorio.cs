@@ -14,28 +14,37 @@ namespace DigitalStore.Repositorio
             _context = context;
         }
 
+        // Método para buscar usuário pelo email (não sensível a maiúsculas/minúsculas)
         public async Task<UsuarioModel> BuscarUsuarioExistenteAsync(string email)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.ToUpper() == email.ToUpper());
+            return await _context.Usuarios
+                                  .FirstOrDefaultAsync(x => x.Email == email);
         }
 
+        // Método para buscar usuário por ID
         public async Task<UsuarioModel> BuscarUsuarioPorIdAsync(int id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == id);
+            return await _context.Usuarios
+                                 .FirstOrDefaultAsync(x => x.UsuarioId == id);
         }
 
+        // Método para adicionar um novo usuário
         public async Task AddUsuarioAsync(UsuarioModel usuario)
         {
-            usuario.SetSenhaHash();
-            _context.Usuarios.Add(usuario);
+            usuario.SetSenhaHash();  // Definir a senha criptografada
+            await _context.Usuarios.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
 
+        // Método para atualizar os dados do usuário
         public async Task AtualizarUsuarioAsync(UsuarioModel usuario)
         {
-            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(usuario.UsuarioId);
+            var usuarioDb = await BuscarUsuarioPorIdAsync(usuario.UsuarioId);
 
-            if (usuarioDb == null) throw new Exception("Houve um erro na alteração");
+            if (usuarioDb == null)
+            {
+                throw new KeyNotFoundException("Usuário não encontrado para atualização");
+            }
 
             usuarioDb.Nome = usuario.Nome;
             usuarioDb.Email = usuario.Email;
@@ -44,15 +53,25 @@ namespace DigitalStore.Repositorio
             await _context.SaveChangesAsync();
         }
 
+        // Método para alterar a senha de um usuário
         public async Task AlterarSenhaAsync(AlterarSenhaModel alterarSenhaModel)
         {
-            UsuarioModel usuarioDB = await BuscarUsuarioPorIdAsync(alterarSenhaModel.Id);
+            var usuarioDB = await BuscarUsuarioPorIdAsync(alterarSenhaModel.Id);
 
-            if (usuarioDB == null) throw new Exception("Houve um erro na atualização da senha, usuário não encontrado!");
+            if (usuarioDB == null)
+            {
+                throw new KeyNotFoundException("Usuário não encontrado para atualização de senha");
+            }
 
-            if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual)) throw new Exception("Senha atual não confere!");
+            if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual))
+            {
+                throw new ArgumentException("Senha atual não confere!");
+            }
 
-            if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha)) throw new Exception("Nova senha deve ser diferente da senha atual!");
+            if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha))
+            {
+                throw new ArgumentException("Nova senha deve ser diferente da senha atual!");
+            }
 
             usuarioDB.SetNovaSenha(alterarSenhaModel.NovaSenha);
 
@@ -60,9 +79,10 @@ namespace DigitalStore.Repositorio
             await _context.SaveChangesAsync();
         }
 
+        // Método para remover um usuário
         public async Task<bool> RemoverUsuarioAsync(int id)
         {
-            UsuarioModel usuarioDb = await BuscarUsuarioPorIdAsync(id);
+            var usuarioDb = await BuscarUsuarioPorIdAsync(id);
 
             if (usuarioDb == null) return false;
 

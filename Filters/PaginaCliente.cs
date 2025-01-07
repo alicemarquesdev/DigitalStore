@@ -9,19 +9,25 @@ namespace DigitalStore.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            // Recupera a sessão do usuário logado
             string sessaoDoUsuario = context.HttpContext.Session.GetString("sessaoDoUsuarioLogado");
 
+            // Se não houver sessão do usuário, redireciona para a página de login
             if (string.IsNullOrEmpty(sessaoDoUsuario))
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
+                context.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
             }
             else
             {
+                // Deserializa o usuário da sessão
                 UsuarioModel usuario = JsonConvert.DeserializeObject<UsuarioModel>(sessaoDoUsuario);
 
+                // Se o usuário não for encontrado, redireciona para a página de login
                 if (usuario == null)
                 {
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
+                    context.Result = new RedirectToRouteResult(
+                        new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } });
                 }
             }
 

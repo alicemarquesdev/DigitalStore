@@ -4,70 +4,86 @@
     ViewData["Title"] = "Últimas Novidades";
 }
 
+<div class="container my-5 pb-lg-5 px-5">
+    <!-- Título da seção -->
+    <a class="text-decoration-none text-dark mb-5 text-start py-3">
+        <h3>Últimas Novidades</h3>
+    </a>
 
-<div class="container p-2">
-    <h1 class="mb-4 mt-5">Últimas Novidades</h1>
-
-
-    <div class="container-fluid px-5">
-        <div class="row gx-4 gx-lg-3 row-cols-2 row-cols-md-3 row-cols-xl-4">
-            @foreach (var produto in Model)
-            {
-                <div class="col mb-5">
-                    <div class="card w-100">
-                        <img class="card-img-top img-fluid" src="@Url.Content("~/" + produto.ImagemUrl)" alt="@produto.NomeProduto" style=" height:200px; object-fit: cover; object-position: center;" />
-                        <div class="card-body p-2">
-                            <div>
-                                <p>@produto.NomeProduto</p>
-                                <h6 class="fw-bold"> R$@produto.Preco no Pix</h6>
-                            </div>
+    <!-- Grid de produtos -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 pt-5">
+        @foreach (var produto in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <!-- Link para a página de produto individual -->
+                    <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                        <img src="@produto.ImagemUrl" class="card-img-top" alt="@produto.NomeProduto" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body text-center text-dark">
+                            <h5 class="card-title">@produto.NomeProduto</h5>
+                            <p class="card-text text-muted">@produto.Descricao</p>
+                            <p class="fw-bold text-primary">R$ @produto.Preco</p>
                         </div>
-                        @if (ViewBag.Sessao == null)
-                        {
-                            <div class="card-footer p-2 pt-0 border-top-0 bg-transparent  justify-content-center">
+                    </a>
 
-                                <div class="container d-flex justify-content-center gap-2">
-                                    <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-heart"></i></a>
-                                    <a class="btn btn-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-cart3"></i></a>
+                    <!-- Rodapé com botões de Favoritos e Carrinho -->
+                    <div class="card-footer p-2 pt-0 border-top-0 bg-transparent justify-content-center">
+                        <div class="container d-flex justify-content-center gap-2">
+                            @if (ViewBag.Sessao == null)
+                            {
+                                <!-- Caso o usuário não esteja logado -->
+                                <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-heart"></i> </a>
+                                <a class="btn btn-dark d-block mt-auto w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-cart3"></i> </a>
+                            }
+                            else if (ViewBag.Sessao != null && ViewBag.PerfilUsuario == true)
+                            {
+                                <!-- Botões de Favoritos e Carrinho quando o usuário está logado -->
+                                <!-- Botão de Favoritos -->
+                                <form asp-controller="Favorito" asp-action="BotaoFavorito" method="post">
+                                    <input type="hidden" name="produtoId" value="@produto.ProdutoId" />
+                                    <input type="hidden" name="usuarioId" value="@ViewBag.UsuarioId" />
 
-                                </div>
-                            </div>
+                                    @if (ViewBag.FavoritosDoUsuario != null && ViewBag.FavoritosDoUsuario.Contains(produto.ProdutoId))
+                                    {
+                                        <!-- Ícone coração preenchido se estiver nos favoritos -->
+                                        <button type="submit" class="btn btn-outline-danger mt-auto d-block w-100">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <!-- Ícone coração vazio se não estiver nos favoritos -->
+                                        <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    }
+                                </form>
 
-                        }
-                        else if (ViewBag.Sessao != null && ViewBag.Perfil == true)
-                        {
-                            <div class="card-footer p-2 pt-0 border-top-0 bg-transparent  justify-content-center">
+                                <!-- Botão de Adicionar ao Carrinho -->
+                                <form asp-controller="Carrinho" asp-action="BotaoCarrinho" method="post">
+                                    <input type="hidden" name="produtoId" value="@produto.ProdutoId" />
+                                    <input type="hidden" name="usuarioId" value="@ViewBag.UsuarioId" />
 
-                                <div class="container d-flex justify-content-center gap-2">
-                                    <form asp-controller="Favorito" asp-action="AddFavorito" method="post" class="flex-grow-1">
-                                        <input type="hidden" name="id" value="@produto.ProdutoId" />
-                                        <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
-
-                                        <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100"><i class="bi bi-heart"></i></button>
-                                    </form>
-                                    <form asp-controller="Carrinho" asp-action="AddCarrinho" method="post" class="flex-grow-1">
-                                        <input type="hidden" name="id" value="@produto.ProdutoId" />
-                                        <input type="hidden" name="id" value="@ViewBag.UsuarioId" />
-
-                                        <button type="submit" class="btn btn-dark mt-auto d-block w-100"><i class="bi bi-cart3"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        }
+                                    @if (ViewBag.CarrinhoDoUsuario != null && ViewBag.CarrinhoDoUsuario.Contains(produto.ProdutoId))
+                                    {
+                                        <!-- Se o produto estiver no carrinho -->
+                                        <button type="submit" class="btn btn-dark mt-auto d-block w-100">
+                                            <i class="bi bi-cart3 text-danger"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <!-- Se o produto não estiver no carrinho -->
+                                        <button type="submit" class="btn btn-dark mt-auto d-block w-100">
+                                            <i class="bi bi-cart3"></i> Adicionar
+                                        </button>
+                                    }
+                                </form>
+                            }
+                        </div>
                     </div>
-
-
                 </div>
-            }
-
-
-
-        </div>
-
-
+            </div>
+        }
     </div>
-
-
-
-
 </div>

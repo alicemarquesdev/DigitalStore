@@ -4,7 +4,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-4 px-lg-4">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">DigitalStore</a>
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">@ViewBag.SiteDados</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
@@ -34,16 +34,16 @@
                     {
 
                         <li class="nav-item me-2">
-                            <a class="btn btn-outline-light nav-link" asp-controller="PerfilCliente" asp-action="Favoritos" asp-route-id="@ViewBag.UsuarioId" style="color: inherit; background-color: transparent; border-color: inherit;">
+                            <a class="btn btn-outline-light nav-link" asp-controller="Favorito" asp-action="Favoritos" asp-route-id="@ViewBag.UsuarioId" style="color: inherit; background-color: transparent; border-color: inherit;">
                                 <i class="bi-heart-fill me-1 text-light"></i>
-                                <span class="badge bg-light text-dark ms-1 rounded-pill">0</span>
+                                <span class="badge bg-light text-dark ms-1 rounded-pill">@ViewBag.FavoritosQuantidadeDeProdutos</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-light nav-link" role="button" asp-controller="PerfilCliente" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId"
+                            <a class="btn btn-outline-light nav-link" role="button" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId"
                                style="color: inherit; background-color: transparent; border-color: inherit;">
                                 <i class="bi-cart-fill me-1 text-light"></i>
-                                <span class="badge bg-light text-dark ms-1 rounded-pill">0</span>
+                                <span class="badge bg-light text-dark ms-1 rounded-pill">@ViewBag.CarrinhoQuantidadeDeProdutos</span>
                             </a>
                         </li>
 
@@ -52,25 +52,22 @@
                     {
 
                         <li class="nav-item">
-                            <a role="button" class="nav-link" asp-controller="PerfilAdmin" asp-action="GerenciamentoProdutos">Gerenciamento de Produtos</a>
+                            <a role="button" class="nav-link" asp-controller="Produto" asp-action="GerenciamentoProdutos">Gerenciamento de Produtos</a>
                         </li>
                         <li class="nav-item">
-                            <a role="button" class="nav-link" asp-controller="PerfilAdmin" asp-action="Personalizacao">Personalização</a>
+                            <a role="button" class="nav-link" asp-controller="Site" asp-action="Personalizacao">Personalização</a>
                         </li>
                     }
 
                     <li class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Minha Conta</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="PerfilCliente" asp-action="MeusPedidos" asp-route-Id="@ViewBag.UsuarioId">Meus Pedidos</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@ViewBag.UsuarioId">Minha Conta</a></li>
+                            <li><a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@ViewBag.UsuarioId"><i class="bi bi-bag"></i> Meus Pedidos</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@ViewBag.UsuarioId"><i class="bi bi-person"></i> Minha Conta</a></li>
 
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-Id="@ViewBag.UsuarioId">Editar Dados</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="AlterarSenha" asp-route-Id="@ViewBag.UsuarioId">Alterar Senha</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="ApagarUsuario" asp-route-Id="@ViewBag.UsuarioId">Apagar Conta</a></li>
                             <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
-                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair">Sair</a></li>
+                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte"><i class="bi bi-question-circle"></i> Suporte</a></li>
+                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -97,7 +94,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
                         <li>
-                            <a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos">
+                            <a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos" asp-route-id="@ViewBag.UsuarioId">
                                 Todos os produtos
                             </a>
                         </li>
@@ -108,7 +105,7 @@
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria">
                                     @categoria.Categoria
                                 </a>
-                            </li>   
+                            </li>
                         }
                     </ul>
                 </li>
@@ -123,7 +120,7 @@
                 }
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="UltimasNovidades">
+                    <a class="nav-link" asp-controller="Home" asp-action="UltimasNovidades" asp-route-id="@ViewBag.UsuarioId">
                         ÚLTIMAS NOVIDADES
                     </a>
                 </li>

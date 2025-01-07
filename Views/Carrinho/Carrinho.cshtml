@@ -1,0 +1,90 @@
+﻿@model List<CarrinhoModel>
+
+@{
+    ViewData["Title"] = "Carrinho";
+}
+
+
+<div class="container my-lg-5 pb-md-5">
+    <div class="row">
+        <!-- Left Section: Meu Carrinho -->
+        <div class="col-md-8">
+            <h4 class="mb-4">Meu Carrinho</h4>
+            <!-- Product Item -->
+            <div class="card mb-3 shadow-sm">
+                <div class="row g-0 ms-1 mt-1">
+                    @foreach (var produto in Model)
+                    {
+
+
+                        <div class="col-md-3 mt-4 ">
+                            <img src="@Url.Content(produto.Produto.ImagemUrl)" class="img-fluid rounded-start" alt="Produto">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <h5 class="card-title">@produto.Produto.NomeProduto</h5>
+                                <p class="card-text text-muted">@produto.Produto.Descricao</p>
+                                <p class="card-text fw-bold text-primary">R$ @produto.Produto.Preco</p>
+                                <form asp-controller="Carrinho" asp-action="RemoverCarrinho" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="id" value="@produto.ProdutoId" />
+                                    <input type="hidden" name="id" value="@produto.UsuarioId" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Remover <i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center justify-content-center">
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary btn-sm">-</button>
+                                <input type="text" class="form-control text-center" value="1" style="max-width: 50px;">
+                                <button class="btn btn-outline-secondary btn-sm">+</button>
+                            </div>
+                        </div>
+
+                        <div class="text-center my-1">
+                            <hr class="w-75 mx-auto border-2 border-secondary">
+                        </div>
+
+                    }
+                </div>
+
+            </div>
+            <!-- Repeat for More Products -->
+        </div>
+
+        <!-- Right Section: Resumo de Compra -->
+        <div class="col-md-4">
+            <!-- Consultar Frete -->
+            <form asp-controller="Frete" asp-action="CalcularFrete" method="post" class="mt-4 pt-4 mb-4">
+                <h5>Consultar Frete</h5>
+                <div class="input-group">
+                    <input type="text" name="cep" class="form-control" placeholder="Digite seu CEP" maxlength="8" required>
+                    <button type="submit" class="btn btn-outline-primary">Calcular</button>
+                </div>
+            </form>
+            <h5 class="mb-4">Resumo da Compra</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Subtotal</p>
+                        <p class="mb-2 fw-bold">R$ @ViewBag.TotalCarrinho</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Frete</p>
+                        <p class="mb-2 fw-bold">R$ 20,00</p>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold">Total</h6>
+                        <h6 class="fw-bold text-primary">R$ 219,99</h6>
+                    </div>
+                    <a class="btn btn-primary w-100 mt-3" asp-controller="Endereco" asp-action="Endereco" asp-route-Id="@ViewBag.UsuarioId">Prosseguir</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+

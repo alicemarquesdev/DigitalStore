@@ -26,6 +26,10 @@ namespace DigitalStore.Models
 
         public virtual List<FavoritosModel> Favoritos { get; set; } = new List<FavoritosModel>();
 
+        public virtual List<PedidoModel> Pedido { get; set; } = new List<PedidoModel>();
+
+        public virtual List<EnderecoModel> Endereco { get; set; } = new List<EnderecoModel>();
+
         public bool SenhaValida(string senha)
         {
             return Senha == senha.GerarHash();

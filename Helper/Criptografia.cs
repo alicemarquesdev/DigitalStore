@@ -7,20 +7,26 @@ namespace DigitalStore.Helper
     {
         public static string GerarHash(this string valor)
         {
-            var hash = SHA1.Create();
-            var encoding = new ASCIIEncoding();
-            var array = encoding.GetBytes(valor);
-
-            array = hash.ComputeHash(array);
-
-            var strHexa = new StringBuilder();
-
-            foreach (var item in array)
+            // Criação de uma instância do algoritmo SHA1
+            using (var hash = SHA1.Create())
             {
-                strHexa.Append(item.ToString("x2"));
-            }
+                // Codificação da string de entrada para um array de bytes
+                var encoding = new ASCIIEncoding();
+                var bytes = encoding.GetBytes(valor);
 
-            return strHexa.ToString();
+                // Computa o hash
+                var hashBytes = hash.ComputeHash(bytes);
+
+                // Converte os bytes do hash para uma string hexadecimal
+                var strHexa = new StringBuilder();
+                foreach (var byteValue in hashBytes)
+                {
+                    strHexa.Append(byteValue.ToString("x2"));
+                }
+
+                // Retorna o hash gerado em formato hexadecimal
+                return strHexa.ToString();
+            }
         }
     }
 }
