@@ -1,4 +1,6 @@
-﻿@{
+﻿@model UsuarioModel
+
+@{
     ViewData["Title"] = "Minha Conta";
 }
 
@@ -6,29 +8,27 @@
     <div class="row">
         <!-- Sidebar Left -->
         <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-3">
                     <ul class="list-unstyled">
-                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@ViewBag.UsuarioId" class="text-decoration-none text-dark fw-bold text-start">Meus Pedidos</a></li>
-                        <hr class="w-100 mx-auto border-2 border-secondary">
-                        
-                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@ViewBag.UsuarioId" class="text-decoration-none text-dark fw-bold text-start">Meus Dados</a></li>
-                        <hr class="w-100 mx-auto border-2 border-secondary">
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Meus Pedidos</a></li>
+                        <hr>
 
-                        
-                        <li><a asp-controller="Usuario" asp-action="AlterarSenha" asp-route-Id="@ViewBag.UsuarioId" class="text-decoration-none text-dark fw-bold text-start">Alterar Senha</a></li>
-                        <hr class="w-100 mx-auto border-2 border-secondary">
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <hr>
+
+                        <li><a asp-controller="Usuario" asp-action="AlterarSenha" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
+                        <hr>
 
                         <li>
-                            <a asp-controller="Usuario" asp-action="ApagarUsuario" asp-route-Id="@ViewBag.UsuarioId" class="text-decoration-none text-dark fw-bold text-start">
-                                Apagar Conta
+                            <a href="#" class="text-decoration-none text-dark fw-bold d-block py-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                                <i class="bi bi-trash"></i> Apagar Conta
                             </a>
                         </li>
-
-                        <hr class="w-100 mx-auto border-2 border-secondary">
+                        <hr>
 
                         <li>
-                            <a class="text-decoration-none text-dark fw-bold text-start" asp-controller="Login" asp-action="Sair">
+                            <a class="text-decoration-none text-dark fw-bold d-block py-2" asp-controller="Login" asp-action="Sair">
                                 <i class="bi bi-box-arrow-right"></i> Sair
                             </a>
                         </li>
@@ -39,33 +39,55 @@
 
         <!-- Main Content: User Data -->
         <div class="col-md-9">
-            <h2 class="text-center mb-5">Minha Conta</h2>
+            <h2 class="text-center mb-4">Minha Conta</h2>
 
             <!-- Dados do Usuário -->
-            <div class="card shadow-sm mb-4" id="meusDados">
-                <div class="card-header">
-                    <h5 class="mb-0">Seus Dados</h5>
+            <div class="card shadow-sm border-0 rounded-3" id="meusDados">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Meus Dados</h5>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="#" id="formDadosUsuario">
-                            <div class="col-md-6 mb-3">
-                                <label for="NomeUsuario" class="form-label">Nome</label>
-                                <input type="text" class="form-control" id="NomeUsuario" value="João Silva" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="EmailUsuario" class="form-label">E-mail</label>
-                                <input type="email" class="form-control w-100" id="EmailUsuario" value="joao.silva@email.com" readonly>
-                            </div>
+                    <form asp-controller="Usuario" asp-action="EditarUsuario" method="post">
+                        <input type="hidden" asp-for="UsuarioId" value="@Model.UsuarioId"/>
 
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-dark d-block w-100">Salvar Informações</button>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="NomeUsuario" class="form-label fw-semibold">Nome</label>
+                                <input type="text" class="form-control" id="NomeUsuario" asp-for="Nome">
+                                <span class="text-danger"> @Html.ValidationMessageFor(x => x.Nome) </span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="EmailUsuario" class="form-label fw-semibold">E-mail</label>
+                                <input type="email" class="form-control" id="EmailUsuario" asp-for="Email">
+                                <span class="text-danger"> @Html.ValidationMessageFor(x => x.Nome) </span>
+                            </div>
                         </div>
+                        <button type="submit" class="btn btn-dark w-100">Salvar Alterações</button>
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-           
-
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light text-dark">
+                <h6 class="modal-title fw-bold" id="confirmDeleteModalLabel">Confirmar Exclusão</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="fw-semibold">@Model.Nome, deseja realmente apagar sua conta?</p>
+                <p class="text-muted">Essa ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer d-flex flex-column">
+                <form asp-controller="Usuario" asp-action="RemoverUsuario" method="post" class="w-100">
+                    <button type="submit" class="btn btn-dark w-100">Apagar Conta</button>
+                </form>
+                <button type="button" class="btn bg-transparent text-dark border-0 w-100 mt-2" data-bs-dismiss="modal">Cancelar</button>
+            </div>
         </div>
     </div>
 </div>

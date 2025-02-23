@@ -9,5 +9,7 @@ namespace DigitalStore.Repositorio.Interfaces
         Task<PedidoModel> BuscarPedidoPorIdAsync(int id);
 
         Task AddPedidoAsync(PedidoModel pedido);
+
+        Task AtualizarPedidoAsync(PedidoModel pedido);
     }
 }

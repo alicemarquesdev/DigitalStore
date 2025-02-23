@@ -30,7 +30,7 @@ namespace DigitalStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AtualizarSite(SiteModel site, IFormFile? imagem1, IFormFile? imagem2, IFormFile? imagem3, IFormFile? imagem4)
+        public async Task<IActionResult> AtualizarSite(SiteModel site, List<IFormFile?> banners)
         {
             if (site == null)
             {
@@ -40,7 +40,7 @@ namespace DigitalStore.Controllers
 
             try
             {
-                await _siteRepositorio.AtualizarSite(site, imagem1, imagem2, imagem3, imagem4);
+                await _siteRepositorio.AtualizarSite(site, banners);
                 TempData["MensagemSucesso"] = "Dados atualizados com sucesso!";
             }
             catch (Exception ex)

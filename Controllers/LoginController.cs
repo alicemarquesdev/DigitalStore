@@ -25,28 +25,27 @@ namespace DigitalStore.Controllers
         }
 
         // Ação principal para exibir a tela de login
-        public IActionResult Index()
+        public IActionResult Login()
         {
-            if (_sessao.BuscarSessaoDoUsuario() != null)
+            var sessao = _sessao.BuscarSessaoDoUsuario();
+
+            if (sessao != null)
                 return RedirectToAction("Index", "Home"); // Redireciona se já houver uma sessão ativa
+
             return View();
         }
 
-        // Exibe a tela de redefinir senha para o usuário específico
-        public async Task<IActionResult> RedefinirSenha(int id)
+        public IActionResult RedefinirSenha()
         {
-            var usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(id);
-            return View(usuario);
+            return View();
         }
 
         // Método de logout que remove a sessão do usuário
         public IActionResult Sair()
         {
             _sessao.RemoverSessaoDoUsuario();
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Login", "Login");
         }
-
-        // Exibe a tela para criação de um novo usuário
 
         // Cria um novo usuário no sistema
         [HttpPost]
@@ -56,8 +55,9 @@ namespace DigitalStore.Controllers
             {
                 await _usuarioRepositorio.AddUsuarioAsync(usuario);
                 TempData["MensagemSucesso"] = "O usuário foi criado com sucesso!";
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Login", "Login");
             }
+
             return View(usuario); // Retorna para a tela de criação caso os dados sejam inválidos
         }
 
@@ -89,7 +89,7 @@ namespace DigitalStore.Controllers
             catch (Exception ex)
             {
                 TempData["MensagemErro"] = $"Erro ao tentar realizar login: {ex.Message}";
-                return RedirectToAction("Index");
+                return RedirectToAction("Login");
             }
         }
 

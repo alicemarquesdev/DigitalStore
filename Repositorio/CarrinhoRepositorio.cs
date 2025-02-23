@@ -45,59 +45,43 @@ namespace DigitalStore.Repositorio
         }
 
         // Método que adiciona um produto ao carrinho
-        public async Task AddAoCarrinhoAsync(int produtoId, int usuarioId)
+        public async Task AddOuRemoverCarrinhoAsync(int produtoId, int usuarioId)
         {
-            // Verifica se o usuário e o produto existem
-            UsuarioModel usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(usuarioId);
-            ProdutoModel produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(produtoId);
-
-            if (produto == null || usuario == null)
-            {
-                throw new ArgumentException("Produto ou Usuario não encontrado.");
-            }
-
             // Verifica se o produto já está no carrinho
-            var produtoDuplicado = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
-            if (produtoDuplicado != null)
+            var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
+
+            if (produtoNoCarrinho != null)
             {
-                throw new ArgumentException("O Produto já está salvo no carrinho.");
+                // Remove do carrinho se já estiver lá
+                _context.Carrinho.Remove(produtoNoCarrinho);
+            }
+            else
+            {
+                // Adiciona ao carrinho se não estiver
+                var novoProduto = new CarrinhoModel
+                {
+                    ProdutoId = produtoId,
+                    UsuarioId = usuarioId
+                };
+
+                _context.Carrinho.Add(novoProduto);
             }
 
-            // Cria um novo carrinho com o produto
-            var novoProduto = new CarrinhoModel
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AtualizarQuantidadeAsync(int produtoId, int usuarioId, int quantidade)
+        {
+            var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
+
+            if (produtoNoCarrinho == null)
             {
-                ProdutoId = produtoId,
-                UsuarioId = usuarioId
-            };
+                throw new Exception("Produto não encontrado no carrinho");
+            }
 
-            // Adiciona o produto ao carrinho no banco de dados
-            _context.Carrinho.Add(novoProduto);
+            produtoNoCarrinho.Quantidade = quantidade;
+            _context.Carrinho.Update(produtoNoCarrinho);
             await _context.SaveChangesAsync();
-        }
-
-        // Método que remove um produto do carrinho
-        public async Task<bool> RemoverDoCarrinhoAsync(int produtoId, int usuarioId)
-        {
-            // Busca o produto no carrinho
-            CarrinhoModel produto = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
-
-            // Se o produto não existir, retorna false
-            if (produto == null) return false;
-
-            // Remove o produto do carrinho e salva as alterações
-            _context.Carrinho.Remove(produto);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        // Método que retorna o total de produtos no carrinho de um usuário
-        public async Task<int> TotalProdutosNoCarrinhoDoUsuarioAsync(int usuarioId)
-        {
-            var carrinho = await BuscarCarrinhoDoUsuarioAsync(usuarioId);
-
-            // Retorna a quantidade de produtos no carrinho
-            return carrinho.Count();
         }
     }
 }

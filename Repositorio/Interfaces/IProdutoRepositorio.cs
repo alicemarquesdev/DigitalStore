@@ -4,9 +4,9 @@ namespace DigitalStore.Repositorio.Interfaces
 {
     public interface IProdutoRepositorio
     {
-        Task<List<ProdutoModel>> BuscarCategoriasAsync();
+        Task<List<string>> BuscarCategoriasAsync();
 
-        Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(ProdutoModel categoria);
+        Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(string categoria);
 
         Task<ProdutoModel> BuscarProdutoPorIdAsync(int id);
 
@@ -14,12 +14,10 @@ namespace DigitalStore.Repositorio.Interfaces
 
         Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionados();
 
-        Task AddProdutoAsync(ProdutoModel produto, IFormFile imagem);
+        Task AddProdutoAsync(ProdutoModel produto);
 
         Task AtualizarProdutoAsync(ProdutoModel produto, IFormFile? novaImagem);
 
         Task<bool> RemoverProdutoAsync(int id);
-
-        Task<string> GerarCaminhoArquivoAsync(IFormFile imagem);
     }
 }

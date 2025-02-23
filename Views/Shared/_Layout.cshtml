@@ -22,26 +22,20 @@
 
         <div class="container-fluid m-0 p-0">
             <main role="main">
-                @if (TempData["MensagemSucesso"] != null)
-                {
-                    <div class="alert alert-dark mx-4" role="alert">
-                        <button type="button" class="btn btn-dark btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
-                        @TempData["MensagemSucesso"]
-                    </div>
-                }
-                @if (TempData["MensagemErro"] != null)
-                {
-                    <div class="alert alert-dark mx-4" role="alert">
-                        <button type="button" class="btn btn-ou btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
-                        @TempData["MensagemErro"]
-                    </div>
-                }
+
+            @if (TempData["MensagemSucesso"] != null || TempData["MensagemErro"] != null)
+            {
+                <div class="alert alert-dark mx-4 d-flex justify-content-between align-items-center" role="alert">
+                    <span>@(TempData["MensagemSucesso"] ?? TempData["MensagemErro"])</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
                 @RenderBody()
             </main>
         </div>
-    <footer class="bg-dark text-white py-5">
-        <div class="container pb-3">
+    <footer class="bg-dark text-white pt-4">
+        <div class="container py-5">
             <div class="row text-center align-items-center">
                 <!-- FRETE GRÁTIS -->
                 <div class="col-md-4 d-flex flex-row align-items-center justify-content-center border-end border-white">
@@ -93,7 +87,7 @@
                 </div>
 
                 <!-- Coluna 3 - Contato -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4">
                     <h6 class="text-uppercase">Contato</h6>
                     <ul class="list-unstyled">
                         <li><strong>Telefone:</strong> (81) 4002-1234</li>
@@ -103,25 +97,28 @@
                 </div>
             </div>
 
-            <hr class="my-4" />
+            <hr class="my-2" />
 
             <div class="text-center">
                 <p class="small mb-0">&copy; 2024 Digital Store. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
-
     
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="~/js-bootstrap/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Para Bootstrap 5 -->
 
-    @await RenderSectionAsync("Scripts", required: false)
-   
+
+    <script src="~/js-bootstrap/site.js" asp-append-version="true"></script>
+    <script src="~/js/favoritos.js"></script>
+    <script src="~/js/carrinho.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>

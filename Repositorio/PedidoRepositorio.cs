@@ -25,7 +25,7 @@ namespace DigitalStore.Repositorio
 
         public async Task<List<PedidoModel>> BuscarTodosOsPedidosDoUsuarioAsync(int usuarioId)
         {
-            var pedidos = await _context.Pedidos.Include(e => e.Endereco).Include(p => p.Pagamento).Where(x => x.UsuarioId == usuarioId).ToListAsync();
+            var pedidos = await _context.Pedidos.Include(e => e.Endereco).Include(p => p.Pagamento).Include(i => i.ItensDoPedido).Where(x => x.UsuarioId == usuarioId).ToListAsync();
 
             if (pedidos == null) throw new Exception("Nenhum pedido encontrado");
 
@@ -34,7 +34,13 @@ namespace DigitalStore.Repositorio
 
         public async Task AddPedidoAsync(PedidoModel pedido)
         {
-            await _context.Pedidos.AddAsync(pedido);
+            _context.Pedidos.AddAsync(pedido);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AtualizarPedidoAsync(PedidoModel pedido)
+        {
+            _context.Pedidos.Update(pedido);
             await _context.SaveChangesAsync();
         }
     }

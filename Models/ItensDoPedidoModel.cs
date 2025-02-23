@@ -2,21 +2,29 @@
 
 namespace DigitalStore.Models
 {
+    // Representa os itens de um pedido, incluindo o produto, a quantidade e o preço.
     public class ItensDoPedidoModel
     {
+        // ID único do item no pedido.
         [Key]
         public int ItemId { get; set; }
 
+        // ID do pedido ao qual o item pertence.
         public int PedidoId { get; set; }
 
+        // ID do produto incluído no pedido.
         public int ProdutoId { get; set; }
 
-        public int QuantidadeDeProdutos { get; set; }
+        // Quantidade do produto no item do pedido.
+        public int QuantidadeItem { get; set; }
 
-        public decimal PrecoUnidadeProduto { get; set; }
+        // Preço unitário do produto no momento da compra.
+        public decimal PrecoUnidadeItem { get; set; }
 
-        public virtual PedidoModel Pedido { get; set; } = new PedidoModel();// Relacionamento com PedidosModel
+        // Objeto que acessa os detalhes do pedido ao qual o item pertence.
+        public virtual PedidoModel? Pedido { get; set; }
 
-        public virtual ProdutoModel Produto { get; set; } = new ProdutoModel(); // Relacionamento com ProdutoModel (model que você precisaria criar para representar os produtos)
+        // Objeto que acessa os detalhes do produto incluído no pedido.
+        public virtual ProdutoModel? Produto { get; set; }
     }
 }

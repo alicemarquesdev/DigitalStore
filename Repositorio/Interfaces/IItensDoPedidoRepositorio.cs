@@ -6,7 +6,7 @@ namespace DigitalStore.Repositorio.Interfaces
     {
         Task<List<ItensDoPedidoModel>> BuscarTodosOsItensDoPedidoAsync(int pedidoId);
 
-        Task<ItensDoPedidoModel> BuscarItemDoPedidoPorIdAsync(int pedidoId);
+        Task<ItensDoPedidoModel> BuscarItemDoPedidoPorIdAsync(int itemId);
 
         Task AddItemAsync(ItensDoPedidoModel item);
 

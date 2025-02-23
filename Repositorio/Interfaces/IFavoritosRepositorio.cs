@@ -8,10 +8,6 @@ namespace DigitalStore.Repositorio.Interfaces
 
         Task<FavoritosModel> BuscarProdutoExistenteNoFavoritosAsync(int produtoId, int usuarioId);
 
-        Task AddFavoritoAsync(int produtoId, int usuarioId);
-
-        Task<bool> RemoverFavoritoAsync(int produtoId, int usuarioId);
-
-        Task<int> TotalProdutosNosFavoritos(int usuarioId);
+        Task AddOuRemoverFavoritoAsync(int produtoId, int usuarioId);
     }
 }

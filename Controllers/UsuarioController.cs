@@ -17,18 +17,8 @@ namespace DigitalStore.Controllers
             _sessao = sessao;
         }
 
-        // Exibe a página de apagar usuário com confirmação
-        public async Task<IActionResult> ApagarUsuario(int id)
-        {
-            UsuarioModel usuario = await
-                _usuarioRepositorio.BuscarUsuarioPorIdAsync(id);
-
-            ViewBag.UsuarioNome = usuario.Nome;
-            return View(usuario);
-        }
-
-        // Exibe a página para editar os dados do usuário
-        public async Task<IActionResult> EditarUsuario(int id)
+        // Exibe a página de alteração de senha
+        public async Task<IActionResult> AlterarSenha(int id)
         {
             var usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(id);
             if (usuario == null)
@@ -36,35 +26,23 @@ namespace DigitalStore.Controllers
                 TempData["MensagemErro"] = "Houve um erro, por favor tente novamente";
             }
 
-            return View(usuario);
-        }
+            var alterarSenhaModel = new AlterarSenhaModel()
+            {
+                Id = usuario.UsuarioId,
+                SenhaAtual = string.Empty,
+                NovaSenha = string.Empty,
+                ConfirmarNovaSenha = string.Empty
+            };
 
-        // Exibe a página de alteração de senha
-        public IActionResult AlterarSenha()
-        {
-            return View();
+            return View(alterarSenhaModel);
         }
 
         // Exibe a página da conta do usuário
         public IActionResult MinhaConta()
         {
-            return View();
-        }
+            var usuarioSessao = _sessao.BuscarSessaoDoUsuario();
 
-        // Método para confirmação de apagar o usuário
-        [HttpPost]
-        public async Task<IActionResult> ApagarUsuarioConfirmacao(int id)
-        {
-            try
-            {
-                await _usuarioRepositorio.RemoverUsuarioAsync(id);
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception erro)
-            {
-                TempData["MensagemErro"] = $"Ops, não conseguimos apagar o usuário, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("ApagarUsuario", new { id });
-            }
+            return View(usuarioSessao);
         }
 
         // Método para editar os dados do usuário
@@ -75,12 +53,16 @@ namespace DigitalStore.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // Criação de um novo modelo de usuário com os dados fornecidos
-                    UsuarioModel usuario = new UsuarioModel()
+                    var usuarioDb = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(usuarioSemSenha.Id);
+
+                    // Criação de um novo modelo de usuário comos dados fornecidos
+                    var usuario = new UsuarioModel()
                     {
                         UsuarioId = usuarioSemSenha.Id,
                         Nome = usuarioSemSenha.Nome,
                         Email = usuarioSemSenha.Email,
+                        Perfil = usuarioDb.Perfil,
+                        Senha = usuarioDb.Senha
                     };
 
                     await _usuarioRepositorio.AtualizarUsuarioAsync(usuario);
@@ -104,9 +86,6 @@ namespace DigitalStore.Controllers
         {
             try
             {
-                UsuarioModel usuarioLogado = _sessao.BuscarSessaoDoUsuario();
-                alterarSenhaModel.Id = usuarioLogado.UsuarioId;
-
                 if (ModelState.IsValid)
                 {
                     await _usuarioRepositorio.AlterarSenhaAsync(alterarSenhaModel);
@@ -120,6 +99,22 @@ namespace DigitalStore.Controllers
             {
                 TempData["MensagemErro"] = $"Ops, não conseguimos alterar sua senha, tente novamente. Detalhe do erro: {erro.Message}";
                 return View("AlterarSenha", alterarSenhaModel);
+            }
+        }
+
+        // Método para confirmação de apagar o usuário
+        [HttpPost]
+        public async Task<IActionResult> RemoverUsuario(int id)
+        {
+            try
+            {
+                await _usuarioRepositorio.RemoverUsuarioAsync(id);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Ops, não conseguimos apagar o usuário, tente novamente, detalhe do erro: {erro.Message}";
+                return RedirectToAction("ApagarUsuario", new { id });
             }
         }
     }

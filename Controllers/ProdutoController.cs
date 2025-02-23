@@ -1,4 +1,6 @@
-﻿using DigitalStore.Models;
+﻿using DigitalStore.Helper;
+using DigitalStore.Models;
+using DigitalStore.Models.ViewModels;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,62 +9,76 @@ namespace DigitalStore.Controllers
     public class ProdutoController : Controller
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly ICaminhoImagem _caminhoImagem;
 
         // Construtor para injeção de dependência
-        public ProdutoController(IProdutoRepositorio produtoRepositorio)
+        public ProdutoController(IProdutoRepositorio produtoRepositorio, ICaminhoImagem caminhoImagem)
         {
             _produtoRepositorio = produtoRepositorio;
-        }
-        public IActionResult GetPartialUpdateView(int id)
-        {
-            var produto = _produtoRepositorio.BuscarProdutoPorIdAsync(id); // Substitua pelo seu serviço
-            return PartialView("_AtualizarProdutoPartial", produto);
-        }
-
-        public IActionResult AddProduto()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> AtualizarProduto(int id)
-        {
-            ProdutoModel produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(id);
-            ViewBag.Categorias = await _produtoRepositorio.BuscarCategoriasAsync();
-            return View(produto);
+            _caminhoImagem = caminhoImagem;
         }
 
         public async Task<IActionResult> GerenciamentoProdutos()
         {
-            var produtos = await _produtoRepositorio.BuscarTodosProdutosAsync();
-            return View(produtos);
+            // Criando uma nova instância de ProdutoModel com valores válidos para evitar erros de validação
+            var produto = new ProdutoModel
+            {
+                NomeProduto = string.Empty,    // Nome do produto vazio (pode ser alterado conforme necessário)
+                Descricao = string.Empty,      // Descrição vazia
+                Categoria = string.Empty,     // Categoria vazia
+                Preco = 0.0m,                  // Preço inicializado com zero
+                QuantidadeEstoque = 0,        // Estoque inicializado com zero
+                ImagemUrl = string.Empty,     // URL da imagem vazia (pode ser preenchido depois)
+            };
+
+            var viewModel = new GerenciamentoProdutoViewModel
+            {
+                Produto = produto,
+                Categorias = await _produtoRepositorio.BuscarCategoriasAsync(),
+                Produtos = await _produtoRepositorio.BuscarTodosProdutosAsync(),
+            };
+
+            return View(viewModel);
         }
 
         // Método para adicionar um produto
         [HttpPost]
         public async Task<IActionResult> AddProduto(ProdutoModel produto, IFormFile imagem)
         {
-            // Verificando se o ModelState não é válido
+            // Verifica se a imagem foi enviada corretamente
+            if (imagem == null || imagem.Length == 0)
+            {
+                TempData["MensagemErro"] = "A imagem não foi enviada corretamente!";
+                return RedirectToAction("GerenciamentoProdutos", "Produto");
+            }
+
+            // Processa a imagem e gera o caminho
+            var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(imagem);
+            if (caminhoImagem == null || caminhoImagem.Length == 0)
+            {
+                TempData["MensagemErro"] = "caminho da imagem não foi enviada corretamente!";
+                return RedirectToAction("GerenciamentoProdutos", "Produto");
+            }
+
+            Console.WriteLine("Caminho da imagem: " + produto.ImagemUrl);
+
+            produto.ImagemUrl = caminhoImagem;
+
+            // Verifica se o modelo é válido
             if (!ModelState.IsValid)
             {
-                // Adiciona as mensagens de erro do ModelState
+                // Se o modelo não for válido, adiciona as mensagens de erro e redireciona
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
                     TempData["MensagemErro"] = error.ErrorMessage;
                 }
-                return RedirectToAction("AddProduto", "Produto");
-            }
-
-            // Verificando se a imagem foi carregada corretamente
-            if (imagem == null || imagem.Length == 0)
-            {
-                TempData["MensagemErro"] = "A imagem não foi enviada corretamente!";
-                return RedirectToAction("AddProduto", "Produto");
+                return RedirectToAction("GerenciamentoProdutos", "Produto");
             }
 
             try
             {
                 // Tenta adicionar o produto no repositório
-                await _produtoRepositorio.AddProdutoAsync(produto, imagem);
+                await _produtoRepositorio.AddProdutoAsync(produto);
                 TempData["MensagemSucesso"] = "Produto adicionado com sucesso!";
             }
             catch (Exception ex)
@@ -71,36 +87,55 @@ namespace DigitalStore.Controllers
                 TempData["MensagemErro"] = $"Erro ao adicionar o produto: {ex.Message}";
             }
 
-            return RedirectToAction("AddProduto", "Produto");
+            return RedirectToAction("GerenciamentoProdutos", "Produto");
         }
+
 
         // Método para atualizar um produto
         [HttpPost]
-        public async Task<IActionResult> AtualizarProduto(ProdutoModel produto, IFormFile? novaImagem)
+        public async Task<IActionResult> AtualizarProduto(GerenciamentoProdutoViewModel viewModel, IFormFile? novaImagem)
         {
-            // Verifica se a ImagemUrl do produto está nula
-            if (produto.ImagemUrl == null)
-            {
-                TempData["MensagemErro"] = "ImagemUrl está nulo no modelo!";
-            }
-
-            // Verifica se o ModelState é válido antes de atualizar
+            // Verifica se o ModelState é válido
             if (ModelState.IsValid)
             {
+                // Busca o produto existente no banco de dados
+                var produtoExistente = await _produtoRepositorio.BuscarProdutoPorIdAsync(viewModel.Produto.ProdutoId);
+
+                if (produtoExistente == null)
+                {
+                    // Caso o produto não seja encontrado, retorna erro
+                    return NotFound();
+                }
+
+                // Atualiza as propriedades do produto com as novas informações da viewModel
+                produtoExistente.NomeProduto = viewModel.Produto.NomeProduto;
+                produtoExistente.Descricao = viewModel.Produto.Descricao;
+                produtoExistente.Categoria = viewModel.Produto.Categoria;
+                produtoExistente.Preco = viewModel.Produto.Preco;
+                produtoExistente.QuantidadeEstoque = viewModel.Produto.QuantidadeEstoque;
+
+                // Tenta atualizar o produto no banco de dados
                 try
                 {
-                    await _produtoRepositorio.AtualizarProdutoAsync(produto, novaImagem);
+                    await _produtoRepositorio.AtualizarProdutoAsync(produtoExistente, novaImagem);
                     TempData["MensagemSucesso"] = "Os dados do produto foram atualizados com sucesso!";
                 }
                 catch (Exception ex)
                 {
                     TempData["MensagemErro"] = $"Erro ao atualizar os dados do produto: {ex.Message}";
                 }
-                return RedirectToAction("AtualizarProduto", "Produto");
+
+                // Após a atualização, redireciona para a página de gerenciamento de produtos
+                return RedirectToAction("GerenciamentoProdutos");
             }
 
-            TempData["MensagemErro"] = "Não foi possível atualizar os dados do produto. Por favor, tente novamente!";
-            return RedirectToAction("AtualizarProduto", "Produto");
+            // Se o ModelState não for válido, recarrega as categorias e produtos para mostrar erros
+            var categorias = await _produtoRepositorio.BuscarCategoriasAsync();
+            viewModel.Categorias = categorias;
+            viewModel.Produtos = await _produtoRepositorio.BuscarTodosProdutosAsync();
+
+            // Retorna a mesma view com as mensagens de erro
+            return View("GerenciamentoProdutos", viewModel);
         }
 
         // Método para remover um produto
@@ -109,6 +144,12 @@ namespace DigitalStore.Controllers
         {
             try
             {
+                if (id == 0)
+                {
+                    TempData["Erro"] = "O ID do produto não foi informado.";
+                    return RedirectToAction("GerenciamentoProdutos", "Produto");
+                }
+
                 bool sucesso = await _produtoRepositorio.RemoverProdutoAsync(id);
 
                 if (!sucesso)

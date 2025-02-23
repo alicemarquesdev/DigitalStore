@@ -16,12 +16,12 @@ namespace DigitalStore.Repositorio
 
         public async Task<ItensDoPedidoModel> BuscarItemDoPedidoPorIdAsync(int pedidoId)
         {
-            return await _context.ItensDoPedido.FirstOrDefaultAsync(x => x.PedidoId == pedidoId);
+            return await _context.ItensDoPedido.Include(x => x.Produto).FirstOrDefaultAsync(x => x.PedidoId == pedidoId);
         }
 
         public async Task<List<ItensDoPedidoModel>> BuscarTodosOsItensDoPedidoAsync(int pedidoId)
         {
-            return await _context.ItensDoPedido.Where(x => x.PedidoId == pedidoId).ToListAsync();
+            return await _context.ItensDoPedido.Include(x => x.Produto).Where(x => x.PedidoId == pedidoId).ToListAsync();
         }
 
         public async Task AddItemAsync(ItensDoPedidoModel item)
@@ -34,9 +34,9 @@ namespace DigitalStore.Repositorio
         {
             var itemDb = await BuscarItemDoPedidoPorIdAsync(item.ItemId);
 
-            itemDb.QuantidadeDeProdutos = item.QuantidadeDeProdutos;
+            itemDb.QuantidadeItem = item.QuantidadeItem;
 
-            _context.Update(itemDb);
+            _context.ItensDoPedido.Update(itemDb);
             await _context.SaveChangesAsync();
         }
 
@@ -46,7 +46,7 @@ namespace DigitalStore.Repositorio
 
             if (item == null) return false;
 
-            _context.Remove(item);
+            _context.ItensDoPedido.Remove(item);
             await _context.SaveChangesAsync();
             return true;
         }

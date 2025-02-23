@@ -1,4 +1,4 @@
-﻿@model List<CarrinhoModel>
+﻿@model PagamentoViewModel
 
 @{
     ViewData["Title"] = "Pagamento";
@@ -7,109 +7,97 @@
 <div class="container my-lg-5 pb-md-5">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a class="text-decoration-none text-dark" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId">
+            <a class="text-decoration-none text-dark" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@Model.Endereco.UsuarioId">
                 <i class="bi bi-arrow-left"></i>Carrinho
             </a>
         </li>
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none text-dark" asp-controller="Endereco" asp-action="Endereco" asp-route-id="@ViewBag.UsuarioId">
-                Endereço de Envio
-            </a>
-        </li>
+
         <li class="breadcrumb-item active" aria-current="page">Pagamento</li>
     </ol>
 
     <div class="row mb-4">
         <!-- Left Section: Pagamento -->
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h4 class="mb-4">Pagamento</h4>
 
             <!-- Cartão de Crédito -->
             <div class="card mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="mb-3"><i class="bi bi-credit-card"></i> Cartão de Crédito</h5>
-                    <form id="payment-form">
-                        <!-- Número do Cartão -->
-                        <div class="mb-3">
-                            <label for="card-element" class="form-label">Número do Cartão</label>
-                            <div id="card-element" class="form-control"></div> <!-- Este é o campo gerado pelo Stripe -->
+                    <form id="payment-form" method="post">
+
+                        <!-- Input de Nome no Cartão -->
+                        <div class="form-group mb-3">
+                            <label for="card-name">Nome no Cartão</label>
+                            <input type="text" id="card-name" class="form-control" placeholder="Nome no Cartão" style="border-radius: 5px; padding: 10px;" required>
                         </div>
-                        <!-- Exibição de erros -->
-                        <div id="card-errors" class="text-danger mt-3" role="alert"></div>
+
+                        <!-- Input de Número do Cartão -->
+                        <div class="form-group mb-3">
+                            <label for="card-number">Número do Cartão</label>
+                            <div id="card-number" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                        </div>
+
+                        <!-- Linha de inputs para Expiração e CVC -->
+                        <div class="row mb-4">
+                            <!-- Expiração -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-expiry">Mês e Ano de Expiração</label>
+                                    <div id="card-expiry" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                                </div>
+                            </div>
+
+                            <!-- CVC com ícone -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-cvc">CVC</label>
+                                    <div id="card-cvc" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mensagem de erro -->
+                        <div id="card-errors" role="alert" class="text-danger"></div>
 
                         <!-- Botão de pagamento -->
-                        <button id="submit-button" class="btn btn-primary w-100 fw-bold mt-4">
-                            <i class="bi bi-lock"></i> Confirmar Pagamento
-                        </button>
+                        <div class="container d-flex justify-content-end">
+                            <button type="submit" class="btn btn-dark w-100">Pagar</button>
+                        </div>
                     </form>
-                </div>
-            </div>
-
-            <!-- Pagamento com Pix -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-3"><i class="bi bi-cash"></i> Pix</h5>
-                    <p class="btn btn-success fw-bold">Aprovação em minutos</p>
-                    <p class="fw-bold fs-5">R$ 209,89</p>
-
-                    <div class="mb-3">
-                        <h6>1. Após a finalização do pedido:</h6>
-                        <p class="text-muted">
-                            Abra o app ou banco de sua preferência. Escolha a opção pagar com código Pix “copia e cola” ou código QR. O código tem validade de 2 horas.
-                        </p>
-                    </div>
-
-                    <div class="mb-3">
-                        <h6>2. Copie e cole o código ou escaneie:</h6>
-                        <p class="text-muted">
-                            Use a câmera do seu celular para escanear o QR Code, ou copie o código Pix e cole na área de pagamento do seu banco. Confira todas as informações e autorize o pagamento.
-                        </p>
-                    </div>
-
-                    <div class="mb-3">
-                        <h6>3. Confirmação do pagamento:</h6>
-                        <p class="text-muted">
-                            Após a autorização, você receberá a confirmação do pagamento no seu e-mail e através dos nossos canais. E pronto!
-                        </p>
-                    </div>
-
-                    <div class="text-end">
-                        <button class="btn btn-primary w-50">Finalizar Pedido com Pix</button>
-                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Right Section: Resumo do Pedido -->
-        <div class="col-md-4">
-            <h4 class="mb-4">Resumo do Pedido</h4>
+        <div class="col-md-5">
+            <h5 class="mb-4 mt-1">Endereço de Entrega</h5>
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    @if (Model.Endereco != null)
+                    {
+                        <p><strong>@Model.Endereco.EnderecoCompleto</strong></p>
+                    }
+                </div>
+            </div>
+
+            <h4 class="mb-3">Resumo do Pedido</h4>
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <p class="mb-2">Subtotal</p>
-                        <p class="mb-2 fw-bold">R$ 199,99</p>
+                        <p class="mb-2 fw-bold">R$ @Model.CarrinhoTotal</p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <p class="mb-2">Valor do Frete:</p>
-                        <p class="mb-2 fw-bold">R$ 20,00</p>
+                        <p class="mb-2 fw-bold">R$ @Model.Frete</p>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
                         <h6 class="fw-bold">Total</h6>
-                        <h6 class="fw-bold text-primary">R$ 219,99</h6>
+                        <h6 class="fw-bold">R$ @(Model.CarrinhoTotal + Model.Frete)</h6>
                     </div>
-                    <a class="btn btn-primary w-100 mt-3" asp-controller="Pagamento" asp-action="Pagamento">Finalizar Compra</a>
-                </div>
-            </div>
-
-            <!-- Endereço de Entrega -->
-            <h5 class="mt-4">Endereço de Entrega</h5>
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <p><strong>Rua Exemplo, 123 - Bairro Exemplo</strong></p>
-                    <p>Cidade - Estado</p>
-                    <p><strong>CEP:</strong> 12345-678</p>
-                    <a href="#" class="btn btn-link">Mudar Endereço</a>
+                    <a class="btn btn-dark w-100 mt-3" asp-controller="Pagamento" asp-action="Pagamento">Finalizar Compra</a>
                 </div>
             </div>
         </div>
@@ -117,74 +105,79 @@
 </div>
 
 <script src="https://js.stripe.com/v3/"></script>
-
 <script>
-    // Inicializa o Stripe
-    const stripe = Stripe('@ViewData["PublishableKey"]');
-    const elements = stripe.elements();
+    var stripe = Stripe('pk_test_51Qcwp7JdK4WCtqrXUbyXtGNl59DXGXKG7NEQeZte1c8tM1xam9IXgYPmE5DlnzHRWHpjMbL7uIyzfvsGuEhnGPbb00WvjgYFSw'); // Sua chave pública do Stripe
+    var elements = stripe.elements();
 
-    // Configura os elementos do cartão (não crie manualmente as divs, use os elementos do Stripe)
-    const card = elements.create('card', {
-        style: {
-            base: {
-                fontSize: '16px',
-                color: '#32325d',
-                '::placeholder': { color: '#aab7c4' },
-            },
-            invalid: { color: '#fa755a' },
+    var style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#aab7c4'
+            }
         },
-    });
-    card.mount('#card-element');
-
-    // Manipula erros no campo do cartão
-    card.on('change', function (event) {
-        const displayError = document.getElementById('card-errors');
-        if (event.error) {
-            displayError.textContent = event.error.message;
-        } else {
-            displayError.textContent = '';
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
         }
-    });
+    };
 
-    // Função para verificar se o formulário está completo
-    function validateForm() {
-        const cardErrors = document.getElementById('card-errors').textContent;
-        // Verifica se há erros de validação no campo do cartão ou se ele está vazio
-        if (cardErrors !== '') {
-            alert("Por favor, corrija os erros do cartão antes de enviar.");
-            return false;
-        }
-        return true;
-    }
+    // Criando os componentes para o número do cartão, expiração e CVC
+    var cardNumber = elements.create('cardNumber', { style: style });
+    var cardExpiry = elements.create('cardExpiry', { style: style });
+    var cardCvc = elements.create('cardCvc', { style: style });
 
-    // Processa o pagamento ao enviar o formulário
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async function (event) {
+    // Montando os campos na página
+    cardNumber.mount('#card-number');
+    cardExpiry.mount('#card-expiry');
+    cardCvc.mount('#card-cvc');
+
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        if (!validateForm()) {
-            return; // Se o formulário não for válido, não envia o pagamento
-        }
+        stripe.createToken(cardNumber).then(function (result) {
+            console.log(result); // Verifica se há erro no token
 
-        const response = await fetch('/Pagamento/ProcessarPagamento', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            if (result.error) {
+                // Exibe o erro para o usuário
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+            } else {
+                // Envia o token para o backend
+                var stripeModel = {
+                     UsuarioId: parseInt('@Model?.Endereco?.UsuarioId', 10),  // Convertendo para inteiro
+    EnderecoId: parseInt('@Model?.Endereco?.EnderecoId', 10),  // Convertendo para inteiro
+                    Token: result.token.id, // O token gerado
+    Valor: parseFloat('@Model?.Valor').toFixed(2), // Convertendo para float
+                    // A moeda é sempre BRL, e a descrição é fixa
+                    Moeda: "brl", // Moeda (real, no caso)
+                    Descricao: "Compra na DigitalStore" // Descrição fixa
+                };
+                        console.log(stripeModel); // Verificando o objeto antes de enviar
+
+
+                // Envia a requisição para o backend
+                fetch('/Pagamento/ProcessarPagamento', {
+                    method: 'POST',
+                    body: JSON.stringify(stripeModel),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    if (data.success) {
+                        window.location.href = '/Pagamento/PagamentoSucesso'; // Redireciona para a página de sucesso
+                    } else {
+                        alert("Erro no pagamento: " + data.message);
+                    }
+                }).catch(function (error) {
+                    alert("Erro na requisição: " + error.message);
+                });
+            }
         });
-
-        const { clientSecret } = await response.json();
-
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: card,
-                billing_details: { name: 'Nome do Cliente' },
-            },
-        });
-
-        if (error) {
-            // Exibe o erro, mas não redireciona a página
-            alert(error.message);
-        } else if (paymentIntent.status === 'succeeded') {
-            window.location.href = '/Pagamento/Sucesso';
-        }
     });
 </script>

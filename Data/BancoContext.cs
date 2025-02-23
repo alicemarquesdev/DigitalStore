@@ -25,7 +25,7 @@ namespace DigitalStore.Data
         {
             modelBuilder.Entity<SiteModel>().HasData(
 
-                new SiteModel { Id = 1, NomeSite = "DigitalStore", Banner1Url = "banner-1.jpg", Frase = "Tudo que você procura em um só lugar" }
+                new SiteModel { Id = 1, NomeSite = "DigitalStore", Banner = "~/image/banner.jpg", Frase = "Tudo que você procura em um só lugar" }
             );
             modelBuilder.Entity<EnderecoModel>()
                .HasOne(ac => ac.Usuario)
@@ -50,12 +50,9 @@ namespace DigitalStore.Data
               .WithOne(c => c.Pedido)
               .HasForeignKey<PedidoModel>(ac => ac.PagamentoId);
 
-            modelBuilder.Entity<PedidoModel>()
-               .Property(p => p.ValorTotalDoPedido)
-               .HasPrecision(18, 2);
 
             modelBuilder.Entity<ItensDoPedidoModel>()
-               .Property(p => p.PrecoUnidadeProduto)
+               .Property(p => p.PrecoUnidadeItem)
                .HasPrecision(18, 2); // Exemplo: precisão de 18 dígitos, 2 casas decimais
 
             modelBuilder.Entity<ItensDoPedidoModel>()

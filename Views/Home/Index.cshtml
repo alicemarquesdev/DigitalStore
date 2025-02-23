@@ -1,217 +1,161 @@
-﻿@model List<ProdutoModel>
+﻿@model HomeViewModel
 
 @{
     ViewData["Title"] = "Loja";
-    var ultimasNovidades = ViewBag.UltimasNovidades as List<ProdutoModel>;
-    var site = ViewBag.SiteDados as SiteModel;
 }
 
-<div id="carouselExampleIndicators" class="carousel slide carousel-fade shadow-lg">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-    </div>
-    <div class="carousel-inner">
-        <div class="carousel-item active shadow-lg" style="position: relative;">
-            <img src="@Url.Content(site.Banner1Url)" style="height: 400px; object-fit: cover; object-position: center; width: 100%;" alt="...">
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
-                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));">
-            </div>
-        </div>
-        <div class="carousel-item shadow-lg" style="position: relative;">
-            <img src="@Url.Content(site.Banner2Url)" style="height: 400px; object-fit: cover; object-position: center; width: 100%;" alt="...">
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
-                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));">
-            </div>
-        </div>
-        <div class="carousel-item shadow-lg" style="position: relative;">
-            <img src="@Url.Content(site.Banner3Url)" style="height: 400px; object-fit: cover; object-position: center; width: 100%;" alt="...">
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
-                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));">
-            </div>
-        </div>
-        <div class="carousel-item shadow-lg" style="position: relative;">
-            <img src="@Url.Content(site.Banner4Url)" style="height: 400px; object-fit: cover; object-position: center; width: 100%;" alt="...">
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
-                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));">
-            </div>
+<div class="container-fluid d-flex align-items-center justify-content-center py-5 mb-5"
+     style="background-image: url('@Url.Content(Model?.SiteDados?.Banner)'); background-size: cover; background-position: center; height: 400px;">
+    <div class="text-center text-light w-50">
+        <h2 class="mb-4">@Model?.SiteDados?.Frase</h2>
+        <div class="input-group mb-3 justify-content-center">
+            <input type="text" class="form-control rounded-start bg-light w-75" placeholder="Pesquise aqui..." required>
+            <button type="button" class="btn btn-dark border-0 rounded-end">
+                <i class="bi bi-search"></i>
+            </button>
         </div>
     </div>
 </div>
 
 
-<div class="container-fluid d-flex align-items-center justify-content-center bg-dark" style="min-height: 200px; padding: 0 100px;">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4 fw-bolder text-white text-center">@site.Frase</h2>
-            <form>
-                <div class="input-group">
-                    <input type="email" class="form-control" style="width: 800px;" placeholder="Pesquise aqui..." required>
-                    <button type="submit" class="btn btn-dark border border-white">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
-<div class="ms-5 fw-bolder py-5">
+<div class="container pb-2">
     <a class="text-decoration-none text-dark" asp-controller="Home" asp-action="UltimasNovidades">
-        <h3>ÚLTIMAS NOVIDADES</h3>
+        <h3 class="pb-4 fw-bold">ÚLTIMAS NOVIDADES</h3>
     </a>
-</div>
-
-<div class="container px-4 px-lg-3">
-    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        @if (ultimasNovidades != null)
+    <div class="row gx-4 gx-lg-4 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        @if (Model?.UltimasNovidades != null && Model.UltimasNovidades.Any())
         {
-            foreach (var produto in ultimasNovidades.Take(4))
+            foreach (var produto in Model.UltimasNovidades.Take(4))
             {
-                                                <div class="col mb-5 text-center">
-                                                    <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
-                                                        <div class="position-relative" style="width: 200px; height: 200px; margin: 0 auto;">
-                                                            <img class="img-fluid rounded-circle" src="@Url.Content(produto.ImagemUrl)" alt="@produto.NomeProduto" style="object-fit: cover; width: 100%; height: 100%; display: block;" />
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                                                NEW
-                                                            </span>
-                                                        </div>
-                                                    </a>
-                                                    <h5 class="fw-bolder mt-3">@produto.NomeProduto</h5>
-                                                </div>
+                <div class="col mb-5">
+                    <div class="card h-100 shadow text-center">
+                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                            <div class="position-relative">
+                                <img class="card-img-top" src="@Url.Content(produto.ImagemUrl)" alt="@produto.NomeProduto" style="object-fit: cover; height: 200px;" />
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    NEW
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="fw-bold text-dark">@produto.NomeProduto</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<div class="container pb-4">
+    <h3 class="pb-4 fw-bold">TOP CATEGORIAS</h3>
+    <div class="row gx-4 gx-lg-3 justify-content-center">
+        @if (Model?.Produtos != null && Model.Produtos.Any())
+        {
+            foreach (var produto in Model.Produtos.Take(3))
+            {
+                <div class="col-md-4 col-12 mb-4">
+                    <div class="card text-white border-0 shadow overflow-hidden position-relative">
+                        <a class="text-light" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@produto.Categoria">
+                            <img src="@Url.Content(produto.ImagemUrl)" class="card-img img-fluid object-fit-cover" alt="@produto.Categoria" style="height: 240px; width: 360px">
+                            <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));">
+                                <h5 class="card-title text-center w-100 text-uppercase fw-bold">@produto.Categoria</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<div class="container pb-5">
+    <!-- Título da seção -->
+    <a class="text-decoration-none text-dark mb-5 text-start py-3" asp-controller="Home" asp-action="TodosOsProdutos">
+        <h3 class="fw-bold text-uppercase text-start">Nossos Produtos</h3>
+    </a>
+
+    <!-- Grid de produtos -->
+    <div class="row row-cols-1 row-cols-md-3 g-5 pt-5">
+        @if (Model?.Produtos != null && Model.Produtos.Any())
+        {
+            foreach (var produto in @Model.Produtos.Take(9))
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 rounded-4 shadow position-relative">
+                        <!-- Link para a página de produto individual -->
+                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                            <img src="@Url.Content(produto.ImagemUrl)" class="card-img-top" alt="@produto.NomeProduto" style="height: 250px; object-fit: cover; border-radius: 4px;" />
+                            <div class="card-body text-dark">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title fw-bold text-start mb-0">@produto.NomeProduto</h5>
+                                    <p class="fw-bold text-dark fs-5 mb-0 text-end">R$ @produto.Preco</p>
+                                </div>
+                                <p class="card-text text-muted text-start" style="font-size: 0.9rem;">@produto.Descricao</p>
+                            </div>
+
+                        </a>
+
+                        <!-- Botões dentro de uma div com fundo claro e linha separadora -->
+                        <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
+                            <div class="d-flex flex-column gap-2">
+                                @if (!Model.UsuarioLogado)
+                                {
+                                    <!-- Caso o usuário não esteja logado -->
+                                    <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                        <i class="bi bi-heart fs-5"></i>
+                                    </a>
+
+                                    <div class="border-top mt-1"></div>
+
+                                    <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                        <i class="bi bi-cart3 fs-5"></i>
+                                    </a>
+                                }
+                                else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
+                                {
+                                    <div class="d-flex flex-column gap-2">
+                                        <button type="button"
+                                                class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                data-produto-id="@produto.ProdutoId">
+                                            <i class="bi @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
+                                        </button>
+
+                                        <div class="border-top mt-1"></div>
+
+                                        <button type="button"
+                                                class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                data-produto-id="@produto.ProdutoId">
+                                            <i class="bi @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             }
         }
     </div>
 </div>
 
-<div class="fw-bolder py-3 ms-5">
-    <h3>TOP CATEGORIAS</h3>
-</div>
-<div class="container-fluid px-5">
-    <div class="row gx-4 gx-lg-3 justify-content-center">
-        @foreach (var produto in Model.Take(3))
-        {
-                            <div class="col-md-4 col-12 mb-5 d-flex justify-content-center">
-                                <div style="position: relative; width: 400px; height: 250px; border-radius: 8px; overflow: hidden;">
-                                    <a class="text-decoration-none" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@produto.Categoria">
-                                        <img class="img-fluid" src="@Url.Content(produto.ImagemUrl)" style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
-                                        <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-                            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)); pointer-events: none;"></div>
-                                        <h5 style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-                            margin: 0; color: white; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);">
-                            @produto.Categoria.ToUpper()
-                                        </h5>
-                                    </a>
-                                </div>
-                            </div>
-        }
-    </div>
-</div>
-
-<div class="container-fluid my-5 pb-lg-5 px-5">
-    <!-- Título da seção -->
-    <a class="text-decoration-none text-dark mb-5 text-start py-3" asp-controller="Home" asp-action="TodosOsProdutos">
-        <h3>NOSSOS PRODUTOS</h3>
-    </a>
-
-    <!-- Grid de produtos -->
-    <div class="row row-cols-1 row-cols-md-3 g-4 pt-5">
-        @foreach (var produto in Model.Take(9))
-        {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Link para a página de produto individual -->
-                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
-                            <img src="@Url.Content(produto.ImagemUrl)" class="card-img-top" alt="@produto.NomeProduto" style="height: 200px; object-fit: cover;" />
-                            <div class="card-body text-center text-dark">
-                                <h5 class="card-title">@produto.NomeProduto</h5>
-                                <p class="card-text text-muted">@produto.Descricao</p>
-                                <p class="fw-bold text-dark">R$ @produto.Preco</p>
-                            </div>  
-                        </a>
-
-                        <!-- Rodapé com botões de Favoritos e Carrinho -->
-                        <div class="card-footer p-2 pt-0 border-top-0 bg-transparent justify-content-center">
-                            <div class="container d-flex justify-content-center gap-2">
-                            @if (ViewBag.Sessao == null)
-                            {
-                                        <!-- Caso o usuário não esteja logado -->
-                                        <a class="btn btn-outline-dark mt-auto d-block w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-heart"></i> </a>
-                                        <a class="btn btn-dark d-block mt-auto w-100" asp-controller="Login" asp-action="Index"><i class="bi bi-cart3"></i> </a>
-                            }
-                            else if (ViewBag.Sessao != null && ViewBag.PerfilUsuario == true)
-                            {
-                                        <!-- Botões de Favoritos e Carrinho quando o usuário está logado -->
-
-                                        <!-- Botão de Favoritos -->
-                                        <form asp-controller="Favorito" asp-action="BotaoFavorito" method="post">
-                                            <input type="hidden" name="produtoId" value="@produto.ProdutoId" />
-                                            <input type="hidden" name="usuarioId" value="@ViewBag.UsuarioId" />
-
-                                    @if (ViewBag.FavoritosDoUsuario != null && ViewBag.FavoritosDoUsuario.Contains(produto.ProdutoId))
-                                    {
-                                                    <!-- Ícone coração preenchido se estiver nos favoritos -->
-                                                    <button type="submit" class="btn btn-outline-danger mt-auto d-block w-100">
-                                                        <i class="bi bi-heart-fill"></i>
-                                                    </button>
-                                    }
-                                    else
-                                    {
-                                                    <!-- Ícone coração vazio se não estiver nos favoritos -->
-                                                    <button type="submit" class="btn btn-outline-dark mt-auto d-block w-100">
-                                                        <i class="bi bi-heart"></i>
-                                                    </button>
-                                    }
-                                        </form>
-
-                                        <!-- Botão de Adicionar ao Carrinho -->
-                                        <form asp-controller="Carrinho" asp-action="BotaoCarrinho" method="post">
-                                            <input type="hidden" name="produtoId" value="@produto.ProdutoId" />
-                                            <input type="hidden" name="usuarioId" value="@ViewBag.UsuarioId" />
-
-                                    @if (ViewBag.CarrinhoDoUsuario != null && ViewBag.CarrinhoDoUsuario.Contains(produto.ProdutoId))
-                                    {
-                                                    <!-- Se o produto estiver no carrinho -->
-                                                    <button type="submit" class="btn btn-dark mt-auto d-block w-100">
-                                                        <i class="bi bi-cart3 text-danger"></i>
-                                                    </button>
-                                    }
-                                    else
-                                    {
-                                                    <!-- Se o produto não estiver no carrinho -->
-                                                    <button type="submit" class="btn btn-dark mt-auto d-block w-100">
-                                                        <i class="bi bi-cart3"></i> Adicionar
-                                                    </button>
-                                    }
-                                        </form>
-                            }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        }
-    </div>
-</div>
-
-<div class="container-fluid d-flex align-items-center justify-content-start mt-3" style="background-color: #f8f9fa; min-height: 400px; padding: 0 100px;">
-    <div class="row">
-        <div class="col-12">
-            <h3 class="mb-4 fw-bolder">Inscreva-se na nossa Newsletter!</h3>
+<div class="container-fluid d-flex align-items-center justify-content-center mt-3 bg-light px-5 py-5" style="min-height: 350px;">
+    <div class="row w-75">
+        <div class="col-12 text-center">
+            <h3 class="mb-3 fw-bolder">Inscreva-se na nossa Newsletter!</h3>
             <form>
-                <label class="form-label d-block">
+                <p class="mb-3 text-muted">
                     Esteja sempre atualizado e aproveite promoções exclusivas diretamente no seu e-mail.
-                </label>
-                <div class="input-group">
-                    <input type="email" class="form-control" style="width: 800px;" placeholder="Digite seu e-mail" required>
+                </p>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control w-75" placeholder="Digite seu e-mail" required>
                     <button type="submit" class="btn btn-dark">
                         <i class="bi bi-send"></i>
                     </button>
                 </div>
-                <div class="form-check mt-1">
+                <div class="form-check d-flex justify-content-center">
                     <input type="checkbox" class="form-check-input" id="authorizeCheck" required>
-                    <label class="form-check-label" for="authorizeCheck">
+                    <label class="form-check-label ms-1" for="authorizeCheck">
                         Eu autorizo o envio de e-mails promocionais.
                     </label>
                 </div>

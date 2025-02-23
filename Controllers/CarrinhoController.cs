@@ -1,6 +1,10 @@
-﻿using DigitalStore.Models;
+﻿using DigitalStore.Helper;
+using DigitalStore.Models;
+using DigitalStore.Models.ViewModels;
+using DigitalStore.Repositorio;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace DigitalStore.Controllers
 {
@@ -11,40 +15,69 @@ namespace DigitalStore.Controllers
 
         private readonly IUsuarioRepositorio _usuarioRepositorio;
         private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly ISessao _sessao;
+        private readonly IEnderecoRepositorio _enderecoRepositorio;
 
         // Construtor para injeção de dependência
         public CarrinhoController(ICarrinhoRepositorio carrinhoRepositorio,
                                     IUsuarioRepositorio usuarioRepositorio,
-                                    IProdutoRepositorio produtoRepositorio)
+                                    IProdutoRepositorio produtoRepositorio, ISessao sessao, IEnderecoRepositorio enderecoRepositorio)
         {
             _carrinhoRepositorio = carrinhoRepositorio;
             _usuarioRepositorio = usuarioRepositorio;
             _produtoRepositorio = produtoRepositorio;
+            _sessao = sessao;
+            _enderecoRepositorio = enderecoRepositorio;
         }
 
         public async Task<IActionResult> Carrinho(int id)
         {
-            List<CarrinhoModel> produtos = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(id);
+            List<CarrinhoModel> carrinho = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(id);
 
-            ViewBag.TotalCarrinho = produtos.Sum(x => x.Produto?.Preco ?? 0);
-            ViewBag.UsuarioId = id;
+            if (carrinho == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var endereco = new EnderecoModel
+            {
+                UsuarioId = id,
+                EnderecoCompleto = string.Empty // Definindo o membro requerido
+            };
 
-            return View(produtos);
+            var viewModel = new CarrinhoViewModel
+            {
+                Endereco = endereco,
+                Enderecos = await _enderecoRepositorio.BuscarTodosOsEnderecosDoUsuarioAsync(id),
+                Carrinho = carrinho
+            };
+
+            return View(viewModel);
+        }
+
+        public class CarrinhoRequest
+        {
+            public int ProdutoId { get; set; }
         }
 
         // Método para adicionar um produto ao carrinho
         [HttpPost]
-        public async Task<IActionResult> AddCarrinho(int produtoId, int usuarioId)
+        public async Task<IActionResult> AddOuRemoverCarrinho([FromBody] CarrinhoRequest request)
         {
             try
             {
-                var urlAnterior = Request.Headers["Referer"].ToString();
+                var usuario = _sessao.BuscarSessaoDoUsuario();
+                var produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(request.ProdutoId);
 
-                // Chama o repositório para adicionar o produto ao carrinho
-                await _carrinhoRepositorio.AddAoCarrinhoAsync(produtoId, usuarioId);
+                if (usuario == null || produto == null)
+                {
+                    return Json(new { success = false });
+                }
 
-                // Redireciona para a página principal do carrinho
-                return Redirect(urlAnterior);
+                await _carrinhoRepositorio.AddOuRemoverCarrinhoAsync(request.ProdutoId, usuario.UsuarioId);
+
+                var novoCarrinho = await _carrinhoRepositorio.BuscarProdutoExistenteNoCarrinhoAsync(request.ProdutoId, usuario.UsuarioId);
+
+                return Json(new { success = true, carrinhoAtivo = novoCarrinho != null });
             }
             catch (Exception ex)
             {
@@ -54,70 +87,35 @@ namespace DigitalStore.Controllers
             }
         }
 
-        // Método para remover um produto do carrinho
         [HttpPost]
-        public async Task<IActionResult> RemoverCarrinho(int produtoId, int usuarioId)
+        public async Task<IActionResult> AtualizarQuantidade(int ProdutoId, int usuarioId, string acao)
         {
             try
             {
-                var urlAnterior = Request.Headers["Referer"].ToString();
+                var produtoNoCarrinho = await _carrinhoRepositorio.BuscarProdutoExistenteNoCarrinhoAsync(ProdutoId, usuarioId);
+                if (produtoNoCarrinho == null)
+                {
+                   TempData["MensagemErro"] = "Produto não encontrado no carrinho.";
+                }
+                if (acao == "aumentar")
+                {
+                    produtoNoCarrinho.Quantidade += 1;
+                }
+                else if (acao == "diminuir" && produtoNoCarrinho.Quantidade > 1)
+                {
+                    produtoNoCarrinho.Quantidade -= 1;
+                }
 
-                // Chama o repositório para remover o produto do carrinho
-                await _carrinhoRepositorio.RemoverDoCarrinhoAsync(produtoId, usuarioId);
-
-                // Redireciona para a página principal do carrinho
-                return Redirect(urlAnterior);
+                await _carrinhoRepositorio.AtualizarQuantidadeAsync(ProdutoId, usuarioId, produtoNoCarrinho.Quantidade);
+                return RedirectToAction("Carrinho", new { id = usuarioId });
             }
             catch (Exception ex)
             {
                 // Em caso de erro, loga a exceção e retorna uma página de erro
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "Erro ao remover produto do carrinho.");
+                return StatusCode(500, "Erro ao adicionar produto ao carrinho.");
             }
-        }
 
-        // Método para adicionar ou remover produto do carrinho com base no estado atual
-        [HttpPost]
-        public async Task<IActionResult> BotaoCarrinho(int produtoId, int usuarioId)
-        {
-            try
-            {
-                var urlAnterior = Request.Headers["Referer"].ToString();
-
-                // Busca o usuário e o produto
-                var usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(usuarioId);
-                var produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(produtoId);
-
-                // Verifica se o usuário e o produto existem
-                if (usuario == null || produto == null)
-                {
-                    // Se o produto ou usuário não existir, redireciona para uma página de erro ou retorna algo apropriado
-                    return NotFound(); // Ou redireciona para uma página de erro
-                }
-
-                // Verifica se o produto já está no carrinho
-                var produtoExistente = await _carrinhoRepositorio.BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
-
-                if (produtoExistente != null)
-                {
-                    // Se o produto já existe no carrinho, remove-o
-                    await RemoverCarrinho(produtoId, usuarioId);
-                }
-                else
-                {
-                    // Caso contrário, adiciona o produto ao carrinho
-                    await AddCarrinho(produtoId, usuarioId);
-                }
-
-                // Após a operação, redireciona para a página anterior (de onde veio a requisição)
-                return Redirect(urlAnterior);
-            }
-            catch (Exception ex)
-            {
-                // Em caso de erro, loga a exceção e retorna uma página de erro
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, "Erro ao processar operação no carrinho.");
-            }
         }
     }
 }

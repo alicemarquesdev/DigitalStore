@@ -2,31 +2,23 @@
 
 namespace DigitalStore.Models
 {
+    // Modelo que representa os dados do site que será exibido na Página Inicial do projeto.
+    // O usuário administrador poderá alterar o nome do site, a imagem do banner e a frase de destaque.
     public class SiteModel
     {
+        // ID único para identificar a configuração do site
         [Key]
         public int Id { get; set; }
 
         // Nome do site com limite de 20 caracteres
-        [Required]
         [StringLength(20, ErrorMessage = "O nome do site deve ter no máximo 20 caracteres.")]
         public string NomeSite { get; set; } = "DigitalStore";
 
-        // URL do primeiro banner
-        public string Banner1Url { get; set; } = "banner-1.jpg";
+        // Caminho para o banner do site, valor padrão para a imagem do banner
+        public string Banner { get; set; } = "~/image/banner.jpg";
 
-        // URL do segundo banner (pode ser vazio)
-        public string Banner2Url { get; set; } = string.Empty;
-
-        // URL do terceiro banner (pode ser vazio)
-        public string Banner3Url { get; set; } = string.Empty;
-
-        // URL do quarto banner (pode ser vazio)
-        public string Banner4Url { get; set; } = string.Empty;
-
-        // Frase do site com limite de 50 caracteres
-        [Required]
-        [StringLength(50, ErrorMessage = "A frase deve ter no máximo 50 caracteres")]
+        // Frase de destaque para o site, com limite de 40 caracteres
+        [StringLength(40, ErrorMessage = "A frase deve ter no máximo 40 caracteres.")]
         public string Frase { get; set; } = "Tudo que você procura em um só lugar";
     }
 }

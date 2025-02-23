@@ -30,6 +30,9 @@ namespace DigitalStore.Migrations
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
                     b.HasKey("ProdutoId", "UsuarioId");
 
                     b.HasIndex("UsuarioId");
@@ -45,27 +48,7 @@ namespace DigitalStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnderecoId"));
 
-                    b.Property<string>("Bairro")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CEP")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Cidade")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Rua")
+                    b.Property<string>("EnderecoCompleto")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -106,11 +89,11 @@ namespace DigitalStore.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PrecoUnidadeProduto")
+                    b.Property<decimal>("PrecoUnidadeItem")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantidadeDeProdutos")
+                    b.Property<int>("QuantidadeItem")
                         .HasColumnType("int");
 
                     b.HasKey("PedidoId", "ProdutoId");
@@ -140,6 +123,12 @@ namespace DigitalStore.Migrations
                     b.Property<int>("StatusPagamento")
                         .HasColumnType("int");
 
+                    b.Property<string>("TokenStripe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("PagamentoId");
 
                     b.HasIndex("PedidoId")
@@ -159,7 +148,7 @@ namespace DigitalStore.Migrations
                     b.Property<DateTime>("DataDoPedido")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EnderecoId")
+                    b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
                     b.Property<int?>("EnderecoModelEnderecoId")
@@ -171,15 +160,8 @@ namespace DigitalStore.Migrations
                     b.Property<int>("StatusDoPedido")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusPagamento")
-                        .HasColumnType("int");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ValorTotalDoPedido")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("PedidoId");
 
@@ -202,14 +184,16 @@ namespace DigitalStore.Migrations
 
                     b.Property<string>("Categoria")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<DateTime?>("DataCadastro")
+                    b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
@@ -217,7 +201,8 @@ namespace DigitalStore.Migrations
 
                     b.Property<string>("NomeProduto")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(18,2)");
@@ -225,7 +210,7 @@ namespace DigitalStore.Migrations
                     b.Property<int>("QuantidadeEstoque")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Status")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ProdutoId");
@@ -241,26 +226,14 @@ namespace DigitalStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Banner1Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Banner2Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Banner3Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Banner4Url")
+                    b.Property<string>("Banner")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Frase")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<string>("NomeSite")
                         .IsRequired()
@@ -275,10 +248,7 @@ namespace DigitalStore.Migrations
                         new
                         {
                             Id = 1,
-                            Banner1Url = "banner-1.jpg",
-                            Banner2Url = "",
-                            Banner3Url = "",
-                            Banner4Url = "",
+                            Banner = "~/image/banner.jpg",
                             Frase = "Tudo que você procura em um só lugar",
                             NomeSite = "DigitalStore"
                         });
@@ -294,11 +264,13 @@ namespace DigitalStore.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("Perfil")
                         .HasColumnType("int");
@@ -396,7 +368,8 @@ namespace DigitalStore.Migrations
                     b.HasOne("DigitalStore.Models.EnderecoModel", "Endereco")
                         .WithMany()
                         .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("DigitalStore.Models.EnderecoModel", null)
                         .WithMany("Pedido")
@@ -421,8 +394,7 @@ namespace DigitalStore.Migrations
                 {
                     b.Navigation("ItensDoPedido");
 
-                    b.Navigation("Pagamento")
-                        .IsRequired();
+                    b.Navigation("Pagamento");
                 });
 
             modelBuilder.Entity("DigitalStore.Models.ProdutoModel", b =>

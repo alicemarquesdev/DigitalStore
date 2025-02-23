@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Pagamento Confirmado";
+}
+
+<div class="d-flex flex-column align-items-center justify-content-center my-5 p-5">
+    <div class="card shadow p-4 text-center" style="max-width: 450px;">
+        <div class="card-body">
+            <div class="d-flex justify-content-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 30px;">
+                    <i class="bi bi-check fs-1" style="color: white;"></i>
+                </div>
+            </div>
+            <h1 class="h4 fw-bold text-dark">Pagamento Confirmado!</h1>
+            <p class="text-muted">Seu pagamento foi processado com sucesso e seu pedido está sendo preparado.</p>
+            <p class="text-secondary">Você receberá um e-mail de confirmação com os detalhes da compra.</p>
+            <div class="mt-4">
+                <a asp-controller="Pedido" asp-action="MeusPedidos" class="text-decoration-none fw-bold text-dark">Conferir Detalhes do Pedido</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,83 +5,59 @@
 }
 
 <div class="container my-5">
-    <h2 class="text-center mb-4">Personalização do Site</h2>
+    <h2 class="mb-4">Personalização do Site</h2>
 
     <form method="post" enctype="multipart/form-data" asp-action="AtualizarSite" asp-controller="Site">
-        <!-- Nome do Site -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header">
-                <h5>Nome do Site</h5>
-            </div>
+     
             <div class="card-body">
-                <label asp-for="NomeSite" class="form-label">Digite o nome do site</label>
-                <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" required>
-                <span asp-validation-for="NomeSite" class="text-danger"></span>
+                <!-- Nome do Site -->
+                <div class="mb-4">
+                    <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
+                    <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" required>
+                    <span asp-validation-for="NomeSite" class="text-danger"></span>
+                </div>
+
+                <!-- Banner -->
+                <div class="mb-3">
+                    <label for="ImagemFile" class="form-label fw-bold">Selecione os Banners:</label>
+                    <input class="form-control" id="ImagemFile" type="file" name="imagens" multiple />
+                </div>
+                <div class="text-center">
+                    <label for="ImagemFile">
+                        <img id="imgPreview" style="max-width:300px; max-height:300px" />
+                    </label>
+                </div>
+
+                <!-- Frase da Home Page -->
+                <div class="mb-3">
+                    <label asp-for="Frase" class="form-label fw-bold">Digite a frase para a página inicial:</label>
+                    <textarea asp-for="Frase" rows="3" class="form-control" placeholder="Frase que aparece na home"></textarea>
+                    <span asp-validation-for="Frase" class="text-danger"></span>
+                </div>
+
+                <!-- Botão de Salvar -->
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark w-25">
+                        <i class="bi bi-check-circle"> </i> Salvar Alterações
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <!-- Banner 1 -->
-        <div class="mb-3">
-            <label for="ImagemFile1" class="form-label">Banner 1</label>
-            <input class="form-control" id="ImagemFile1" type="file" name="imagem1" />
-        </div>
-       
-        <div class="text-center">
-            <label for="ImagemFile1">
-                <img id="img" style="max-width:300px; max-height:300px" />
-            </label>
-        </div>
-
-        <!-- Banner 2 -->
-        <div class="mb-3">
-            <label for="ImagemFile2" class="form-label">Banner 2</label>
-            <input class="form-control" id="ImagemFile2" type="file" name="imagem2" />
-        </div>
-        <div class="text-center">
-            <label for="ImagemFile2">
-                <img id="img" style="max-width:300px; max-height:300px" />
-            </label>
-        </div>
-
-        <!-- Banner 3 -->
-        <div class="mb-3">
-            <label for="ImagemFile3" class="form-label">Banner 3</label>
-            <input class="form-control" id="ImagemFile3" type="file" name="imagem3" />
-        </div>
-        <div class="text-center">
-            <label for="ImagemFile3">
-                <img id="img" style="max-width:300px; max-height:300px" />
-            </label>
-        </div>
-
-        <!-- Banner 4 -->
-        <div class="mb-3">
-            <label for="ImagemFile4" class="form-label">Banner 4</label>
-            <input class="form-control" id="ImagemFile4" type="file" name="imagem4" />
-        </div>
-        <div class="text-center">
-            <label for="ImagemFile4">
-                <img id="img" style="max-width:300px; max-height:300px" />
-            </label>
-        </div>
-
-        <!-- Frase da Home Page -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header">
-                <h5>Frase da Home Page</h5>
-            </div>
-            <div class="card-body">
-                <label asp-for="Frase" class="form-label">Digite a frase para a página inicial</label>
-                <textarea asp-for="Frase" rows="3" class="form-control" placeholder="Frase que aparece na home"></textarea>
-                <span asp-validation-for="Frase" class="text-danger"></span>
-            </div>
-        </div>
-
-        <!-- Botão de Salvar -->
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-dark">
-                <i class="bi bi-check-circle"></i> Salvar Personalização
-            </button>
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('ImagemFile').addEventListener('change', function (event) {
+        const imgPreview = document.getElementById('imgPreview');
+        const files = event.target.files;
+
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+</script>

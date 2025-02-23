@@ -1,32 +1,43 @@
 ﻿using DigitalStore.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DigitalStore.Models
 {
+    // Representa um pedido realizado por um usuário
     public class PedidoModel
     {
+        // ID único para o pedido
         [Key]
         public int PedidoId { get; set; }
 
+        // Data e hora em que o pedido foi realizado. O valor padrão é o momento atual da criação.
         public DateTime DataDoPedido { get; set; } = DateTime.Now;
 
-        public decimal ValorTotalDoPedido { get; set; }
+        // Status atual do pedido (ex.: Pago, Em Processamento, Enviado, etc.)
+        // O valor padrão é 'Pago'
+        public PedidoEnum StatusDoPedido { get; set; } = PedidoEnum.Pago;
 
-        public PedidoEnum StatusDoPedido { get; set; } = PedidoEnum.Pendente;
+        // ID do endereço associado ao pedido. Relacionamento com EnderecoModel
+        public int EnderecoId { get; set; }
 
-        public PagamentoEnum StatusPagamento { get; set; } = PagamentoEnum.Pendente;
+        // Relacionamento com a entidade Endereco (um pedido tem um único endereço)
+        [ForeignKey("EnderecoId")]
+        public virtual EnderecoModel? Endereco { get; set; }
 
-        public int? EnderecoId { get; set; }
-
-        public virtual EnderecoModel Endereco { get; set; }
+        // ID do usuário que fez o pedido. Relacionamento com UsuarioModel
         public int UsuarioId { get; set; }
 
-        public virtual UsuarioModel Usuario { get; set; }
+        // Relacionamento com a entidade de Usuário (um pedido pertence a um único usuário)
+        public virtual UsuarioModel? Usuario { get; set; }
 
-        public int? PagamentoId { get; set; }
+        // ID do pagamento associado ao pedido. Relacionamento com PagamentoModel
+        public int PagamentoId { get; set; }
 
-        public virtual PagamentoModel Pagamento { get; set; }
+        // Relacionamento com a entidade Pagamento (um pedido pode ter um pagamento associado)
+        public virtual PagamentoModel? Pagamento { get; set; }
 
-        public virtual IList<ItensDoPedidoModel> ItensDoPedido { get; set; }
+        // Lista de itens do pedido, representando os produtos incluídos no pedido
+        public virtual IList<ItensDoPedidoModel> ItensDoPedido { get; set; } = new List<ItensDoPedidoModel>();
     }
 }

@@ -4,6 +4,7 @@ using DigitalStore.Repositorio;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using System.Configuration;
 
 namespace DigitalStore
 {
@@ -13,11 +14,8 @@ namespace DigitalStore
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.Configure<StripeSettings>(
-    builder.Configuration.GetSection("Stripe"));
-
-
             // Add services to the container.
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<BancoContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase")));
@@ -35,8 +33,12 @@ namespace DigitalStore
             builder.Services.AddScoped<IPedidoRepositorio, PedidoRepositorio>();
             builder.Services.AddScoped<IEnderecoRepositorio, EnderecoRepositorio>();
             builder.Services.AddScoped<IItensDoPedidoRepositorio, ItensDoPedidoRepositorio>();
+            builder.Services.AddScoped<IPagamentoRepositorio, PagamentoRepositorio>();
             builder.Services.AddScoped<ISessao, Sessao>();
             builder.Services.AddScoped<IEmail, Email>();
+            builder.Services.AddScoped<ICaminhoImagem, CaminhoImagem>();
+            builder.Services.AddScoped<StripeService>();
+
 
             builder.Services.AddSession(o =>
             {
@@ -59,8 +61,6 @@ namespace DigitalStore
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
             app.UseAuthorization();
 

@@ -1,20 +1,21 @@
-﻿    @using DigitalStore.Enum
-@model List<ProdutoModel>
+﻿@using DigitalStore.Enum
+@model NavBarViewModel
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container px-4 px-lg-4">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">@ViewBag.SiteDados</a>
+    <div class="container px-3">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            <h4 class="m-0 py-1">@Model.NomeSite</h4>
+        </a>
+       
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-
-            @if (ViewBag.Sessao == null)
+        <div class="" id="navbarSupportedContent">
+            @if (!Model.UsuarioLogado)
             {
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-lg-1">
+                <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Login" asp-action="Index">
+                        <a class="nav-link" asp-controller="Login" asp-action="Login">
                             Login
                         </a>
                     </li>
@@ -24,26 +25,28 @@
                         </a>
                     </li>
                 </ul>
-
             }
             else
             {
-                <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0 me-lg-1">
+                <ul class="navbar-nav align-items-center ms-auto">
 
-                    @if (ViewBag.UsuarioPerfil == PerfilEnum.Cliente)
+                    @if (Model.PerfilUsuarioCliente)
                     {
-
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-light nav-link" asp-controller="Favorito" asp-action="Favoritos" asp-route-id="@ViewBag.UsuarioId" style="color: inherit; background-color: transparent; border-color: inherit;">
-                                <i class="bi-heart-fill me-1 text-light"></i>
-                                <span class="badge bg-light text-dark ms-1 rounded-pill">@ViewBag.FavoritosQuantidadeDeProdutos</span>
+                        <li class="nav-item me-4 position-relative">
+                            <a class="btn btn-outline-light nav-link p-0" asp-controller="Favorito" asp-action="Favoritos" asp-route-id="@Model.UsuarioLogadoId" style="color: inherit; background-color: transparent; border-color: inherit;">
+                                <i class="bi-heart-fill me-1 text-light fs-5"></i>
+                                <span class="badge bg-danger text-light position-absolute top-0 start-100 translate-middle rounded-pill" style="width: 1.1rem; height: 1.1rem; font-size: 0.65rem;">
+                                    @Model.FavoritosQuantidadeDeProdutos
+                                </span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light nav-link" role="button" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@ViewBag.UsuarioId"
-                               style="color: inherit; background-color: transparent; border-color: inherit;">
-                                <i class="bi-cart-fill me-1 text-light"></i>
-                                <span class="badge bg-light text-dark ms-1 rounded-pill">@ViewBag.CarrinhoQuantidadeDeProdutos</span>
+
+                        <li class="nav-item position-relative me-3">
+                            <a class="btn btn-outline-light nav-link p-0" role="button" asp-controller="Carrinho" asp-action="Carrinho" asp-route-id="@Model.UsuarioLogadoId" style="color: inherit; background-color: transparent; border-color: inherit;">
+                                <i class="bi-cart-fill me-1 text-light fs-5"></i>
+                                <span class="badge bg-danger text-light position-absolute top-0 start-100 translate-middle rounded-pill" style="width: 1.1rem; height: 1.1rem; font-size: 0.65rem;">
+                                    @Model.CarrinhoQuantidadeDeProdutos
+                                </span>
                             </a>
                         </li>
 
@@ -62,12 +65,15 @@
                     <li class="nav-item dropdown ms-2">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Minha Conta</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@ViewBag.UsuarioId"><i class="bi bi-bag"></i> Meus Pedidos</a></li>
-                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@ViewBag.UsuarioId"><i class="bi bi-person"></i> Minha Conta</a></li>
+                            @if (Model.PerfilUsuarioCliente)
+                            {
+                            <li><a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.UsuarioLogadoId"><i class="bi bi-bag-fill fs-5 me-1"></i>  Meus Pedidos</a></li>
+                            }
+                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.UsuarioLogadoId"><i class="bi bi-person-fill fs-5 me-1"></i>  Minha Conta</a></li>
 
                             <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte"><i class="bi bi-question-circle"></i> Suporte</a></li>
-                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
+                            <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte"> Suporte</a></li>
+                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair"> Sair</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -78,7 +84,7 @@
 
     </div>
 </nav>
-<nav class="navbar navbar-expand navbar-light bg-light p-0 m-0 shadow-lg">
+<nav class="navbar navbar-expand navbar-light bg-light p-0 m-0 shadow-sm">
     <div class="container-fluid">
         <!-- Centralização das categorias -->
         <div class="d-flex justify-content-center flex-grow-1">
@@ -94,33 +100,40 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
                         <li>
-                            <a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos" asp-route-id="@ViewBag.UsuarioId">
+                            <a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos">
                                 Todos os produtos
                             </a>
                         </li>
-                        @foreach (var categoria in Model)
+                        @if(Model.Categorias != null && Model.Categorias.Any())
                         {
-                            <li>
+                            foreach (var categoria in Model.Categorias)
+                            {
+                                <li>
 
-                                <a class="dropdown-item" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria">
-                                    @categoria.Categoria
-                                </a>
-                            </li>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria">
+                                        @categoria
+                                    </a>
+                                </li>
+                            }
                         }
+
                     </ul>
                 </li>
-
-                @foreach (var categoria in Model.Take(5))
+                @if (Model.Categorias != null && Model.Categorias.Any())
                 {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria.Categoria" asp-route-id="@ViewBag.UsuarioId">
-                            @categoria.Categoria.ToUpper()
-                        </a>
-                    </li>
+                    foreach (var categoria in Model.Categorias.Take(5))
+                    {
+                        <li class="nav-item">   
+                            <a class="nav-link" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria">
+                                @categoria.ToUpper()
+                            </a>
+                        </li>
+                    }
                 }
+                
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="UltimasNovidades" asp-route-id="@ViewBag.UsuarioId">
+                    <a class="nav-link" asp-controller="Home" asp-action="UltimasNovidades">
                         ÚLTIMAS NOVIDADES
                     </a>
                 </li>

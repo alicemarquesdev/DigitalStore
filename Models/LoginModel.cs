@@ -2,13 +2,16 @@
 
 namespace DigitalStore.Models
 {
+    // Representa o modelo de login para autenticação de usuários.
     public class LoginModel
     {
+        // Endereço de email do usuário, necessário para autenticação.
         [Required(ErrorMessage = "Insira o seu login.")]
         [EmailAddress(ErrorMessage = "Email inválido.")]
-        public string Email { get; set; } = string.Empty;
+        public required string Email { get; set; }
 
+        // Senha do usuário, necessária para autenticação.
         [Required(ErrorMessage = "Insira a sua senha.")]
-        public string Senha { get; set; } = string.Empty;
+        public required string Senha { get; set; }
     }
 }

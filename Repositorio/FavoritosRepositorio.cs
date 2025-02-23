@@ -38,47 +38,26 @@ namespace DigitalStore.Repositorio
         }
 
         // Método para adicionar um produto aos favoritos
-        public async Task AddFavoritoAsync(int produtoId, int usuarioId)
+        public async Task AddOuRemoverFavoritoAsync(int produtoId, int usuarioId)
         {
-            ProdutoModel produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(produtoId);
-            UsuarioModel usuario = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(usuarioId);
+            var produtoNoFavorito = await BuscarProdutoExistenteNoFavoritosAsync(produtoId, usuarioId);
 
-            if (produto == null || usuario == null)
+            if (produtoNoFavorito == null)
             {
-                throw new ArgumentException("Produto ou Usuario não encontrado.");
+                var favorito = new FavoritosModel
+                {
+                    ProdutoId = produtoId,
+                    UsuarioId = usuarioId
+                };
+
+                _context.Favoritos.Add(favorito);
+            }
+            else
+            {
+                _context.Favoritos.Remove(produtoNoFavorito);
             }
 
-            var favorito = new FavoritosModel
-            {
-                ProdutoId = produtoId,
-                UsuarioId = usuarioId
-            };
-
-            // Adiciona o produto aos favoritos e salva as alterações
-            await _context.Favoritos.AddAsync(favorito);
             await _context.SaveChangesAsync();
-        }
-
-        // Método para remover um produto dos favoritos
-        public async Task<bool> RemoverFavoritoAsync(int produtoId, int usuarioId)
-        {
-            FavoritosModel produto = await BuscarProdutoExistenteNoFavoritosAsync(produtoId, usuarioId);
-
-            if (produto == null) return false;
-
-            // Remove o produto dos favoritos e salva as alterações
-            _context.Favoritos.Remove(produto);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        // Método para contar o número de produtos nos favoritos de um usuário
-        public async Task<int> TotalProdutosNosFavoritos(int usuarioId)
-        {
-            var favoritos = await BuscarFavoritosDoUsuarioAsync(usuarioId);
-
-            return favoritos.Count();
         }
     }
 }

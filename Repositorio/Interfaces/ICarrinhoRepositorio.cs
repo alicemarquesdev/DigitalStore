@@ -8,10 +8,7 @@ namespace DigitalStore.Repositorio.Interfaces
 
         Task<CarrinhoModel> BuscarProdutoExistenteNoCarrinhoAsync(int produtoId, int usuarioId);
 
-        Task AddAoCarrinhoAsync(int produtoId, int usuarioId);
-
-        Task<bool> RemoverDoCarrinhoAsync(int produtoId, int usuarioId);
-
-        Task<int> TotalProdutosNoCarrinhoDoUsuarioAsync(int usuarioId);
+        Task AddOuRemoverCarrinhoAsync(int produtoId, int usuarioId);
+        Task AtualizarQuantidadeAsync(int produtoId, int usuarioId, int quantidade);
     }
 }

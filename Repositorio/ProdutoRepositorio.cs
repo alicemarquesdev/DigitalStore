@@ -1,4 +1,5 @@
 ﻿using DigitalStore.Data;
+using DigitalStore.Helper;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -8,32 +9,27 @@ namespace DigitalStore.Repositorio
     public class ProdutoRepositorio : IProdutoRepositorio
     {
         private readonly BancoContext _context;
-        private readonly string _sistema;
+        private readonly ICaminhoImagem _caminhoImagem;
 
-        public ProdutoRepositorio(BancoContext context, IWebHostEnvironment sistema)
+        public ProdutoRepositorio(BancoContext context, ICaminhoImagem caminhoImagem)
         {
             _context = context;
-            _sistema = sistema.WebRootPath;
+            _caminhoImagem = caminhoImagem;
         }
 
         // Método para buscar categorias distintas de produtos
-        public async Task<List<ProdutoModel>> BuscarCategoriasAsync()
+        public async Task<List<string>> BuscarCategoriasAsync()
         {
             var categorias = await _context.Produtos.Select(x => x.Categoria).Distinct().ToListAsync();
 
-            var categoriaList = categorias.Select(categoria => new ProdutoModel
-            {
-                Categoria = categoria
-            }).ToList();
-
-            return categoriaList;
+            return categorias;
         }
 
         // Método para buscar produtos por categoria
-        public async Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(ProdutoModel categoria)
+        public async Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(string categoria)
         {
             return await _context.Produtos
-                .Where(c => c.Categoria == categoria.Categoria)
+                .Where(c => c.Categoria == categoria)
                 .ToListAsync();
         }
 
@@ -50,56 +46,21 @@ namespace DigitalStore.Repositorio
             return await _context.Produtos.ToListAsync();
         }
 
-        // Método para gerar caminho de arquivo da imagem do produto
-        public async Task<string> GerarCaminhoArquivoAsync(IFormFile imagem)
+        // Método para buscar os últimos produtos adicionados
+        public async Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionados()
         {
-            // Gera um código único para o arquivo
-            var codigoUnico = Guid.NewGuid().ToString();
-
-            // Obtém a extensão original do arquivo (ex: ".jpg", ".png")
-            var extensao = Path.GetExtension(imagem.FileName).ToLower();
-
-            // Gera o nome final do arquivo (sem espaços e com a extensão original)
-            var nomeCaminhoImagem = codigoUnico + extensao;
-
-            // Caminho para salvar a imagem, dentro da pasta "wwwroot/images"
-            var caminhoParaSalvarImagem = Path.Combine(_sistema, "image");
-
-            // Verifica se a pasta existe e, se não, cria
-            if (!Directory.Exists(caminhoParaSalvarImagem))
-            {
-                Directory.CreateDirectory(caminhoParaSalvarImagem);
-            }
-
-            // Salva o arquivo no caminho especificado
-            var caminhoCompleto = Path.Combine(caminhoParaSalvarImagem, nomeCaminhoImagem);
-            using (var stream = File.Create(caminhoCompleto))
-            {
-                await imagem.CopyToAsync(stream);
-            }
-
-            return Path.Combine("~/image", nomeCaminhoImagem).Replace("\\", "/");
+            return await _context.Produtos
+                .OrderByDescending(p => p.DataCadastro)
+                .ToListAsync();
         }
 
         // Método para adicionar um novo produto
-        public async Task AddProdutoAsync(ProdutoModel produto, IFormFile imagem)
+        public async Task AddProdutoAsync(ProdutoModel produto)
         {
             try
             {
-                var caminhoImagem = await GerarCaminhoArquivoAsync(imagem);
-
-                var produtoDb = new ProdutoModel
-                {
-                    NomeProduto = produto.NomeProduto,
-                    Descricao = produto.Descricao,
-                    Categoria = produto.Categoria,
-                    Preco = produto.Preco,
-                    QuantidadeEstoque = produto.QuantidadeEstoque,
-                    ImagemUrl = caminhoImagem
-                };
-
-                // Adiciona o produto ao banco de dados
-                await _context.Produtos.AddAsync(produtoDb);
+                              // Adiciona o produto ao banco de dados
+                await _context.Produtos.AddAsync(produto);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -135,7 +96,7 @@ namespace DigitalStore.Repositorio
                 }
 
                 // Gerar o novo caminho da imagem
-                var caminhoImagem = await GerarCaminhoArquivoAsync(novaImagem);
+                var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(novaImagem);
                 produtoDb.ImagemUrl = caminhoImagem;
             }
 
@@ -154,14 +115,6 @@ namespace DigitalStore.Repositorio
             _context.Produtos.Remove(produto);
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        // Método para buscar os últimos produtos adicionados
-        public async Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionados()
-        {
-            return await _context.Produtos
-                .OrderByDescending(p => p.DataCadastro)
-                .ToListAsync();
         }
     }
 }

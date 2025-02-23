@@ -6,6 +6,6 @@ namespace DigitalStore.Repositorio.Interfaces
     {
         Task<SiteModel> BuscarDadosDoSiteAsync();
 
-        Task AtualizarSite(SiteModel site, IFormFile imagem1, IFormFile imagem2, IFormFile imagem3, IFormFile? imagem4);
+        Task AtualizarSite(SiteModel site, List<IFormFile?> banners);
     }
 }
