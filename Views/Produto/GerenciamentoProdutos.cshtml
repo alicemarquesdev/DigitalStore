@@ -201,6 +201,7 @@
 
                     <div class="mb-3">
                         <input class="form-control" id="ImagemFile" type="file" name="novaImagem" accept="image/*" />
+                        <span>Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos. A imagem não pode exceder o tamanho de 1MB.</span>
                     </div>
 
                     <div class="text-center">
@@ -219,39 +220,7 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var buttons = document.querySelectorAll('[data-bs-toggle="modal"][data-produto-id]');
-
-        buttons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                var produtoId = this.getAttribute('data-produto-id');
-                var nomeProduto = this.getAttribute('data-nomeproduto');
-                var descricao = this.getAttribute('data-descricao');
-                var categoria = this.getAttribute('data-categoria');
-                var quantidade = this.getAttribute('data-quantidade');
-                var preco = this.getAttribute('data-preco');
-                var imagem = this.getAttribute('data-imagem');
-
-                // Preencher os campos do modal
-                document.getElementById('ProdutoId').value = produtoId;
-                document.getElementById('NomeProduto').value = nomeProduto;
-                document.getElementById('Descricao').value = descricao;
-                document.getElementById('Categoria').value = categoria;
-                document.getElementById('QuantidadeEstoque').value = quantidade;
-                document.getElementById('Preco').value = preco;
-
-                // Exibir a imagem no modal
-                var imgPreview = document.getElementById('imgPreview');
-                if (imgPreview) {
-                    imgPreview.src = imagem;
-                }
-
-                // Atribuir o ID do produto para o modal de remoção
-                if (document.getElementById("produtoId")) {
-                    document.getElementById("produtoId").value = produtoId;
-                }
-            });
-        });
-    });
-</script>
+@section Scripts {
+    <script src="~/js/gerenciamento-produtos.js"></script>
+}
+  

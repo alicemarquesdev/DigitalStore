@@ -1,6 +1,7 @@
-﻿using DigitalStore.Enum;
+﻿using DigitalStore.Enums;
 using DigitalStore.Helper;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DigitalStore.Models
 {
@@ -25,6 +26,15 @@ namespace DigitalStore.Models
         [StringLength(80, ErrorMessage = "O email deve ter no máximo 80 caracteres.")]
         [RegularExpression(@"^\S+$", ErrorMessage = "O email não pode conter espaços, verifique o começo e o fim.")]
         public required string Email { get; set; }
+
+        // Data de Nascimento do usuário
+        [Required(ErrorMessage = "Informe a data de nascimento.")]
+        [DataType(DataType.Date)]
+        public required DateTime DataNascimento { get; set; }
+
+        // Gênero do usuário
+        [Required(ErrorMessage = "Informe o gênero.")]
+        public required GeneroEnum Genero { get; set; }
 
         // Perfil do usuário
         [Required(ErrorMessage = "Informe o perfil.")]

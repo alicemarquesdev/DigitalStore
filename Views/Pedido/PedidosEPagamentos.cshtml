@@ -1,0 +1,128 @@
+﻿@model List<PedidoModel>
+@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+<div class="container my-5">
+    <h2 class="mb-5">Meus Pedidos</h2>
+
+    <!-- Lista de Pedidos -->
+    <div class="row">
+        @foreach (var pedido in Model)
+        {
+            var modalId = "modalPedido" + pedido.PedidoId;
+            var modalStatusId = "modalStatus" + pedido.PedidoId;
+
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            Pedido #@pedido.PedidoId - <span class="badge bg-light text-dark"><strong>@pedido.StatusDoPedido</strong></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Informações principais do pedido -->
+                            <div class="col-md-6">
+                                <p><strong>Data do Pedido:</strong> @pedido.DataDoPedido.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Endereço de Entrega:</strong> @pedido.Endereco</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p><strong>Status do Pagamento:</strong> @pedido.Pagamento.StatusPagamento</p>
+                                <p><strong>Método de Pagamento:</strong> @pedido.Pagamento.MetodoPagamento</p>
+                                <p><strong>Total:</strong> R$ @pedido.Pagamento.Valor.ToString("F2")</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <!-- Botão que aciona o modal de detalhes -->
+                            <button type="button" class="btn btn-outline-dark w-25 me-1" data-bs-toggle="modal" data-bs-target="#@modalId">
+                                Ver Produtos
+                            </button>
+                            @if(pedido.StatusDoPedido != PedidoEnum.Cancelado)
+                            {
+                                <!-- Botão para abrir o modal de atualização de status -->
+                                <button type="button" class="btn btn-dark" id="btnStatus@pedido.PedidoId" data-id="@pedido.PedidoId">
+                                    Atualizar Status do Pedido
+                                </button>
+                            }
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para exibir os detalhes dos itens do pedido -->
+            <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="modalPedidoLabel@pedido.PedidoId" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalPedidoLabel@pedido.PedidoId">Itens do Pedido #@pedido.PedidoId</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                @foreach (var item in pedido.ItensDoPedido)
+                                {
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <img src="@Url.Content(item.Produto.ImagemUrl)" alt="@item.Produto.NomeProduto" class="img-thumbnail" style="width: 80px; height: 80px; margin-right: 15px;">
+                                        <div class="d-flex flex-column">
+                                            <span><strong>@item.Produto.NomeProduto</strong></span>
+                                            <span>R$ @item.Produto.Preco.ToString("F2")</span>
+                                        </div>
+                                        <div class="ms-auto text-end">
+                                            <p><strong>Qtd:</strong> @item.QuantidadeItem</p>
+                                            <p><strong>Preço Unitário:</strong> R$ @item.PrecoUnidadeItem</p>
+                                            <p><strong>Total:</strong> R$ @(item.PrecoUnidadeItem * item.QuantidadeItem)</p>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Atualizar o Status do Pedido -->
+            <div class="modal fade" id="@modalStatusId" tabindex="-1" aria-labelledby="modalStatusLabel@pedido.PedidoId" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalStatusLabel@pedido.PedidoId">Atualizar Status do Pedido #@pedido.PedidoId</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form asp-controller="Pedido" asp-action="AtualizarStatusDoPedido" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="pedidoId" value="@pedido.PedidoId" />
+
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Selecione o Status:</label>
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="@PedidoEnum.Pendente">@PedidoEnum.Pendente</option>
+                                        <option value="@PedidoEnum.EmPreparacao">@PedidoEnum.EmPreparacao</option>
+                                        <option value="@PedidoEnum.Enviado">@PedidoEnum.Enviado</option>
+                                        <option value="@PedidoEnum.Concluido">@PedidoEnum.Concluido</option>
+                                        <option value="@PedidoEnum.Cancelado">@PedidoEnum.Cancelado</option>
+                                    </select>
+                                    <span class="text-danger">Ao cancelar pedido, não é possível desfazer.</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <button type="submit" class="btn btn-primary">Atualizar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pedidos-pagamentos.js"></script>
+}

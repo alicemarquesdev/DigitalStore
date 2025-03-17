@@ -19,9 +19,8 @@ namespace DigitalStore.Models
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,20}$", ErrorMessage = "A senha deve ter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")]
         public required string NovaSenha { get; set; }
 
-        // Confirmação da nova senha inserida pelo usuário.
         // A senha deve ser igual à NovaSenha.
-        [Required(ErrorMessage = "Digite novamente a nova senha.")]
+        [Required(ErrorMessage = "Digite a nova senha novamente.")]
         [Compare("NovaSenha", ErrorMessage = "Não confere com a nova senha")]
         public required string ConfirmarNovaSenha { get; set; }
     }

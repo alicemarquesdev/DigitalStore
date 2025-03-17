@@ -11,19 +11,15 @@ namespace DigitalStore.Models
         [Key]
         public int PedidoId { get; set; }
 
+        // Endereco associado ao pedido
+        public required string Endereco { get; set; }
+
         // Data e hora em que o pedido foi realizado. O valor padrão é o momento atual da criação.
         public DateTime DataDoPedido { get; set; } = DateTime.Now;
 
         // Status atual do pedido (ex.: Pago, Em Processamento, Enviado, etc.)
         // O valor padrão é 'Pago'
-        public PedidoEnum StatusDoPedido { get; set; } = PedidoEnum.Pago;
-
-        // ID do endereço associado ao pedido. Relacionamento com EnderecoModel
-        public int EnderecoId { get; set; }
-
-        // Relacionamento com a entidade Endereco (um pedido tem um único endereço)
-        [ForeignKey("EnderecoId")]
-        public virtual EnderecoModel? Endereco { get; set; }
+        public PedidoEnum StatusDoPedido { get; set; } = PedidoEnum.Pendente;
 
         // ID do usuário que fez o pedido. Relacionamento com UsuarioModel
         public int UsuarioId { get; set; }

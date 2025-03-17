@@ -1,49 +1,103 @@
 ﻿@model List<PedidoModel>
+
 @{
+    // Definindo o título da página
     ViewData["Title"] = "Meus Pedidos";
 }
 
 <div class="container my-5">
-    <h2 class="text-center mb-5">Meus Pedidos</h2>
+    <!-- Título da Página -->
+    <h2 class="mb-5">Meus Pedidos</h2>
 
     <!-- Lista de Pedidos -->
     <div class="row">
         @foreach (var pedido in Model)
         {
+            // Gerando um ID único para cada modal com base no PedidoId
+            var modalId = "modalPedido" + pedido.PedidoId;
+
             <div class="col-md-12 mb-4">
                 <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="mb-0">Pedido #@pedido.PedidoId</h5>
+                    <!-- Cabeçalho do Pedido -->
+                    <div class="card-header bg-dark text-white">
+                        Pedido #@pedido.PedidoId -
+                        <span class="badge bg-light text-dark">
+                            <strong>@pedido.StatusDoPedido</strong>
+                        </span>
                     </div>
+
                     <div class="card-body">
-                        <p><strong>Data do Pedido:</strong> @pedido.DataDoPedido.ToString("dd/mm/yyyy")</p>
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="badge bg-success">@pedido.StatusDoPedido</span>
-                        </p>
+                        <div class="row">
+                            <!-- Informações principais do pedido -->
+                            <div class="col-md-6">
+                                <p><strong>Data do Pedido:</strong> @pedido.DataDoPedido.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Endereço de Entrega:</strong> @pedido.Endereco</p>
+                            </div>
 
-                        <h6 class="mt-4">Produtos:</h6>
-                        <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span></span>
-                                <span>R$ 99,90</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Produto B</span>
-                                <span>R$ 149,90</span>
-                            </li>
-                        </ul>
+                            <!-- Informações de pagamento alinhadas à direita -->
+                            <div class="col-md-6 text-end">
+                                <p><strong>Status do Pagamento:</strong> @pedido.Pagamento.StatusPagamento</p>
+                                <p><strong>Método de Pagamento:</strong> @pedido.Pagamento.MetodoPagamento</p>
+                                <p><strong>Total:</strong> R$ @pedido.Pagamento.Valor.ToString("F2")</p>
+                            </div>
+                        </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <p><strong>Total: </strong> R$ 249,80</p>
-                            <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                        <!-- Botão para abrir o modal de detalhes do pedido -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-dark w-50" data-bs-toggle="modal" data-bs-target="#@modalId">
+                                Ver Produtos
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Modal para exibir os detalhes dos itens do pedido -->
+            <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="modalPedidoLabel@pedido.PedidoId" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+
+                        <!-- Cabeçalho do Modal -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalPedidoLabel@pedido.PedidoId">Itens do Pedido #@pedido.PedidoId</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Corpo do Modal com Lista de Produtos -->
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                @foreach (var item in pedido.ItensDoPedido)
+                                {
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <!-- Imagem do Produto -->
+                                        <img src="@Url.Content(item.Produto.ImagemUrl)" alt="@item.Produto.NomeProduto"
+                                             class="img-thumbnail" style="width: 80px; height: 80px; margin-right: 15px;">
+
+                                        <!-- Informações do Produto -->
+                                        <div class="d-flex flex-column">
+                                            <span><strong>@item.Produto.NomeProduto</strong></span>
+                                            <span>R$ @item.Produto.Preco.ToString("F2")</span>
+                                        </div>
+
+                                        <!-- Informações de Quantidade e Preço -->
+                                        <div class="ms-auto text-end">
+                                            <p><strong>Qtd:</strong> @item.QuantidadeItem</p>
+                                            <p><strong>Preço Unitário:</strong> R$ @item.PrecoUnidadeItem.ToString("F2")</p>
+                                            <p><strong>Total:</strong> R$ @(item.PrecoUnidadeItem * item.QuantidadeItem).ToString("F2")</p>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <!-- Rodapé do Modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         }
-
-
-
     </div>
 </div>

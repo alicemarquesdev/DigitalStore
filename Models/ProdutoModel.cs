@@ -41,10 +41,6 @@ namespace DigitalStore.Models
         // O valor padrão é a data e hora atual
         public DateTime DataCadastro { get; set; } = DateTime.Now;
 
-        // Status do produto (ex.: Ativo, Inativo)
-        // O valor padrão é 'Ativo'
-        public StatusEnum Status { get; set; } = StatusEnum.Ativo;
-
         // Relacionamento com o Carrinho
         // Lista de carrinhos em que o produto foi adicionado
         public virtual IList<CarrinhoModel> Carrinho { get; set; } = new List<CarrinhoModel>();

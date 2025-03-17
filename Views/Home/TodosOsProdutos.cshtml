@@ -1,32 +1,35 @@
 ﻿@model HomeViewModel
+
 @{
-    ViewData["Title"] = "Últimas Novidades";
+    ViewData["Title"] = "Todos os produtos";
 }
 
 <div class="container my-5 pb-lg-5 px-5">
     <!-- Título da seção -->
-
     <h3 class="fw-bold text-uppercase py-3">Explore todos os produtos</h3>
 
     <!-- Grid de produtos -->
     <div class="row row-cols-1 row-cols-md-3 g-5 pt-5">
         @if (Model?.Produtos != null && Model.Produtos.Any())
         {
-            foreach (var produto in @Model.Produtos.Take(9))
+            foreach (var produto in @Model.Produtos)
             {
                 <div class="col">
+                    <!-- Card de produto -->
                     <div class="card h-100 border-0 rounded-4 shadow position-relative">
-                        <!-- Link para a página de produto individual -->
+                        <!-- Link para a página do produto individual -->
                         <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                            <!-- Imagem do produto -->
                             <img src="@Url.Content(produto.ImagemUrl)" class="card-img-top" alt="@produto.NomeProduto" style="height: 250px; object-fit: cover; border-radius: 4px;" />
                             <div class="card-body text-dark">
+                                <!-- Título e preço do produto -->
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="card-title fw-bold text-start mb-0">@produto.NomeProduto</h5>
                                     <p class="fw-bold text-dark fs-5 mb-0 text-end">R$ @produto.Preco</p>
                                 </div>
+                                <!-- Descrição do produto -->
                                 <p class="card-text text-muted text-start" style="font-size: 0.9rem;">@produto.Descricao</p>
                             </div>
-
                         </a>
 
                         <!-- Botões dentro de uma div com fundo claro e linha separadora -->
@@ -47,7 +50,9 @@
                                 }
                                 else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
                                 {
+                                    <!-- Caso o usuário esteja logado e seja um cliente -->
                                     <div class="d-flex flex-column gap-2">
+                                        <!-- Botão de favoritar -->
                                         <button type="button"
                                                 class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
                                                 data-produto-id="@produto.ProdutoId">
@@ -56,6 +61,7 @@
 
                                         <div class="border-top mt-1"></div>
 
+                                        <!-- Botão de adicionar ao carrinho -->
                                         <button type="button"
                                                 class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
                                                 data-produto-id="@produto.ProdutoId">

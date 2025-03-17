@@ -11,10 +11,12 @@
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-3">
                     <ul class="list-unstyled">
-                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Meus Pedidos</a></li>
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
                         <hr>
 
-                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Meus Pedidos</a></li>
+                        <hr>
+                        <li><a asp-controller="Endereco" asp-action="Enderecos" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i>Enderecos</a></li>
                         <hr>
 
                         <li><a asp-controller="Usuario" asp-action="AlterarSenha" asp-route-Id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
@@ -60,6 +62,17 @@
                                 <label for="EmailUsuario" class="form-label fw-semibold">E-mail</label>
                                 <input type="email" class="form-control" id="EmailUsuario" asp-for="Email">
                                 <span class="text-danger"> @Html.ValidationMessageFor(x => x.Nome) </span>
+                            </div>
+                        </div>
+                        <!-- Exibir Data de Nascimento -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="DataNascimento" class="form-label fw-semibold">Data de Nascimento</label>
+                                <input type="text" class="form-control" id="DataNascimento" value="@Model.DataNascimento.ToString("dd/MM/yyyy")" disabled />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Genero" class="form-label fw-semibold">Gênero</label>
+                                <input type="text" class="form-control" id="Genero" value="@Model.Genero.ToString()" disabled />
                             </div>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Salvar Alterações</button>

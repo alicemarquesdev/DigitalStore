@@ -1,56 +1,77 @@
-﻿using System.Net;
+﻿using DigitalStore.Helper.Interfaces;
+using Microsoft.Extensions.Options;
+using System.Net;
 using System.Net.Mail;
 
 namespace DigitalStore.Helper
 {
+    // A classe implementa a interface IEmail, responsável por enviar e-mails através de um servidor SMTP.
     public class Email : IEmail
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _smtpServer; // Endereço do servidor SMTP
+        private readonly string _senderEmail; // Endereço de e-mail do remetente
+        private readonly string _senderPassword; // Senha do e-mail do remetente
+        private readonly int _smtpPort; // Porta SMTP para a conexão
 
-        public Email(IConfiguration configuration)
+        // Construtor da classe que recebe uma instância da configuração de EmailSMTP via injeção de dependência.
+        public Email(IOptions<EmailSettings> emailSMPT)
         {
-            _configuration = configuration;
+            _smtpServer = emailSMPT.Value.SmtpServer;
+            _senderEmail = emailSMPT.Value.SenderEmail;
+            _senderPassword = emailSMPT.Value.SenderPassword;
+            _smtpPort = emailSMPT.Value.SmtpPort;
         }
 
-        public bool Enviar(string email, string mensagem, string assunto)
+        // Método que envia um e-mail de forma assíncrona. Recebe como parâmetros o destinatário, o assunto e a mensagem do e-mail.
+        public async Task<bool> EnviarEmailAsync(string destinatario, string assunto, string mensagem)
         {
             try
             {
-                // Recupera as configurações do SMTP do arquivo de configuração
-                string host = _configuration.GetValue<string>("SMTP:Host");
-                string nome = _configuration.GetValue<string>("SMTP:Nome");
-                string userName = _configuration.GetValue<string>("SMTP:UserName");
-                string senha = _configuration.GetValue<string>("SMTP:Senha");
-                int porta = _configuration.GetValue<int>("SMTP:Porta");
+                // Recupera as configurações de SMTP 
+                var smtpServer = _smtpServer; // Endereço do servidor SMTP
+                var smtpPort = _smtpPort; // Porta do servidor SMTP
+                var senderEmail = _senderEmail; // E-mail do remetente
+                var senderPassword = _senderPassword; // Senha do e-mail do remetente
 
-                // Criação da mensagem de e-mail
-                using (var mail = new MailMessage())
+                // Configuração do cliente SMTP
+                using (var client = new SmtpClient(smtpServer, smtpPort))
                 {
-                    mail.From = new MailAddress(userName, nome);
-                    mail.To.Add(email);
-                    mail.Subject = assunto;
-                    mail.Body = mensagem;
-                    mail.IsBodyHtml = true; // Marca o corpo como HTML
-                    mail.Priority = MailPriority.High; // Define a prioridade do e-mail
+                    // Define as credenciais para autenticação no servidor SMTP
+                    client.Credentials = new NetworkCredential(senderEmail, senderPassword);
 
-                    // Envia o e-mail utilizando o SmtpClient
-                    using (var smtp = new SmtpClient(host, porta))
+                    // Ativa o uso de SSL para uma conexão segura
+                    client.EnableSsl = true;
+
+                    // Criação da mensagem de e-mail
+                    var mailMessage = new MailMessage
                     {
-                        smtp.Credentials = new NetworkCredential(userName, senha);
-                        smtp.EnableSsl = true; // Ativa o uso de SSL
+                        // Define o remetente (de onde o e-mail será enviado)
+                        From = new MailAddress(senderEmail),
 
-                        smtp.Send(mail); // Envia a mensagem
-                    }
+                        // Define o assunto do e-mail
+                        Subject = assunto,
+
+                        // Define o corpo do e-mail (mensagem)
+                        Body = mensagem,
+
+                        // Define que o corpo do e-mail será em HTML
+                        IsBodyHtml = true
+                    };
+
+                    // Define o destinatário (para quem o e-mail será enviado)
+                    mailMessage.To.Add(destinatario);
+
+                    // Envia o e-mail de forma assíncrona
+                    await client.SendMailAsync(mailMessage);
+
+                    // Retorna true se o e-mail foi enviado com sucesso
+                    return true;
                 }
-
-                return true; // E-mail enviado com sucesso
             }
             catch (Exception ex)
             {
-                // Registra o erro em um log (pode ser implementado conforme necessário)
-                // Exemplo: _logger.LogError($"Erro ao enviar e-mail: {ex.Message}");
-
-                return false; // Retorna false em caso de erro
+                // Lançando uma nova exceção personalizada com informações detalhadas
+                throw new Exception("Erro ao enviar o e-mail. Verifique a configuração do servidor SMTP e os parâmetros fornecidos.", ex);
             }
         }
     }

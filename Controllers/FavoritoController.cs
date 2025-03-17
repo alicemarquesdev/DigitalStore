@@ -1,78 +1,113 @@
-﻿using DigitalStore.Helper;
+﻿using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
-using DigitalStore.Models.ViewModels;
+using DigitalStore.ViewModels;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalStore.Controllers
 {
+    /* 
+     Controlador responsável pela gestão dos favoritos de um usuário.
+     - Favoritos(int id): Exibe os favoritos e o carrinho de um usuário.
+     - AddOuRemoverFavorito(FavoritoRequest request): Adiciona ou remove um produto dos favoritos do usuário.
+    */
     public class FavoritoController : Controller
     {
         // Declaração das dependências dos repositórios
         private readonly IFavoritosRepositorio _favoritosRepositorio;
-
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
         private readonly IProdutoRepositorio _produtoRepositorio;
-        private readonly ISessao _sessao;
         private readonly ICarrinhoRepositorio _carrinhoRepositorio;
+        private readonly ISessao _sessao;
+        private readonly ILogger<FavoritoController> _logger; // ILogger para logar erros e eventos.
 
         // Construtor para injeção de dependências
         public FavoritoController(IFavoritosRepositorio favoritosRepositorio,
-                                    IUsuarioRepositorio usuarioRepositorio,
-                                    IProdutoRepositorio produtoRepositorio,
-                                    ISessao sessao,
-                                    ICarrinhoRepositorio carrinhoRepositorio)
+                                  IProdutoRepositorio produtoRepositorio,
+                                  ICarrinhoRepositorio carrinhoRepositorio,
+                                  ISessao sessao,
+                                  ILogger<FavoritoController> logger)
         {
-            _favoritosRepositorio = favoritosRepositorio;
-            _usuarioRepositorio = usuarioRepositorio;
-            _produtoRepositorio = produtoRepositorio;
-            _sessao = sessao;
-            _carrinhoRepositorio = carrinhoRepositorio;
+            _favoritosRepositorio = favoritosRepositorio ?? throw new ArgumentNullException(nameof(favoritosRepositorio));
+            _produtoRepositorio = produtoRepositorio ?? throw new ArgumentNullException(nameof(produtoRepositorio));
+            _carrinhoRepositorio = carrinhoRepositorio ?? throw new ArgumentNullException(nameof(carrinhoRepositorio));
+            _sessao = sessao ?? throw new ArgumentNullException(nameof(sessao));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        // Método para exibir os favoritos e o carrinho do usuário
         public async Task<IActionResult> Favoritos(int id)
         {
-            List<CarrinhoModel> carrinho = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(id);
-            List<FavoritosModel> favoritos = await _favoritosRepositorio.BuscarFavoritosDoUsuarioAsync(id);
-
-            if (carrinho == null)
+            try
             {
+                if (id <= 0) // Verifica se o ID é inválido (zero ou negativo)
+                {
+                    throw new ArgumentException($"ID do usuário inválido: {id}");
+                }
+
+                var carrinho = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(id);
+                var favoritos = await _favoritosRepositorio.BuscarFavoritosDoUsuarioAsync(id);
+
+                if (carrinho == null || favoritos == null)
+                {
+                    throw new InvalidOperationException($"Carrinho ou favoritos do usuário {id} não encontrados.");
+                }
+
+                // Cria um objeto ViewModel para passar os dados para a View
+                var viewModel = new FavoritoViewModel
+                {
+                    Favoritos = favoritos,
+                    Carrinho = carrinho
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Loga o erro caso ocorra algum problema ao tentar buscar os dados
+                _logger.LogError(ex, "Erro ao buscar favoritos e carrinho do usuário.");
+                TempData["Alerta"] = "Ocorreu um erro ao tentar carregar seus favoritos. Tente novamente mais tarde.";
                 return RedirectToAction("Index", "Home");
             }
-
-            var viewModel = new FavoritoViewModel
-            {
-                Favoritos = favoritos,
-                Carrinho = carrinho
-            };
-
-            return View(viewModel);
         }
 
+        // Classe de requisição para adicionar ou remover favorito
         public class FavoritoRequest
         {
             public int ProdutoId { get; set; }
         }
 
-        // Método para adicionar um produto aos favoritos
+        // Método para adicionar ou remover um produto dos favoritos, via requisição AJAX
         [HttpPost]
         public async Task<IActionResult> AddOuRemoverFavorito([FromBody] FavoritoRequest request)
         {
             try
             {
-                var usuario = _sessao.BuscarSessaoDoUsuario();
-
-                var produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(request.ProdutoId);
-
-                if (produto == null || usuario == null)
+                if (request.ProdutoId <= 0)
                 {
-                    return Json(new { success = false });
+                    // Loga se o produto ou o usuário não forem encontrados
+                    throw new ArgumentException($"Produto não encontrado para a requisição de favorito. ProdutoId: {request.ProdutoId}");
                 }
 
+                // Busca o usuário logado na sessão
+                var usuario = _sessao.BuscarSessaoDoUsuario();
+
+                // Verifica se o produto e o usuário são válidos
+                var produto = await _produtoRepositorio.BuscarProdutoPorIdAsync(request.ProdutoId);
+                if (produto == null || usuario == null)
+                {
+                    // Loga se o produto ou o usuário não forem encontrados
+                    throw new InvalidOperationException($"Produto ou usuário não encontrado para a requisição de favorito. ProdutoId: {request.ProdutoId}");
+                }
+
+                // Realiza a operação de adicionar ou remover favorito
                 await _favoritosRepositorio.AddOuRemoverFavoritoAsync(request.ProdutoId, usuario.UsuarioId);
 
+                // Verifica se o produto foi adicionado aos favoritos
                 var novoFavorito = await _favoritosRepositorio.BuscarProdutoExistenteNoFavoritosAsync(request.ProdutoId, usuario.UsuarioId);
 
+                _logger.LogInformation($"Produto {request.ProdutoId} {(novoFavorito != null ? "adicionado" : "removido")} aos favoritos do usuário {usuario.UsuarioId}.");
+
+                // Retorna o status da operação junto com o novo estado do favorito
                 return Json(new
                 {
                     success = true,
@@ -81,9 +116,13 @@ namespace DigitalStore.Controllers
             }
             catch (Exception ex)
             {
-                // Em caso de erro, loga a exceção e retorna um erro genérico
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, "Erro ao adicionar produto aos favoritos.");
+                // Loga qualquer exceção que ocorra e retorna um erro genérico
+                _logger.LogError(ex, "Erro ao adicionar ou remover produto dos favoritos.");
+                return Json(new
+                {
+                    success = false,
+                    message = $"Erro ao adicionar ou remover produto dos favoritos. Detalhes: {ex.Message}"
+                });
             }
         }
     }

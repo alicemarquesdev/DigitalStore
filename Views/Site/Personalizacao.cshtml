@@ -7,7 +7,7 @@
 <div class="container my-5">
     <h2 class="mb-4">Personalização do Site</h2>
 
-    <form method="post" enctype="multipart/form-data" asp-action="AtualizarSite" asp-controller="Site">
+    <form method="post" enctype="multipart/form-data" asp-action="AtualizarSiteAsync" asp-controller="Site">
         <div class="card shadow-sm mb-4">
      
             <div class="card-body">
@@ -16,6 +16,7 @@
                     <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
                     <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" required>
                     <span asp-validation-for="NomeSite" class="text-danger"></span>
+                    <span>Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos. A imagem não pode exceder o tamanho de 1MB.</span>
                 </div>
 
                 <!-- Banner -->
@@ -47,17 +48,7 @@
     </form>
 </div>
 
-<script>
-    document.getElementById('ImagemFile').addEventListener('change', function (event) {
-        const imgPreview = document.getElementById('imgPreview');
-        const files = event.target.files;
+@section Scripts {
+    <script src="~/js/personalizacao.js"></script>
+}
 
-        if (files.length > 0) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imgPreview.src = e.target.result;
-            };
-            reader.readAsDataURL(files[0]);
-        }
-    });
-</script>

@@ -7,7 +7,7 @@
         public int UsuarioId { get; set; }
 
         // ID do endereço do usuário associado à transação (referencia o endereço de entrega ou cobrança)
-        public int EnderecoId { get; set; }
+        public string EnderecoCompleto { get; set; }
 
         // Token do cartão de crédito gerado no frontend, utilizado para processar a transação no Stripe
         public required string Token { get; set; }

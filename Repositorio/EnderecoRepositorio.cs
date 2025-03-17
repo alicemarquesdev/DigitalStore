@@ -2,130 +2,123 @@
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace DigitalStore.Repositorio
 {
+    // A classe EnderecoRepositorio gerencia as operações relacionadas aos endereços de usuários, como adicionar, buscar e remover endereços no banco de dados.
+    // - BuscarEnderecoPorIdAsync(int enderecoId)
+    // - BuscarTodosOsEnderecosDoUsuarioAsync(int id)
+    // - AddEnderecoAsync(EnderecoModel endereco)
+    // - RemoverEnderecoAsync(int id)
+
     public class EnderecoRepositorio : IEnderecoRepositorio
     {
         private readonly BancoContext _context;
-        private readonly string googleMapsApiKey = "AIzaSyDG0kqBvyaIBJjspyDxSWGaEwbaokw4BNg";
 
+        // Construtor que injeta o contexto do banco de dados
         public EnderecoRepositorio(BancoContext context)
         {
             _context = context;
         }
 
+        // Método para buscar um endereço pelo seu ID
         public async Task<EnderecoModel> BuscarEnderecoPorIdAsync(int enderecoId)
         {
             try
             {
+                // Tenta buscar o endereço pelo ID
                 var endereco = await _context.Endereco.FirstOrDefaultAsync(x => x.EnderecoId == enderecoId);
-                if (endereco == null) throw new Exception("Endereço não encontrado.");
+
+                // Se o endereço não for encontrado, lança uma exceção 
+                if (endereco == null)
+                {
+                    throw new Exception("Endereço não encontrado.");
+                }
 
                 return endereco;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
+                throw new Exception($"Erro ao buscar o endereço: {ex.Message}", ex);
             }
         }
 
+        // Método para buscar todos os endereços de um usuário específico
         public async Task<List<EnderecoModel>> BuscarTodosOsEnderecosDoUsuarioAsync(int id)
         {
-            var enderecos = await _context.Endereco.Where(x => x.UsuarioId == id).ToListAsync();
+            try
+            {
+                // Tenta buscar todos os endereços relacionados ao usuário
+                var enderecos = await _context.Endereco.Where(x => x.UsuarioId == id).ToListAsync();
 
-            if (enderecos == null) return new List<EnderecoModel>();
+                // Se não encontrar nenhum endereço, retorna uma lista vazia
+                if (enderecos == null || !enderecos.Any())
+                {
+                    return new List<EnderecoModel>();
+                }
 
-            return enderecos;
+                return enderecos;
+            }
+            catch (Exception ex)
+            {
+                // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
+                throw new Exception($"Erro ao buscar os endereços do usuário: {ex.Message}", ex);
+            }
         }
 
+        // Método para adicionar um novo endereço
         public async Task AddEnderecoAsync(EnderecoModel endereco)
         {
-            _context.Endereco.Add(endereco);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Adiciona o novo endereço no banco de dados
+                _context.Endereco.Add(endereco);
+
+                // Salva as mudanças no banco de dados
+                var result = await _context.SaveChangesAsync();
+
+                // Verifica se a operação foi bem-sucedida, ou seja, se houve alguma alteração no banco
+                if (result == 0)
+                {
+                    throw new Exception("Falha ao adicionar o endereço.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
+                throw new Exception($"Erro ao adicionar o endereço: {ex.Message}", ex);
+            }
         }
 
+        // Método para remover um endereço pelo seu ID
         public async Task<bool> RemoverEnderecoAsync(int id)
         {
-            var endereco = await BuscarEnderecoPorIdAsync(id);
-
-            if (endereco == null) return false;
-
-            _context.Endereco.Remove(endereco);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        // Método para extrair o estado do endereço (simulando uma geocodificação)
-        public async Task<string> ObterEstadoDoEnderecoAsync(string endereco)
-        {
-            // URL da API do Google Geocoding
-            string url = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(endereco)}&key={googleMapsApiKey}";
-
-            using (var client = new HttpClient())
+            try
             {
-                // Fazendo a requisição HTTP para a API do Google
-                var response = await client.GetStringAsync(url);
-                var jsonResponse = JObject.Parse(response);
+                // Busca o endereço que será removido
+                var endereco = await BuscarEnderecoPorIdAsync(id);
 
-                // Verificando se a resposta tem resultados
-                if (jsonResponse["status"].ToString() == "OK")
+                // Se o endereço não for encontrado, retorna false
+                if (endereco == null)
                 {
-                    // Pega o primeiro resultado da geocodificação
-                    var result = jsonResponse["results"][0];
-
-                    // Percorrendo os componentes do endereço
-                    foreach (var component in result["address_components"])
-                    {
-                        // Verificando se o componente é o estado
-                        var types = component["types"];
-                        if (types != null && types.Any(t => t.ToString() == "administrative_area_level_1"))
-                        {
-                            return component["short_name"].ToString(); // Retorna o código do estado (ex: "SP", "RJ")
-                        }
-                    }
+                    return false;
                 }
 
-                // Caso não encontre o estado, retornamos "Desconhecido"
-                return "Desconhecido";
+                // Remove o endereço do banco de dados
+                _context.Endereco.Remove(endereco);
+
+                // Salva as mudanças no banco de dados
+                var result = await _context.SaveChangesAsync();
+
+                // Retorna true se o endereço foi removido com sucesso, caso contrário retorna false
+                return result > 0;
             }
-        }
-
-        // Método para calcular o frete por região
-        public decimal CalcularFretePorRegiao(string estado)
-        {
-            // Definindo as regiões do Brasil
-            var regioes = new Dictionary<string, string[]>
-        {
-            { "Norte", new[] { "AC", "AM", "AP", "PA", "RO", "RR", "TO" } },
-            { "Nordeste", new[] { "AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE", "BA" } },
-            { "Centro-Oeste", new[] { "GO", "MT", "MS", "DF" } },
-            { "Sudeste", new[] { "ES", "MG", "RJ", "SP" } },
-            { "Sul", new[] { "PR", "RS", "SC" } }
-        };
-
-            // Definindo os preços por região
-            var precos = new Dictionary<string, decimal>
-        {
-            { "Norte", 25.00m },
-            { "Nordeste", 0.00m },
-            { "Centro-Oeste", 20.00m },
-            { "Sudeste", 35.00m },
-            { "Sul", 30.00m }
-        };
-
-            // Verificando em qual região o estado está e retornando o frete
-            foreach (var regiao in regioes)
+            catch (Exception ex)
             {
-                if (regiao.Value.Contains(estado))
-                {
-                    return precos[regiao.Key]; // Retorna o preço do frete da região
-                }
+                // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
+                throw new Exception($"Erro ao remover o endereço: {ex.Message}", ex);
             }
-
-            // Caso o estado não esteja em nenhuma região, retornamos um preço padrão
-            return 25.00m; // Preço para estados não definidos
         }
     }
 }

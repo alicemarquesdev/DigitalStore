@@ -1,99 +1,125 @@
 ﻿@model CarrinhoViewModel
 
 @{
-    ViewData["Title"] = "Carrinho";
+    ViewData["Title"] = "Carrinho"; // Definindo o título da página como "Carrinho"
 }
 
 <div class="container my-lg-5 pb-md-5">
     <div class="row">
-        <!-- Left Section: Meu Carrinho -->
+        <!-- Seção esquerda: Meu Carrinho -->
         <div class="col-md-7">
             <h3 class="fw-bold text-uppercase pt-3 pb-5">Meu Carrinho</h3>
 
-            @if(Model.Carrinho != null && Model.Carrinho.Any())
+            <!-- Verifica se o carrinho contém itens -->
+            @if (Model.Carrinho != null && Model.Carrinho.Any())
             {
+                // Itera sobre cada item do carrinho
                 foreach (var produto in Model.Carrinho)
                 {
                     <div class="card mb-3 shadow-sm border-0">
                         <div class="row g-0">
                             <!-- Imagem do Produto -->
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
-                                <img src="@Url.Content(produto.Produto.ImagemUrl)" class="img-fluid rounded-start" alt="Produto" style="object-fit: cover; height: 180px; width: 100%;">
+                                <!-- Link para visualizar o produto -->
+                                <a asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                                    <img src="@Url.Content(produto?.Produto?.ImagemUrl)" class="img-fluid rounded-start" alt="Produto" style="object-fit: cover; height: 180px; width: 100%;">
+                                </a>
                             </div>
 
                             <!-- Informações do Produto -->
                             <div class="col-md-6 d-flex flex-column justify-content-center">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold text-dark mb-1">@produto.Produto.NomeProduto</h5>
-                                    <p class="card-text text-muted small mb-2">@produto.Produto.Descricao</p>
-                                    <h5 class="fw-bold mb-3">R$ @produto.Produto.Preco</h5>
-                                </div>
+                                <!-- Link para o produto -->
+                                <a class="text-decoration-none text-dark" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold text-dark mb-1">@produto?.Produto?.NomeProduto</h5>
+                                        <p class="card-text text-muted small mb-2">@produto?.Produto?.Descricao</p>
+                                        <h5 class="fw-bold mb-3">R$ @produto?.Produto?.Preco</h5>
+                                    </div>
+                                </a>
                             </div>
 
                             <!-- Seção de quantidade -->
                             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center position-relative">
                                 <!-- Botão no canto superior direito -->
                                 <div class="position-absolute top-0 end-0 mt-2 bg-light rounded-3 me-2">
+                                    <!-- Lógica para alterar o ícone do carrinho (adicionar/remover) -->
                                     <button type="button" class="btn bg-transparent border-0 btn-sm carrinho-btn @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
                                             data-produto-id="@produto.ProdutoId">
                                         <i class="bi @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
-
                                     </button>
                                 </div>
 
-                                <!-- Controle de quantidade -->
-                                <div class="input-group mt-4">
-                                    <form asp-controller="Carrinho" asp-action="AtualizarQuantidade" method="post">
-                                        <input type="hidden" name="produtoId" value="@produto.ProdutoId" />
-                                        <input type="hidden" name="usuarioId" value="@Model.Endereco.UsuarioId" />
+                                <!-- Campo de quantidade -->
+                                <div class="input-group border-1 border-secondary" style="max-width: 150px;">
+                                    <div class="border border-secondary rounded">
+                                        <!-- Botão para diminuir quantidade -->
+                                        <button type="button" class="bg-transparent border-0 btnDiminuir" data-produto-id="@produto.ProdutoId">
+                                            <i class="bi bi-dash-circle text-secondary"></i>
+                                        </button>
 
-                                        <button type="submit" name="acao" value="diminuir" class="btn btn-outline-secondary btn-sm">-</button>
-                                        <input type="text" name="Quantidade" class="form-control text-center" value="@produto.Quantidade" style="max-width: 45px;" readonly>
-                                        <button type="submit" name="acao" value="aumentar" class="btn btn-outline-secondary btn-sm">+</button>
-                                    </form>
+                                        <!-- Campo de quantidade, que é somente leitura -->
+                                        <input type="text" name="Quantidade" class="text-center border-0"
+                                               value="@(Model?.Carrinho?.FirstOrDefault(x => x.ProdutoId == produto.ProdutoId)?.Quantidade ?? 0)"
+                                               style="font-size: 1rem; width: 60px;" readonly
+                                               data-produto-id="@produto.ProdutoId" />
+
+                                        <!-- Botão para aumentar quantidade -->
+                                        <button type="button" class="bg-transparent border-0 btnAumentar" data-produto-id="@produto.ProdutoId">
+                                            <i class="bi bi-plus-circle text-secondary"></i>
+                                        </button>
+                                    </div>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 }
             }
-            
         </div>
 
-        <!-- Right Section: Resumo de Compra -->
+        <!-- Seção direita: Resumo de Compra -->
         <div class="col-md-5">
             <h4 class="mb-3 pt-3">Endereço de Envio</h4>
 
-            <!-- Card Principal -->
+            <!-- Card para exibição dos endereços -->
             <div class="card shadow-sm mb-4 mt-2">
                 <div class="card-body">
-                    <!-- Conteúdo Condicional -->
-                    @if (Model.Enderecos != null && Model.Enderecos.Any())
+                    @if (Model?.Enderecos != null && Model.Enderecos.Any())
                     {
                         <h5 class="card-title mb-3">Selecione um Endereço</h5>
                         @foreach (var endereco in Model.Enderecos)
                         {
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="EnderecoId" value="@endereco.EnderecoId" id="endereco_@endereco.EnderecoId" />
-                                <label class="form-check-label" for="endereco_@endereco.EnderecoId">
-                                    <p>@endereco.EnderecoCompleto</p>
-                                </label>
+                            <div class="d-flex justify-content-between mb-2 align-items-start">
+                                <!-- Exibe a lista de endereços cadastrados com radio buttons para selecionar o endereço de envio -->
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="EnderecoId" value="@endereco.EnderecoId" id="endereco_@endereco.EnderecoId" />
+                                    <label class="form-check-label" for="endereco_@endereco.EnderecoId">
+                                        <p>@endereco.EnderecoCompleto</p>
+                                    </label>
+                                </div>
+
+                                <!-- Formulário para remover o endereço -->
+                                <form asp-controller="Endereco" asp-action="RemoverEndereco" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@endereco.EnderecoId" />
+                                    <button type="submit" class="btn btn-link text-dark" title="Remover Endereço">
+                                        <i class="bi bi-trash"></i> <!-- Ícone de lixeira -->
+                                    </button>
+                                </form>
                             </div>
                         }
                     }
                     else
                     {
                         <p class="text-muted">Você ainda não possui endereços cadastrados.</p>
+                        <a href="@Url.Action("AddEndereco", "Endereco")" class="btn btn-outline-dark btn-sm">Adicionar Endereço</a>
                     }
 
-                    <!-- Formulário para Adicionar Novo Endereço -->
+                    <!-- Formulário para adicionar novo endereço -->
                     <div class="mt-1">
                         <h6 class="card-title">Adicionar Novo Endereço</h6>
                         <form asp-controller="Endereco" asp-action="AddEndereco" method="post">
-                            <input type="hidden" name="UsuarioId" value="@Model.Endereco.UsuarioId" />
+                            <input type="hidden" name="UsuarioId" value="@Model?.Endereco?.UsuarioId" />
                             <div class="form-floating mb-2">
+                                <!-- Uso da API AutoComplete do Google -->
                                 <input class="form-control" type="text" name="EnderecoCompleto" id="endereco" asp-for="@Model.Endereco.EnderecoCompleto" placeholder="Digite o endereço completo" required />
                                 <label for="EnderecoCompleto">Endereço Completo</label>
                             </div>
@@ -105,20 +131,26 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Resumo da Compra -->
             <h5 class="mb-4">Resumo da Compra</h5>
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <!-- Itens no carrinho -->
                     <div class="d-flex justify-content-between mb-2">
                         <h6 class="fw-bold">Itens no carrinho:</h6>
-                        <span>@Model?.Carrinho?.Sum(x => x.Quantidade)</span>
+                        <span>@(Model?.Carrinho?.Sum(x => x.Quantidade) ?? 0)</span>
                     </div>
                     <hr>
+                    <!-- Total da compra -->
                     <div class="d-flex justify-content-between mb-3">
                         <h6 class="fw-bold">Total:</h6>
-                        <h6 class="fw-bold">R$ @Model?.Carrinho?.Sum(x => x.Produto.Preco * x.Quantidade).ToString("F2")</h6>
+                        <h6 class="fw-bold">R$ @((Model?.Carrinho?.Sum(x => x.Produto?.Preco * x.Quantidade) ?? 0))</h6>
                     </div>
+
+                    <!-- Botão para prosseguir para pagamento -->
                     <a id="btnProsseguir" asp-controller="Pagamento" asp-action="Pagamento"
-                       class="btn btn-dark w-100" asp-route-id="@Model?.Enderecos?.FirstOrDefault()?.EnderecoId">
+                       class="btn btn-dark w-100" asp-route-id="@(Model?.Enderecos?.FirstOrDefault()?.EnderecoId)">
                         Prosseguir para Pagamento <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -128,67 +160,20 @@
     </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDG0kqBvyaIBJjspyDxSWGaEwbaokw4BNg&libraries=places&callback=initAutocomplete" async defer></script>
-
-<script>
-    // Atualizar o valor do asp-route-id com o EnderecoId selecionado
-    document.querySelectorAll('input[name="EnderecoId"]').forEach(function (input) {
-        input.addEventListener('change', function () {
-            var enderecoId = this.value;
-            var prosseguirLink = document.getElementById('btnProsseguir');
-            prosseguirLink.setAttribute('asp-route-id', enderecoId);
-        });
-    });
-
-    // Adicionar a validação antes de prosseguir para pagamento
-    document.getElementById('btnProsseguir').addEventListener('click', function (e) {
-        var enderecoSelecionado = document.querySelector('input[name="EnderecoId"]:checked');
-
-        // Se nenhum endereço estiver selecionado, impedir a navegação
-        if (!enderecoSelecionado) {
-            e.preventDefault();  // Impede a navegação
-            alert("Por favor, selecione um endereço de envio antes de prosseguir.");
-        }
-    });
-
-    // Funcionalidade de Autocomplete
-    let autocomplete;
-
-    function initAutocomplete() {
-        let inputEndereco = document.getElementById("endereco");
-
-        if (!inputEndereco) {
-            console.error("Campo de endereço não encontrado!");
-            return;
-        }
-
-        autocomplete = new google.maps.places.Autocomplete(inputEndereco, {
-            types: ['address'],
-            componentRestrictions: { country: "BR" }
-        });
-
-        autocomplete.addListener("place_changed", function () {
-            let place = autocomplete.getPlace();
-
-            if (!place.geometry) {
-                console.error("Nenhum detalhe do local foi encontrado.");
-                return;
-            }
-
-            const addressTypes = place.types;
-            if (addressTypes.includes("route")) {
-                inputEndereco.value = place.formatted_address;
-            } else {
-                inputEndereco.value = '';
-                alert("Por favor, selecione um endereço válido de rua.");
-            }
-        });
-
-        inputEndereco.addEventListener('blur', function () {
-            const place = autocomplete.getPlace();
-            if (place.geometry && !place.types.includes("route")) {
-                inputEndereco.value = '';
-            }
-        });
-    }
-</script>
+@section Scripts {
+    <!-- Variável carrinhoVazio indica se o carrinho está vazio ou não, para o javascript carrinho-view.js -->
+    <script>
+        var carrinhoVazio = @((Model?.Carrinho != null && Model.Carrinho.Any()) ? "false" : "true")
+    </script>
+    <script>
+        var googleApiKey = '@Model?.GoogleApiKey'; // Chave da API do Google
+               var script = document.createElement('script');
+               script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=places&callback=initAutocomplete`;
+               script.async = true;
+               script.defer = true;
+               document.head.appendChild(script);
+    </script>
+    <script src="~/js/google-api-endereco.js"></script>
+    <script src="~/js/carrinho-view.js"></script>
+    <script src="~/js/atualizar-quantidade-carrinho.js"></script>
+}

@@ -5,83 +5,141 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
 {
+    // A classe CarrinhoRepositorio é responsável por gerenciar as operações relacionadas ao carrinho de compras de um usuário,
+    // - BuscarCarrinhoDoUsuarioAsync(int usuarioId)
+    // - BuscarProdutoExistenteNoCarrinhoAsync(int produtoId, int usuarioId)
+    // - AddOuRemoverCarrinhoAsync(int produtoId, int usuarioId)
+    // - AtualizarQuantidadeAsync(int produtoId, int usuarioId, int quantidade)
+
     public class CarrinhoRepositorio : ICarrinhoRepositorio
     {
         private readonly BancoContext _context;
-        private readonly IProdutoRepositorio _produtoRepositorio;
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
 
-        public CarrinhoRepositorio(BancoContext context,
-                                    IUsuarioRepositorio usuarioRepositorio,
-                                    IProdutoRepositorio produtoRepositorio)
+        // Injeção de dependência para o contexto do banco de dados e os repositórios de Produto e Usuário
+        public CarrinhoRepositorio(BancoContext context)
         {
             _context = context;
-            _produtoRepositorio = produtoRepositorio;
-            _usuarioRepositorio = usuarioRepositorio;
         }
 
         // Método que retorna o carrinho de um usuário específico
         public async Task<List<CarrinhoModel>> BuscarCarrinhoDoUsuarioAsync(int usuarioId)
         {
-            var carrinho = await _context.Carrinho
-                .Include(x => x.Usuario)
-                .Include(x => x.Produto)
-                .Where(x => x.UsuarioId == usuarioId)
-                .ToListAsync();
-
-            if (!carrinho.Any())
+            try
             {
-                Console.WriteLine("Nenhum item encontrado no carrinho para o usuário de ID " + usuarioId);
-            }
+                // Busca todos os itens no carrinho de um usuário específico, inclui detalhes de usuário e produto
+                var carrinho = await _context.Carrinho
+                    .Include(x => x.Usuario)
+                    .Include(x => x.Produto)
+                    .Where(x => x.UsuarioId == usuarioId)
+                    .ToListAsync();
 
-            return carrinho;
+                // Verifica se não há itens no carrinho
+                if (!carrinho.Any())
+                {
+                    Console.WriteLine("Nenhum item encontrado no carrinho para o usuário de ID " + usuarioId);
+                    return new List<CarrinhoModel>();  // Retorna uma lista vazia
+                }
+
+                return carrinho;
+            }
+            catch (Exception ex)
+            {
+                // Captura exceções, caso ocorra algum erro na busca
+                throw new Exception($"Erro ao buscar o carrinho para o usuário com ID {usuarioId}: {ex.Message}", ex);
+            }
         }
 
         // Método que verifica se um produto já existe no carrinho
-        public async Task<CarrinhoModel> BuscarProdutoExistenteNoCarrinhoAsync(int produtoId, int usuarioId)
+        public async Task<CarrinhoModel?> BuscarProdutoExistenteNoCarrinhoAsync(int produtoId, int usuarioId)
         {
-            return await _context.Carrinho
-                .FirstOrDefaultAsync(x => x.ProdutoId == produtoId && x.UsuarioId == usuarioId);
+            try
+            {
+                // Tenta buscar o produto no carrinho do usuário
+                return await _context.Carrinho
+                    .FirstOrDefaultAsync(x => x.ProdutoId == produtoId && x.UsuarioId == usuarioId);
+
+            }
+            catch (Exception ex)
+            {
+                // Captura exceções, caso ocorra algum erro na busca
+                throw new Exception($"Erro ao verificar produto no carrinho do usuário com ID {usuarioId}: {ex.Message}", ex);
+            }
         }
 
-        // Método que adiciona um produto ao carrinho
+        // Método que adiciona ou remove um produto do carrinho
         public async Task AddOuRemoverCarrinhoAsync(int produtoId, int usuarioId)
         {
-            // Verifica se o produto já está no carrinho
-            var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
+            try
+            {
+                // Verifica se o produto já existe no carrinho do usuário
+                var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
 
-            if (produtoNoCarrinho != null)
-            {
-                // Remove do carrinho se já estiver lá
-                _context.Carrinho.Remove(produtoNoCarrinho);
-            }
-            else
-            {
-                // Adiciona ao carrinho se não estiver
-                var novoProduto = new CarrinhoModel
+                // Se o produto já está no carrinho, remove-o
+                if (produtoNoCarrinho != null)
                 {
-                    ProdutoId = produtoId,
-                    UsuarioId = usuarioId
-                };
+                    _context.Carrinho.Remove(produtoNoCarrinho); // Produto foi removido do carrinho
+                }
+                else
+                {
+                    // Se o produto não está no carrinho, cria um novo registro para adicionar o produto
+                    var novoProduto = new CarrinhoModel
+                    {
+                        ProdutoId = produtoId,
+                        UsuarioId = usuarioId
+                    };
 
-                _context.Carrinho.Add(novoProduto);
+                    _context.Carrinho.Add(novoProduto); // Produto foi adicionado ao carrinho
+                }
+
+                // Salva as alterações no banco de dados
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    // Caso não tenha ocorrido alteração alguma, lança exceção informando
+                    throw new InvalidOperationException("Nenhuma alteração foi realizada no carrinho.");
+                }
             }
-
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                // Captura qualquer erro e lança uma exceção com uma mensagem clara
+                throw new Exception($"Erro ao adicionar ou remover produto no carrinho do usuário com ID {usuarioId}. Detalhes: {ex.Message}", ex);
+            }
         }
 
+
+        // Método que atualiza a quantidade de um produto no carrinho
         public async Task AtualizarQuantidadeAsync(int produtoId, int usuarioId, int quantidade)
         {
-            var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
-
-            if (produtoNoCarrinho == null)
+            try
             {
-                throw new Exception("Produto não encontrado no carrinho");
-            }
+                // Verifica se o produto está no carrinho
+                var produtoNoCarrinho = await BuscarProdutoExistenteNoCarrinhoAsync(produtoId, usuarioId);
 
-            produtoNoCarrinho.Quantidade = quantidade;
-            _context.Carrinho.Update(produtoNoCarrinho);
-            await _context.SaveChangesAsync();
+                // Se o produto não for encontrado, lança uma exceção
+                if (produtoNoCarrinho == null)
+                {
+                    throw new Exception("Produto não encontrado no carrinho");
+                }
+
+                // Atualiza a quantidade do produto no carrinho
+                produtoNoCarrinho.Quantidade = quantidade;
+                _context.Carrinho.Update(produtoNoCarrinho);
+
+                // Salva as alterações no banco de dados
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    // Caso não tenha ocorrido alteração alguma, lança exceção informando
+                    throw new InvalidOperationException("Nenhuma alteração foi realizada no carrinho.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Captura exceções, caso ocorra algum erro na atualização
+                throw new Exception($"Erro ao atualizar a quantidade do produto no carrinho do usuário com ID {usuarioId}: {ex.Message}", ex);
+            }
         }
     }
 }

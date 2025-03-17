@@ -5,43 +5,133 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
 {
+    // A classe PedidoRepositorio é responsável por manipular as operações relacionadas aos pedidos no banco de dados.
+    // Isso inclui as operações:
+    // - BuscarPedidoPorIdAsync(int id) - Para buscar um pedido específico pelo seu ID.
+    // - BuscarTodosOsPedidosAsync() - Para buscar todos os pedidos do banco de dados.
+    // - BuscarTodosOsPedidosDoUsuarioAsync(int usuarioId) - Para buscar todos os pedidos de um usuário específico.
+    // - AddPedidoAsync(PedidoModel pedido) - Para adicionar um novo pedido.
+    // - AtualizarPedidoAsync(PedidoModel pedido) - Para atualizar um pedido existente.
     public class PedidoRepositorio : IPedidoRepositorio
     {
         private readonly BancoContext _context;
 
+        // Construtor que recebe o contexto do banco de dados (BancoContext).
+        // O contexto é injetado para interagir com o banco de dados.
         public PedidoRepositorio(BancoContext context)
         {
             _context = context;
         }
 
-        public async Task<PedidoModel> BuscarPedidoPorIdAsync(int id)
+        // Método para buscar um pedido específico pelo seu ID, incluindo as informações de pagamento.
+        public async Task<PedidoModel?> BuscarPedidoPorIdAsync(int id)
         {
-            var pedido = await _context.Pedidos.Include(e => e.Endereco).Include(p => p.Pagamento).FirstOrDefaultAsync(x => x.PedidoId == id);
+            try
+            {
+                // Utiliza o método Include para carregar as informações de Pagamento relacionadas ao pedido.
+                var pedido = await _context.Pedidos
+                    .Include(p => p.Pagamento)  // Inclui os detalhes do pagamento do pedido.
+                    .FirstOrDefaultAsync(x => x.PedidoId == id);  // Retorna o pedido com o ID fornecido ou null.
 
-            if (pedido == null) throw new Exception("Nenhum pedido encontrado");
+                // Caso o pedido não seja encontrado, lança uma exceção.
+                if (pedido == null) throw new Exception("Nenhum pedido encontrado.");
 
-            return pedido;
+                return pedido;  // Retorna o pedido encontrado.
+            }
+            catch (Exception ex)
+            {
+                // Em caso de erro, lança uma nova exceção com uma mensagem detalhada.
+                throw new Exception($"Erro ao buscar pedido por ID {id}: {ex.Message}", ex);
+            }
         }
 
+        // Método para buscar todos os pedidos no banco de dados, incluindo informações de pagamento e itens do pedido.
+        public async Task<List<PedidoModel>> BuscarTodosOsPedidosAsync()
+        {
+            try
+            {
+                // Retorna todos os pedidos, incluindo informações detalhadas de pagamento e itens do pedido.
+                return await _context.Pedidos
+                    .Include(p => p.Pagamento)  // Inclui informações do pagamento.
+                    .Include(i => i.ItensDoPedido)  // Inclui os itens do pedido.
+                    .ThenInclude(p => p.Produto)  // Inclui os detalhes dos produtos dos itens.
+                    .OrderByDescending(x => x.DataDoPedido)  // Ordena os pedidos pela data em ordem decrescente.
+                    .ToListAsync();  // Converte para lista e retorna os resultados.
+            }
+            catch (Exception ex)
+            {
+                // Em caso de erro, lança uma exceção com a mensagem detalhada.
+                throw new Exception($"Erro ao buscar pedidos: {ex.Message}", ex);
+            }
+        }
+
+        // Método para buscar todos os pedidos de um usuário específico, incluindo as informações de pagamento, itens e produtos.
         public async Task<List<PedidoModel>> BuscarTodosOsPedidosDoUsuarioAsync(int usuarioId)
         {
-            var pedidos = await _context.Pedidos.Include(e => e.Endereco).Include(p => p.Pagamento).Include(i => i.ItensDoPedido).Where(x => x.UsuarioId == usuarioId).ToListAsync();
-
-            if (pedidos == null) throw new Exception("Nenhum pedido encontrado");
-
-            return pedidos;
+            try
+            {
+                // Retorna todos os pedidos de um usuário, incluindo detalhes do pagamento, itens do pedido e produtos.
+                return await _context.Pedidos
+                    .Include(p => p.Pagamento)  // Inclui os detalhes de pagamento.
+                    .Include(i => i.ItensDoPedido)  // Inclui os itens do pedido.
+                    .ThenInclude(p => p.Produto)  // Inclui os produtos dos itens.
+                    .Where(x => x.UsuarioId == usuarioId)  // Filtra os pedidos do usuário com o ID fornecido.
+                    .OrderByDescending(x => x.DataDoPedido)  // Ordena os pedidos pela data em ordem decrescente.
+                    .ToListAsync();  // Converte para lista e retorna.
+            }
+            catch (Exception ex)
+            {
+                // Caso ocorra um erro, lança uma exceção detalhada.
+                throw new Exception($"Erro ao buscar pedidos para o usuário com ID {usuarioId}: {ex.Message}", ex);
+            }
         }
 
+        // Método para adicionar um novo pedido ao banco de dados.
         public async Task AddPedidoAsync(PedidoModel pedido)
         {
-            _context.Pedidos.AddAsync(pedido);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Adiciona o pedido ao contexto de pedidos.
+                await _context.Pedidos.AddAsync(pedido);
+
+                // Tenta salvar as mudanças no banco de dados.
+                var result = await _context.SaveChangesAsync();
+
+                // Se não houver alterações no banco (result == 0), lança uma exceção.
+                if (result == 0)
+                {
+                    throw new Exception("Falha ao adicionar o pedido no banco de dados.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Caso ocorra um erro, lança uma exceção detalhada.
+                throw new Exception($"Erro ao adicionar pedido: {ex.Message}", ex);
+            }
         }
 
+        // Método para atualizar um pedido existente no banco de dados.
         public async Task AtualizarPedidoAsync(PedidoModel pedido)
         {
-            _context.Pedidos.Update(pedido);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Atualiza o pedido no contexto de pedidos.
+                _context.Pedidos.Update(pedido);
+
+                // Tenta salvar as mudanças no banco de dados.
+                var result = await _context.SaveChangesAsync();
+
+                // Se não houver alterações no banco (result == 0), lança uma exceção.
+                if (result == 0)
+                {
+                    throw new Exception("Falha ao atualizar o pedido no banco de dados.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Caso ocorra um erro, lança uma exceção detalhada.
+                throw new Exception($"Erro ao atualizar pedido: {ex.Message}", ex);
+            }
         }
     }
 }

@@ -1,24 +1,32 @@
 ﻿@model HomeViewModel
 
 @{
-    ViewData["Title"] = "Loja";
+    ViewData["Title"] = "Loja"; // Define o título da página
 }
 
+<!-- Seção de banner com frase e formulário de pesquisa -->
 <div class="container-fluid d-flex align-items-center justify-content-center py-5 mb-5"
      style="background-image: url('@Url.Content(Model?.SiteDados?.Banner)'); background-size: cover; background-position: center; height: 400px;">
     <div class="text-center text-light w-50">
-        <h2 class="mb-4">@Model?.SiteDados?.Frase</h2>
-        <div class="input-group mb-3 justify-content-center">
-            <input type="text" class="form-control rounded-start bg-light w-75" placeholder="Pesquise aqui..." required>
-            <button type="button" class="btn btn-dark border-0 rounded-end">
-                <i class="bi bi-search"></i>
-            </button>
-        </div>
+        <!-- Exibe a frase no banner -->
+        <h2 class="mb-4 shadow-lg">@Model?.SiteDados?.Frase</h2>
+
+        <!-- Formulário de pesquisa -->
+        <form id="searchForm" class="d-flex position-relative" role="search">
+            <div class="input-group justify-content-center">
+                <!-- Campo de pesquisa -->
+                <input type="search" class="form-control rounded-start bg-light w-75" id="searchInput" name="termo" placeholder="O que você procura?" required>
+                <button type="button" class="btn btn-dark border-0 rounded-end">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <!-- Dropdown para exibir os resultados da pesquisa -->
+            <div id="searchDropdown" class="dropdown-menu w-100" style="display: none; position: absolute; top: 100%; left: 0;"></div>
+        </form>
     </div>
 </div>
 
-
-
+<!-- Seção de últimas novidades -->
 <div class="container pb-2">
     <a class="text-decoration-none text-dark" asp-controller="Home" asp-action="UltimasNovidades">
         <h3 class="pb-4 fw-bold">ÚLTIMAS NOVIDADES</h3>
@@ -26,13 +34,17 @@
     <div class="row gx-4 gx-lg-4 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
         @if (Model?.UltimasNovidades != null && Model.UltimasNovidades.Any())
         {
+            <!-- Exibe as 4 últimas novidades -->
             foreach (var produto in Model.UltimasNovidades.Take(4))
             {
                 <div class="col mb-5">
                     <div class="card h-100 shadow text-center">
+                        <!-- Link para a página de produto -->
                         <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
                             <div class="position-relative">
+                                <!-- Imagem do produto -->
                                 <img class="card-img-top" src="@Url.Content(produto.ImagemUrl)" alt="@produto.NomeProduto" style="object-fit: cover; height: 200px;" />
+                                <!-- Badge indicando novo produto -->
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     NEW
                                 </span>
@@ -47,15 +59,19 @@
         }
     </div>
 </div>
+
+<!-- Seção de categorias -->
 <div class="container pb-4">
     <h3 class="pb-4 fw-bold">TOP CATEGORIAS</h3>
     <div class="row gx-4 gx-lg-3 justify-content-center">
         @if (Model?.Produtos != null && Model.Produtos.Any())
         {
+            <!-- Exibe as 3 primeiras categorias -->
             foreach (var produto in Model.Produtos.Take(3))
             {
                 <div class="col-md-4 col-12 mb-4">
                     <div class="card text-white border-0 shadow overflow-hidden position-relative">
+                        <!-- Link para a página de categoria -->
                         <a class="text-light" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@produto.Categoria">
                             <img src="@Url.Content(produto.ImagemUrl)" class="card-img img-fluid object-fit-cover" alt="@produto.Categoria" style="height: 240px; width: 360px">
                             <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));">
@@ -68,8 +84,9 @@
         }
     </div>
 </div>
+
+<!-- Seção de produtos -->
 <div class="container pb-5">
-    <!-- Título da seção -->
     <a class="text-decoration-none text-dark mb-5 text-start py-3" asp-controller="Home" asp-action="TodosOsProdutos">
         <h3 class="fw-bold text-uppercase text-start">Nossos Produtos</h3>
     </a>
@@ -78,7 +95,8 @@
     <div class="row row-cols-1 row-cols-md-3 g-5 pt-5">
         @if (Model?.Produtos != null && Model.Produtos.Any())
         {
-            foreach (var produto in @Model.Produtos.Take(9))
+            <!-- Exibe os 9 primeiros produtos -->
+            foreach (var produto in @Model.Produtos.Take(12))
             {
                 <div class="col">
                     <div class="card h-100 border-0 rounded-4 shadow position-relative">
@@ -92,10 +110,9 @@
                                 </div>
                                 <p class="card-text text-muted text-start" style="font-size: 0.9rem;">@produto.Descricao</p>
                             </div>
-
                         </a>
 
-                        <!-- Botões dentro de uma div com fundo claro e linha separadora -->
+                        <!-- Botões para adicionar aos favoritos e carrinho -->
                         <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
                             <div class="d-flex flex-column gap-2">
                                 @if (!Model.UsuarioLogado)
@@ -104,15 +121,14 @@
                                     <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
                                         <i class="bi bi-heart fs-5"></i>
                                     </a>
-
                                     <div class="border-top mt-1"></div>
-
                                     <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
                                         <i class="bi bi-cart3 fs-5"></i>
                                     </a>
                                 }
                                 else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
                                 {
+                                    <!-- Caso o usuário esteja logado e seja cliente -->
                                     <div class="d-flex flex-column gap-2">
                                         <button type="button"
                                                 class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
@@ -131,7 +147,6 @@
                                 }
                             </div>
                         </div>
-
                     </div>
                 </div>
             }
@@ -139,27 +154,34 @@
     </div>
 </div>
 
+<!-- Seção de inscrição na newsletter -->
 <div class="container-fluid d-flex align-items-center justify-content-center mt-3 bg-light px-5 py-5" style="min-height: 350px;">
     <div class="row w-75">
         <div class="col-12 text-center">
             <h3 class="mb-3 fw-bolder">Inscreva-se na nossa Newsletter!</h3>
-            <form>
-                <p class="mb-3 text-muted">
-                    Esteja sempre atualizado e aproveite promoções exclusivas diretamente no seu e-mail.
-                </p>
-                <div class="input-group mb-3">
-                    <input type="email" class="form-control w-75" placeholder="Digite seu e-mail" required>
-                    <button type="submit" class="btn btn-dark">
-                        <i class="bi bi-send"></i>
-                    </button>
-                </div>
-                <div class="form-check d-flex justify-content-center">
-                    <input type="checkbox" class="form-check-input" id="authorizeCheck" required>
-                    <label class="form-check-label ms-1" for="authorizeCheck">
-                        Eu autorizo o envio de e-mails promocionais.
-                    </label>
-                </div>
-            </form>
+            <p class="mb-3 text-muted">
+                Esteja sempre atualizado e aproveite promoções exclusivas diretamente no seu e-mail.
+            </p>
+            <div class="input-group mb-3">
+                <input type="email" id="emailInput" class="form-control w-75" placeholder="Digite seu e-mail" required>
+                <button id="enviarNewsletter" class="btn btn-dark">
+                    <i class="bi bi-send"></i>
+                </button>
+                <div id="newsletterMessage"></div>
+            </div>
+            <div class="form-check d-flex justify-content-center">
+                <input type="checkbox" class="form-check-input" id="authorizeCheck" required>
+                <label class="form-check-label ms-1" for="authorizeCheck">
+                    Eu autorizo o envio de e-mails promocionais.
+                </label>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Seção de scripts -->
+@section Scripts
+{
+    <script src="~/js/barra-de-pesquisa.js"></script>
+    <script src="~/js/envio-newsletter.js"></script>
+}

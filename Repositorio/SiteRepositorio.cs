@@ -1,62 +1,62 @@
 ﻿using DigitalStore.Data;
-using DigitalStore.Helper;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
 {
+    // Classe responsável por acessar e manipular os dados do site no banco de dados.
+    // BuscarDadosDoSiteAsync() - Retorna os dados gerais do site, como nome, imagem e frase de destaque.
+    // AtualizarSiteAsync(SiteModel site) - Atualiza os dados do site.
     public class SiteRepositorio : ISiteRepositorio
     {
         private readonly BancoContext _context;
-        private readonly IProdutoRepositorio _produtoRepositorio;
-        private readonly ICaminhoImagem _caminhoImagem;
 
-        public SiteRepositorio(BancoContext context, IProdutoRepositorio produtoRepositorio, ICaminhoImagem caminhoImagem)
+        // Construtor que recebe o contexto do banco de dados.
+        public SiteRepositorio(BancoContext context)
         {
             _context = context;
-            _produtoRepositorio = produtoRepositorio;
-            _caminhoImagem = caminhoImagem;
         }
 
-        // Método para buscar os dados do site
-        public async Task<SiteModel> BuscarDadosDoSiteAsync()
+        // Busca os dados do site no banco de dados.
+        public async Task<SiteModel?> BuscarDadosDoSiteAsync()
         {
-            return await _context.Site.FirstOrDefaultAsync();
+            try
+            {
+                var site = await _context.Site.FirstOrDefaultAsync();
+
+                if (site == null)
+                    throw new Exception("Nenhum dado do site encontrado no banco de dados.");
+
+                return site;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao buscar dados do site: {ex.Message}", ex);
+            }
         }
 
-        // Método para atualizar os dados do site
-        public async Task AtualizarSite(SiteModel site, List<IFormFile?> banners)
+        // Atualiza os dados do site no banco de dados.
+        public async Task AtualizarSiteAsync(SiteModel site)
         {
-            var siteDb = await BuscarDadosDoSiteAsync();
-
-            if (siteDb == null)
+            try
             {
-                throw new Exception("Site não encontrado no banco de dados.");
+                var siteDb = await BuscarDadosDoSiteAsync();
+
+                // Atualiza apenas os campos necessários
+                siteDb.NomeSite = site.NomeSite;
+                siteDb.Banner = site.Banner;
+                siteDb.Frase = site.Frase;
+
+                // Salva as alterações e verifica se a atualização ocorreu
+                var resultado = await _context.SaveChangesAsync();
+                if (resultado == 0)
+                    throw new Exception("Nenhuma alteração foi realizada ao atualizar os dados do site.");
             }
-
-            List<string> caminhosBanners = new List<string>();
-
-            if (banners != null)
+            catch (Exception ex)
             {
-                // Atualiza as imagens se fornecidas
-                foreach (var banner in banners)
-                {
-                    if (banner != null)
-                    {
-                        var caminhoBanner = await _caminhoImagem.GerarCaminhoArquivoAsync(banner);
-                        caminhosBanners.Add(caminhoBanner);
-                    }
-                }
+                throw new Exception($"Erro ao atualizar os dados do site: {ex.Message}", ex);
             }
-
-            // Atualiza os campos do site
-            siteDb.NomeSite = site.NomeSite;
-            siteDb.Frase = site.Frase;
-
-            // Atualiza no banco de dados
-            _context.Site.Update(siteDb);
-            await _context.SaveChangesAsync();
         }
     }
 }

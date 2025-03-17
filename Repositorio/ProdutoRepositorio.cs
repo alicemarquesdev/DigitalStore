@@ -1,120 +1,212 @@
 ﻿using DigitalStore.Data;
-using DigitalStore.Helper;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalStore.Repositorio
 {
+    // Classe responsável por manipular operações relacionadas aos produtos no banco de dados.
+    // Métodos:
+    // - BuscarCategoriasAsync() - Retorna uma lista com todas as categorias distintas de produtos.
+    // - BuscarProdutosPorCategoriaAsync(string categoria) - Retorna uma lista de produtos filtrados por categoria.
+    // - BuscarProdutosBarraDePesquisaAsync(string termo) - Retorna uma lista de produtos filtrados por um termo de pesquisa.
+    // - BuscarProdutoPorIdAsync(int id) - Busca um produto específico pelo ID.
+    // - BuscarTodosOsProdutosAsync() - Retorna uma lista com todos os produtos cadastrados.
+    // - BuscarUltimosProdutosAdicionadosAsync() - Retorna uma lista com os últimos produtos adicionados.
+    // - AddProdutoAsync(ProdutoModel produto) - Adiciona um novo produto ao banco de dados.
+    // - AtualizarProdutoAsync(ProdutoModel produto) - Atualiza os dados de um produto existente.
+    // - RemoverProdutoAsync(ProdutoModel produto) - Remove um produto do banco de dados.
+
     public class ProdutoRepositorio : IProdutoRepositorio
     {
         private readonly BancoContext _context;
-        private readonly ICaminhoImagem _caminhoImagem;
 
-        public ProdutoRepositorio(BancoContext context, ICaminhoImagem caminhoImagem)
+        // Construtor que recebe o contexto do banco de dados.
+        public ProdutoRepositorio(BancoContext context)
         {
             _context = context;
-            _caminhoImagem = caminhoImagem;
         }
 
-        // Método para buscar categorias distintas de produtos
+        // Retorna uma lista com todas as categorias distintas de produtos.
         public async Task<List<string>> BuscarCategoriasAsync()
         {
-            var categorias = await _context.Produtos.Select(x => x.Categoria).Distinct().ToListAsync();
-
-            return categorias;
+            try
+            {
+                // Seleciona a categoria de cada produto e remove duplicatas.
+                return await _context.Produtos
+                    .Select(x => x.Categoria)
+                    .Distinct()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar as categorias.
+                throw new Exception($"Erro ao buscar categorias: {ex.Message}", ex);
+            }
         }
 
-        // Método para buscar produtos por categoria
+        // Retorna uma lista de produtos filtrados por categoria.
         public async Task<List<ProdutoModel>> BuscarProdutosPorCategoriaAsync(string categoria)
         {
-            return await _context.Produtos
-                .Where(c => c.Categoria == categoria)
-                .ToListAsync();
+            try
+            {
+                // Filtra os produtos pelo nome da categoria.
+                return await _context.Produtos
+                    .Where(c => c.Categoria == categoria)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar os produtos por categoria.
+                throw new Exception($"Erro ao buscar produtos pela categoria {categoria}: {ex.Message}", ex);
+            }
         }
 
-        // Método para buscar um produto por ID
-        public async Task<ProdutoModel> BuscarProdutoPorIdAsync(int id)
+        // Retorna uma lista de produtos filtrados por um termo de pesquisa (nome ou categoria).
+        public async Task<List<ProdutoModel>> BuscarProdutosBarraDePesquisaAsync(string termo)
         {
-            return await _context.Produtos
-                .FirstOrDefaultAsync(x => x.ProdutoId == id);
+            try
+            {
+                // Filtra produtos cujos nomes ou categorias contêm o termo informado.
+                return await _context.Produtos
+                    .Where(x => x.NomeProduto.Contains(termo) || x.Categoria.Contains(termo))
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao buscar produtos pela barra de pesquisa: {ex.Message}", ex);
+            }
         }
 
-        // Método para buscar todos os produtos
-        public async Task<List<ProdutoModel>> BuscarTodosProdutosAsync()
+        // Busca um produto específico pelo ID.
+        public async Task<ProdutoModel?> BuscarProdutoPorIdAsync(int id)
         {
-            return await _context.Produtos.ToListAsync();
+            try
+            {
+                // Retorna o primeiro produto que corresponde ao ID informado.
+                return await _context.Produtos
+                    .FirstOrDefaultAsync(x => x.ProdutoId == id);
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar o produto pelo ID.
+                throw new Exception($"Erro ao buscar o produto com ID {id}: {ex.Message}", ex);
+            }
         }
 
-        // Método para buscar os últimos produtos adicionados
-        public async Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionados()
+        // Retorna uma lista com todos os produtos cadastrados.
+        public async Task<List<ProdutoModel>> BuscarTodosOsProdutosAsync()
         {
-            return await _context.Produtos
-                .OrderByDescending(p => p.DataCadastro)
-                .ToListAsync();
+            try
+            {
+                // Retorna todos os produtos cadastrados no banco.
+                return await _context.Produtos.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar todos os produtos.
+                throw new Exception($"Erro ao buscar todos os produtos: {ex.Message}", ex);
+            }
         }
 
-        // Método para adicionar um novo produto
+        // Retorna uma lista com os últimos produtos adicionados, ordenados por data de cadastro.
+        public async Task<List<ProdutoModel>> BuscarUltimosProdutosAdicionadosAsync()
+        {
+            try
+            {
+                // Ordena os produtos da data mais recente para a mais antiga.
+                return await _context.Produtos
+                    .OrderByDescending(p => p.DataCadastro)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar os últimos produtos adicionados.
+                throw new Exception($"Erro ao buscar os últimos produtos adicionados: {ex.Message}", ex);
+            }
+        }
+
+        // Adiciona um novo produto ao banco de dados e verifica se a inserção foi bem-sucedida.
         public async Task AddProdutoAsync(ProdutoModel produto)
         {
             try
             {
-                              // Adiciona o produto ao banco de dados
-                await _context.Produtos.AddAsync(produto);
-                await _context.SaveChangesAsync();
+                // Adiciona o produto ao contexto.
+                _context.Produtos.Add(produto);
+
+                // Salva as alterações no banco e verifica se foi salvo.
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
+                {
+                    // Lança uma exceção caso nenhum produto tenha sido adicionado.
+                    throw new Exception($"Nenhum produto adicionado");
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao adicionar o produto: " + ex.Message);
+                // Lança uma exceção detalhando o erro ocorrido ao tentar adicionar o produto.
+                throw new Exception($"Erro ao adicionar o produto: {ex.Message}", ex);
             }
         }
 
-        // Método para atualizar um produto
-        public async Task AtualizarProdutoAsync(ProdutoModel produto, IFormFile? novaImagem)
+        // Atualiza os dados de um produto existente, verificando se foi encontrado no banco.
+        public async Task AtualizarProdutoAsync(ProdutoModel produto)
         {
-            ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
-
-            if (produtoDb == null)
-                throw new Exception("Produto não encontrado para atualização.");
-
-            produtoDb.NomeProduto = produto.NomeProduto;
-            produtoDb.Descricao = produto.Descricao;
-            produtoDb.Preco = produto.Preco;
-            produtoDb.Categoria = produto.Categoria;
-            produtoDb.QuantidadeEstoque = produto.QuantidadeEstoque;
-
-            if (novaImagem != null)
+            try
             {
-                // Remover a imagem antiga, se necessário
-                if (!string.IsNullOrEmpty(produtoDb.ImagemUrl))
+                // Busca o produto pelo ID antes de atualizar.
+                ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
+
+                if (produtoDb == null)
+                    // Lança uma exceção caso o produto não seja encontrado.
+                    throw new Exception("Produto não encontrado para atualização.");
+
+                // Atualiza os dados do produto existente.
+                produtoDb.NomeProduto = produto.NomeProduto;
+                produtoDb.Descricao = produto.Descricao;
+                produtoDb.Preco = produto.Preco;
+                produtoDb.Categoria = produto.Categoria;
+                produtoDb.QuantidadeEstoque = produto.QuantidadeEstoque;
+                produtoDb.ImagemUrl = produto.ImagemUrl;
+
+                // Marca o produto como atualizado no contexto.
+                _context.Produtos.Update(produtoDb);
+
+                // Salva as alterações e verifica se houve atualização.
+                var result = await _context.SaveChangesAsync();
+
+                if (result == 0)
                 {
-                    var caminhoAntigo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", produtoDb.ImagemUrl.TrimStart('~', '/').Replace("/", "\\"));
-                    if (File.Exists(caminhoAntigo))
-                    {
-                        File.Delete(caminhoAntigo);
-                    }
+                    // Lança uma exceção caso nenhum produto tenha sido atualizado.
+                    throw new Exception("Nenhum produto atualizado");
                 }
-
-                // Gerar o novo caminho da imagem
-                var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(novaImagem);
-                produtoDb.ImagemUrl = caminhoImagem;
             }
-
-            // Atualiza o produto no banco de dados
-            _context.Produtos.Update(produtoDb);
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar atualizar o produto.
+                throw new Exception($"Erro ao atualizar o produto: {ex.Message}", ex);
+            }
         }
 
-        // Método para remover um produto
-        public async Task<bool> RemoverProdutoAsync(int id)
+        // Remove um produto do banco de dados e retorna se a operação foi bem-sucedida.
+        public async Task<bool> RemoverProdutoAsync(ProdutoModel produto)
         {
-            ProdutoModel produto = await BuscarProdutoPorIdAsync(id);
+            try
+            {
+                // Remove o produto do contexto.
+                _context.Produtos.Remove(produto);
 
-            if (produto == null) return false;
+                // Salva as alterações no banco e retorna se a remoção foi bem-sucedida.
+                var resultado = await _context.SaveChangesAsync();
 
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
-            return true;
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção detalhando o erro ocorrido ao tentar remover o produto.
+                throw new Exception($"Erro ao remover o produto com ID: {ex.Message}", ex);
+            }
         }
     }
 }
