@@ -50,8 +50,8 @@ namespace DigitalStore.Migrations
 
                     b.Property<string>("EnderecoCompleto")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
@@ -60,7 +60,7 @@ namespace DigitalStore.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Endereco");
+                    b.ToTable("Enderecos");
                 });
 
             modelBuilder.Entity("DigitalStore.Models.FavoritosModel", b =>
@@ -90,8 +90,8 @@ namespace DigitalStore.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("PrecoUnidadeItem")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("QuantidadeItem")
                         .HasColumnType("int");
@@ -127,7 +127,7 @@ namespace DigitalStore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("PagamentoId");
 
@@ -148,13 +148,11 @@ namespace DigitalStore.Migrations
                     b.Property<DateTime>("DataDoPedido")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EnderecoModelEnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PagamentoId")
+                    b.Property<int>("PagamentoId")
                         .HasColumnType("int");
 
                     b.Property<int>("StatusDoPedido")
@@ -164,10 +162,6 @@ namespace DigitalStore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PedidoId");
-
-                    b.HasIndex("EnderecoId");
-
-                    b.HasIndex("EnderecoModelEnderecoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -196,7 +190,6 @@ namespace DigitalStore.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ImagemUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NomeProduto")
@@ -205,12 +198,9 @@ namespace DigitalStore.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("QuantidadeEstoque")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ProdutoId");
@@ -262,10 +252,16 @@ namespace DigitalStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsuarioId"));
 
+                    b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<int>("Genero")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -365,29 +361,12 @@ namespace DigitalStore.Migrations
 
             modelBuilder.Entity("DigitalStore.Models.PedidoModel", b =>
                 {
-                    b.HasOne("DigitalStore.Models.EnderecoModel", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DigitalStore.Models.EnderecoModel", null)
-                        .WithMany("Pedido")
-                        .HasForeignKey("EnderecoModelEnderecoId");
-
                     b.HasOne("DigitalStore.Models.UsuarioModel", "Usuario")
                         .WithMany("Pedido")
                         .HasForeignKey("UsuarioId")
                         .IsRequired();
 
-                    b.Navigation("Endereco");
-
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("DigitalStore.Models.EnderecoModel", b =>
-                {
-                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("DigitalStore.Models.PedidoModel", b =>

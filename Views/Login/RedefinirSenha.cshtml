@@ -26,10 +26,11 @@
                     </div>
 
                     <!-- Formulário para enviar o e-mail para redefinição de senha -->
-                    <form asp-controller="Login" asp-action="EnviarLinkParaRedefinirSenha" method="post">
+                    <form asp-controller="Login" asp-action="EnviarLinkParaRedefinirSenha" method="post" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerText = 'Enviando...';">
+                        
                         <!-- Campo de e-mail -->
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="inputEmail" type="email" asp-for="Email" />
+                            <input class="form-control" id="inputEmail" type="email" asp-for="Email" maxlength="100"/>
                             <label for="inputEmail">Email</label>
                             <!-- Mensagem de erro para o campo Email -->
                             <span class="text-danger"> @Html.ValidationMessageFor(x => x.Email) </span>

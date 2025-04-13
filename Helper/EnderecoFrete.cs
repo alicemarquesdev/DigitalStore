@@ -54,6 +54,7 @@ namespace DigitalStore.Helper
                 foreach (var regiao in regioes)
                 {
                     if (regiao.Value.Contains(estado))
+                    if (regiao.Value.Contains(estado))
                     {
                         return precos[regiao.Key]; // Retorna o preço do frete da região
                     }
@@ -72,7 +73,7 @@ namespace DigitalStore.Helper
         private async Task<string> BuscarEstadoDoEnderecoAsync(string endereco)
         {
             // URL da API do Google Geocoding
-            string url = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(endereco)}&key=AIzaSyDG0kqBvyaIBJjspyDxSWGaEwbaokw4BNg";
+            string url = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(endereco)}&key={_googleAPIKey}";
 
             using (var client = new HttpClient())
             {

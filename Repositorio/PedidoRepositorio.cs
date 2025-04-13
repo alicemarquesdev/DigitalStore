@@ -15,12 +15,14 @@ namespace DigitalStore.Repositorio
     public class PedidoRepositorio : IPedidoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<PedidoRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados (BancoContext).
         // O contexto é injetado para interagir com o banco de dados.
-        public PedidoRepositorio(BancoContext context)
+        public PedidoRepositorio(BancoContext context, ILogger<PedidoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método para buscar um pedido específico pelo seu ID, incluindo as informações de pagamento.
@@ -29,19 +31,15 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Utiliza o método Include para carregar as informações de Pagamento relacionadas ao pedido.
-                var pedido = await _context.Pedidos
-                    .Include(p => p.Pagamento)  // Inclui os detalhes do pagamento do pedido.
-                    .FirstOrDefaultAsync(x => x.PedidoId == id);  // Retorna o pedido com o ID fornecido ou null.
-
-                // Caso o pedido não seja encontrado, lança uma exceção.
-                if (pedido == null) throw new Exception("Nenhum pedido encontrado.");
-
-                return pedido;  // Retorna o pedido encontrado.
+                return await _context.Pedidos
+                     .Include(p => p.Pagamento)  // Inclui os detalhes do pagamento do pedido.
+                     .FirstOrDefaultAsync(x => x.PedidoId == id);  // Retorna o pedido com o ID fornecido ou null.
             }
             catch (Exception ex)
             {
                 // Em caso de erro, lança uma nova exceção com uma mensagem detalhada.
-                throw new Exception($"Erro ao buscar pedido por ID {id}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar pedido com ID.");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -61,7 +59,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, lança uma exceção com a mensagem detalhada.
-                throw new Exception($"Erro ao buscar pedidos: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar todos os pedidos.");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -82,7 +81,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Caso ocorra um erro, lança uma exceção detalhada.
-                throw new Exception($"Erro ao buscar pedidos para o usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar pedidos do usuário com ID");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -106,7 +106,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Caso ocorra um erro, lança uma exceção detalhada.
-                throw new Exception($"Erro ao adicionar pedido: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar pedido.");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -130,7 +131,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Caso ocorra um erro, lança uma exceção detalhada.
-                throw new Exception($"Erro ao atualizar pedido: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao atualizar pedido.");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
     }

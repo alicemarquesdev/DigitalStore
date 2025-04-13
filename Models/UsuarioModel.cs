@@ -37,13 +37,11 @@ namespace DigitalStore.Models
         public required GeneroEnum Genero { get; set; }
 
         // Perfil do usuário
-        [Required(ErrorMessage = "Informe o perfil.")]
-        public PerfilEnum Perfil { get; set; }
+        public PerfilEnum Perfil { get; set; } = PerfilEnum.Cliente;
 
         // Senha do usuário 
         [Required(ErrorMessage = "Digite a nova senha.")]
-        [StringLength(20, MinimumLength = 8, ErrorMessage = "A senha deve ter entre 8 e 20 caracteres.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,20}$", ErrorMessage = "A senha deve ter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,20}$", ErrorMessage = "A senha deve ter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial. No minimo 8 e no maximo 20 caracteres.")]
         public required string Senha { get; set; }
 
         // Lista de carrinhos do usuário (relacionamento com CarrinhoModel)

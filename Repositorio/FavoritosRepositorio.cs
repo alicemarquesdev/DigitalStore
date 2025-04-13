@@ -12,10 +12,12 @@ namespace DigitalStore.Repositorio
     public class FavoritosRepositorio : IFavoritosRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<FavoritosRepositorio> _logger;
 
-        public FavoritosRepositorio(BancoContext context)
+        public FavoritosRepositorio(BancoContext context, ILogger<FavoritosRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método que retorna todos os produtos favoritos pelo usuário.
@@ -32,7 +34,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção com a mensagem de erro
-                throw new Exception($"Erro ao buscar favoritos do usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar favoritos do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao buscar favoritos.");
             }
         }
 
@@ -47,7 +50,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção com a mensagem de erro
-                throw new Exception($"Erro ao verificar produto nos favoritos do usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao verificar produto nos favoritos do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao verificar produto nos favoritos.");
             }
         }
 
@@ -87,7 +91,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção com a mensagem de erro
-                throw new Exception($"Erro ao adicionar/remover produto nos favoritos do usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar/remover produto nos favoritos do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao adicionar/remover produto nos favoritos.");
             }
         }
     }

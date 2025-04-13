@@ -7,16 +7,16 @@
 <div class="container my-5">
     <h2 class="mb-4">Personalização do Site</h2>
 
-    <form method="post" enctype="multipart/form-data" asp-action="AtualizarSiteAsync" asp-controller="Site">
+    <form method="post" enctype="multipart/form-data" asp-action="AtualizarSite" asp-controller="Site">
         <div class="card shadow-sm mb-4">
      
             <div class="card-body">
                 <!-- Nome do Site -->
                 <div class="mb-4">
                     <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
-                    <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" required>
+                    <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" maxlength="20" required>
                     <span asp-validation-for="NomeSite" class="text-danger"></span>
-                    <span>Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos. A imagem não pode exceder o tamanho de 1MB.</span>
+                    <small class="text-danger">Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos.</small>
                 </div>
 
                 <!-- Banner -->
@@ -33,7 +33,7 @@
                 <!-- Frase da Home Page -->
                 <div class="mb-3">
                     <label asp-for="Frase" class="form-label fw-bold">Digite a frase para a página inicial:</label>
-                    <textarea asp-for="Frase" rows="3" class="form-control" placeholder="Frase que aparece na home"></textarea>
+                    <textarea asp-for="Frase" rows="3" class="form-control" maxlength="40" ></textarea>
                     <span asp-validation-for="Frase" class="text-danger"></span>
                 </div>
 

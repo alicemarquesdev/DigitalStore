@@ -1,4 +1,5 @@
-﻿using DigitalStore.Helper.Interfaces;
+﻿using DigitalStore.Filters;
+using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using DigitalStore.ViewModels;
@@ -11,6 +12,7 @@ namespace DigitalStore.Controllers
     // - AddProduto: Adiciona um novo produto ao estoque.
     // - AtualizarProduto: Atualiza os dados de um produto existente.
     // - RemoverProduto: Remove um produto do estoque.
+    [PaginaAdmin]
     public class ProdutoController : Controller
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
@@ -64,41 +66,43 @@ namespace DigitalStore.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduto(ProdutoModel produto, IFormFile imagem)
         {
-
-            // Verifica se a imagem foi enviada corretamente
-            if (imagem == null || imagem.Length == 0)
-            {
-                throw new ArgumentException("A imagem não foi enviada corretamente!");
-            }
-
-            // Processa a imagem e gera o caminho
-            var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(imagem);
-            if (caminhoImagem == null || caminhoImagem.Length == 0)
-            {
-                throw new ArgumentException("caminho da imagem não foi enviada corretamente!");
-            }
-
-            // Adiciona o caminho da imagem ao produto
-            produto.ImagemUrl = caminhoImagem;
-
             try
             {
+                // Verifica se a imagem foi enviada corretamente
+                if (imagem == null || imagem.Length == 0)
+                {
+                    TempData["Alerta"] = "A imagem não foi enviada!";
+                    return RedirectToAction("GerenciamentoProdutos", produto);
+                }
+            
+                // Processa a imagem e gera o caminho
+                var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(imagem);
+                if (caminhoImagem == null || caminhoImagem.Length == 0)
+                {
+                    throw new Exception("caminho da imagem não foi enviada corretamente!");
+                }
+
+                // Adiciona o caminho da imagem ao produto
+                produto.ImagemUrl = caminhoImagem;
+
+
                 if (ModelState.IsValid)
                 {
                     await _produtoRepositorio.AddProdutoAsync(produto);
                     TempData["Alerta"] = "Produto adicionado com sucesso!";
                     return RedirectToAction("GerenciamentoProdutos", "Produto");
                 }
+
                 TempData["Alerta"] = "Verifique os dados do produto, houve um erro ao tentar adicionar.";
-                return RedirectToAction("GerenciamentoProdutos", "Produto");
+                return RedirectToAction("GerenciamentoProdutos", produto);
             }
             catch (Exception ex)
             {
                 // Captura erros e exibe a mensagem
-                TempData["Alerta"] = $"Erro ao adicionar o produto: {ex.Message}";
+                _logger.LogError(ex, "Erro ao adicionar o produto");
+                TempData["Alerta"] = "Erro ao adicionar o produto, tente novamente";
+                return RedirectToAction("GerenciamentoProdutos", produto);
             }
-
-            return RedirectToAction("GerenciamentoProdutos", "Produto");
         }
 
 
@@ -129,7 +133,7 @@ namespace DigitalStore.Controllers
                         }
 
                         // Remover a imagem antiga, se necessário
-                       await _caminhoImagem.RemoverImagemAntiga(produtoDb.ImagemUrl);
+                        await _caminhoImagem.RemoverImagemAntiga(produtoDb.ImagemUrl);
 
                         // Atualiza a imagem do produto com o novo caminho
                         produtoDb.ImagemUrl = caminhoImagem;
@@ -143,6 +147,8 @@ namespace DigitalStore.Controllers
                     produtoDb.QuantidadeEstoque = viewModel.Produto.QuantidadeEstoque;
 
                     await _produtoRepositorio.AtualizarProdutoAsync(produtoDb);
+
+                    TempData["Alerta"] = "Produto atualizado com sucesso!";
 
                     // Após a atualização, redireciona para a página de gerenciamento de produtos
                     return RedirectToAction("GerenciamentoProdutos");
@@ -207,7 +213,7 @@ namespace DigitalStore.Controllers
                 _logger.LogError(ex, "Erro ao remover produto.");
 
                 // Adiciona uma mensagem de erro para ser exibida na próxima requisição
-                TempData["Alerta"] = $"Desculpe, houve um erro ao tentar remover o produto";
+                TempData["Alerta"] = "Desculpe, houve um erro ao tentar remover o produto";
 
                 // Redireciona o usuário de volta para a página de gerenciamento de produtos
                 return RedirectToAction("GerenciamentoProdutos", "Produto");

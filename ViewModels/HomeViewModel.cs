@@ -13,10 +13,6 @@ namespace DigitalStore.ViewModels
         // Pode ser usado para personalizar a interface dependendo do tipo de usuário (cliente ou admin)
         public bool PerfilUsuarioCliente { get; set; }
 
-        // Lista de categorias de produtos disponíveis no sistema
-        // Pode ser usada para exibir categorias como filtros ou opções de navegação na página inicial
-        public List<string> Categorias { get; set; } = new List<string>();
-
         // Produto específico que pode ser destacado ou exibido na página inicial
         // Usado quando é necessário exibir um único produto com mais detalhes
         public ProdutoModel? Produto { get; set; }
@@ -36,9 +32,5 @@ namespace DigitalStore.ViewModels
 
         // Lista de "últimas novidades" que podem ser exibidas como produtos recentes ou lançamentos
         public List<ProdutoModel> UltimasNovidades { get; set; } = new List<ProdutoModel>();
-
-        // Novos campos para paginação
-        public int PaginaAtual { get; set; }
-        public int TotalPaginas { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DigitalStore.Helper;
+﻿using DigitalStore.Filters;
+using DigitalStore.Helper;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using DigitalStore.ViewModels;
@@ -15,6 +16,7 @@ namespace DigitalStore.Controllers
         - (POST) AddEndereco(EnderecoModel endereco): Adiciona um novo endereço para o usuário, com verificações de validade.
         - (POST) RemoverEndereco(int id): Remove um endereço baseado no ID do endereço.
     */
+    [PaginaCliente]
     public class EnderecoController : Controller
     {
         // Declaração das dependências injetadas no controlador

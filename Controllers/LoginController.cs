@@ -90,6 +90,14 @@ namespace DigitalStore.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    var emailExistente = await _usuarioRepositorio.BuscarUsuarioExistenteAsync(usuario.Email);
+                    // Verifica se o e-mail já está cadastrado.
+                    if (emailExistente != null)
+                    {
+                        TempData["Alerta"] = "E-mail já cadastrado. Tente novamente com outro e-mail.";
+                        return View(usuario); // Retorna para a tela de criação caso o e-mail já exista.
+                    }
+
                     // Cria o usuário no repositório e envia um e-mail de boas-vindas.
                     await _usuarioRepositorio.AddUsuarioAsync(usuario);
                     TempData["Alerta"] = "O usuário foi criado com sucesso!";
@@ -179,7 +187,7 @@ namespace DigitalStore.Controllers
 
                             if (senhaAlterada)
                             {
-                                TempData["Alerta"] = $"Enviamos para seu e-mail cadastrado uma nova senha.";
+                                TempData["Alerta"] = "Enviamos uma nova senha para o seu e-mail cadastrado. Verifique sua caixa de entrada e também o spam.";
                                 return RedirectToAction("Login", "Login"); // Redireciona para a tela de login após a redefinição.
                             }
                         }

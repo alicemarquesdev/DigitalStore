@@ -1,7 +1,10 @@
 ﻿using DigitalStore.Enums;
+using DigitalStore.Filters;
 using DigitalStore.Helper.Interfaces;
 using DigitalStore.Repositorio.Interfaces;
+using DigitalStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace DigitalStore.Controllers
 {
@@ -42,6 +45,7 @@ namespace DigitalStore.Controllers
         }
 
         // Método para exibir todos os pedidos do usuário logado.
+        [PaginaCliente]
         public async Task<IActionResult> MeusPedidos()
         {
             try
@@ -61,8 +65,14 @@ namespace DigitalStore.Controllers
                     throw new InvalidOperationException("Nenhum pedido encontrado para este usuário.");
                 }
 
+                var viewModel = new PedidoViewModel
+                {
+                    UsuarioId = usuario.UsuarioId,
+                    Pedidos = pedidos
+                };
+
                 // Retorna a view com os pedidos
-                return View(pedidos);
+                return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -74,6 +84,7 @@ namespace DigitalStore.Controllers
         }
 
         // Método para exibir todos os pedidos e pagamentos para o ADMIN.
+        [PaginaAdmin]
         public async Task<IActionResult> PedidosEPagamentos()
         {
             try
@@ -84,6 +95,14 @@ namespace DigitalStore.Controllers
                 {
                     throw new InvalidOperationException("Erro ao carregar pedidos.");
                 }
+
+                // Para exibir o endereço sem falhas em acentos.
+                foreach (var item in pedidos)
+                {
+                    item.Endereco = WebUtility.HtmlDecode(item.Endereco);
+
+                }
+                
                 // Retorna a view com os pedidos
                 return View(pedidos);
             }
@@ -97,6 +116,7 @@ namespace DigitalStore.Controllers
         }
 
         // Método para atualizar o status do pedido, ADMIN.
+        [PaginaAdmin]
         [HttpPost]
         public async Task<IActionResult> AtualizarStatusDoPedido(int pedidoId, string status)
         {
@@ -116,18 +136,6 @@ namespace DigitalStore.Controllers
                 }
                 // Atualiza o status do pedido
                 pedido.StatusDoPedido = pedidoStatus;
-
-                if (pedidoStatus == PedidoEnum.Cancelado)
-                {
-                    var pagamento = await _pagamentoRepositorio.BuscarPagamentoPorIdAsync(pedido.PagamentoId);
-
-                    if (pagamento != null)
-                    {
-                        // Atualiza o status do pagamento para Cancelado
-                        pagamento.StatusPagamento = StatusPagamentoEnum.Cancelado;
-                        await _pagamentoRepositorio.AtualizarPagamentoAsync(pagamento);
-                    }
-                }
 
                 await _pedidoRepositorio.AtualizarPedidoAsync(pedido);
 

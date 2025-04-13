@@ -19,7 +19,7 @@
                     <!-- Card de produto -->
                     <div class="card h-100 border-0 rounded-4 shadow position-relative">
                         <!-- Link para a página do produto individual -->
-                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId">
+                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
                             <!-- Imagem do produto -->
                             <img src="@Url.Content(produto.ImagemUrl)" class="card-img-top" alt="@produto.NomeProduto" style="height: 250px; object-fit: cover; border-radius: 4px;" />
                             <div class="card-body text-dark">
@@ -33,46 +33,48 @@
                             </div>
                         </a>
 
-                        <!-- Botões dentro de uma div com fundo claro e linha separadora -->
-                        <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
-                            <div class="d-flex flex-column gap-2">
-                                @if (!Model.UsuarioLogado)
-                                {
-                                    <!-- Caso o usuário não esteja logado -->
-                                    <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
-                                        <i class="bi bi-heart fs-5"></i>
-                                    </a>
+                        <!-- Botões para adicionar aos favoritos e carrinho -->
+                        <div>
 
-                                    <div class="border-top mt-1"></div>
-
-                                    <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
-                                        <i class="bi bi-cart3 fs-5"></i>
-                                    </a>
-                                }
-                                else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
-                                {
-                                    <!-- Caso o usuário esteja logado e seja um cliente -->
+                            @if (!Model.UsuarioLogado)
+                            {
+                                <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
                                     <div class="d-flex flex-column gap-2">
-                                        <!-- Botão de favoritar -->
-                                        <button type="button"
-                                                class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
-                                                data-produto-id="@produto.ProdutoId">
-                                            <i class="bi @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
-                                        </button>
-
+                                        <!-- Caso o usuário não esteja logado -->
+                                        <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                            <i class="bi bi-heart fs-5"></i>
+                                        </a>
                                         <div class="border-top mt-1"></div>
-
-                                        <!-- Botão de adicionar ao carrinho -->
-                                        <button type="button"
-                                                class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
-                                                data-produto-id="@produto.ProdutoId">
-                                            <i class="bi @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
-                                        </button>
+                                        <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                            <i class="bi bi-cart3 fs-5"></i>
+                                        </a>
                                     </div>
-                                }
-                            </div>
-                        </div>
+                                </div>
+                            }
+                            else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
+                            {
+                                <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
+                                    <div class="d-flex flex-column gap-2">
+                                        <!-- Caso o usuário esteja logado e seja cliente -->
+                                        <div class="d-flex flex-column gap-2">
+                                            <button type="button"
+                                                    class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                    data-produto-id="@produto.ProdutoId">
+                                                <i class="bi @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
+                                            </button>
 
+                                            <div class="border-top mt-1"></div>
+
+                                            <button type="button"
+                                                    class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                    data-produto-id="@produto.ProdutoId">
+                                                <i class="bi @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             }

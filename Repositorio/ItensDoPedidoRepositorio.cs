@@ -11,11 +11,13 @@ namespace DigitalStore.Repositorio
     public class ItensDoPedidoRepositorio : IItensDoPedidoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<ItensDoPedidoRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados (BancoContext).
-        public ItensDoPedidoRepositorio(BancoContext context)
+        public ItensDoPedidoRepositorio(BancoContext context, ILogger<ItensDoPedidoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método que retorna todos os itens de um pedido específico, incluindo as informações do produto relacionado.
@@ -24,17 +26,16 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Consulta os itens do pedido e inclui os dados do produto associado a cada item.
-                var itens = await _context.ItensDoPedido
+                return await _context.ItensDoPedido
                                            .Include(x => x.Produto)
                                            .Where(x => x.PedidoId == pedidoId)
                                            .ToListAsync();
-
-                return itens;
             }
             catch (Exception ex)
             {
                 // Captura e lança a exceção, com mensagem personalizada para facilitar o diagnóstico do erro.
-                throw new Exception($"Erro ao buscar itens do pedido com ID {pedidoId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar itens do pedido com ID {PedidoId}", pedidoId);
+                throw new Exception("Erro ao buscar itens do pedido.");
             }
         }
 
@@ -58,7 +59,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção personalizada com a mensagem original.
-                throw new Exception($"Erro ao adicionar item ao pedido: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar item ao pedido.");
+                throw new Exception("Erro ao adicionar item ao pedido.");
             }
         }
     }

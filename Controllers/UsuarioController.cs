@@ -1,4 +1,5 @@
-﻿using DigitalStore.Helper.Interfaces;
+﻿using DigitalStore.Filters;
+using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace DigitalStore.Controllers
     // - MinhaConta(): Exibe os dados do usuário logado.
     // - EditarUsuario(UsuarioSemSenhaModel usuarioSemSenha): Atualiza os dados do usuário.
     // - RemoverUsuario(int id): Remove um usuário do sistema.
+    [PaginaCliente]
     public class UsuarioController : Controller
     {
         // Declaração das dependências que serão injetadas no controlador.
@@ -28,7 +30,7 @@ namespace DigitalStore.Controllers
         }
 
         // Exibe a página da conta do usuário logado
-        public IActionResult MinhaConta()
+        public async Task<IActionResult> MinhaConta()
         {
             // Busca a sessão do usuário logado
             var usuarioSessao = _sessao.BuscarSessaoDoUsuario();
@@ -38,11 +40,28 @@ namespace DigitalStore.Controllers
             {
                 _logger.LogWarning("Usuário não encontrado na sessão.");
                 TempData["Alerta"] = "Usuário não encontrado. Faça login novamente.";
-                return RedirectToAction("Login", "Auth");
+                return RedirectToAction("Login", "Login");
             }
 
-            // Retorna a visão com os dados do usuário logado
-            return View(usuarioSessao);
+            // Busca os dados atualizados no banco
+            var usuarioDb = await _usuarioRepositorio.BuscarUsuarioPorIdAsync(usuarioSessao.UsuarioId);
+            if (usuarioDb == null)
+            {
+                _logger.LogWarning("Usuário não encontrado no banco após login.");
+                TempData["Alerta"] = "Usuário não encontrado no banco.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            var usuarioSemSenha = new UsuarioSemSenhaModel
+            {
+                Id = usuarioDb.UsuarioId,
+                Nome = usuarioDb.Nome,
+                Email = usuarioDb.Email,
+                DataNascimento = usuarioDb.DataNascimento,
+                Genero = usuarioDb.Genero
+            };
+
+            return View(usuarioSemSenha);
         }
 
         // Método para editar os dados do usuário
@@ -60,7 +79,8 @@ namespace DigitalStore.Controllers
                 // Verifica se o modelo está válido
                 if (!ModelState.IsValid)
                 {
-                    throw new ArgumentException("Os dados inseridos não são válidos.");
+                    TempData["Alerta"] = "Os dados inseridos não são válidos.";
+                    return View("MinhaConta", usuarioSemSenha); // Retorna para a tela de criação caso o e-mail já exista.
                 }
 
                 // Busca o usuário no banco de dados para atualizar
@@ -70,6 +90,14 @@ namespace DigitalStore.Controllers
                 if (usuarioDb == null)
                 {
                     throw new InvalidOperationException($"Usuário com ID {usuarioSemSenha.Id} não encontrado no banco de dados.");
+                }
+                var emailExistente = await _usuarioRepositorio.BuscarUsuarioExistenteAsync(usuarioSemSenha.Email);
+
+                // Verifica se o e-mail já está cadastrado.
+                if (emailExistente != null && emailExistente.UsuarioId != usuarioDb.UsuarioId)
+                {
+                    TempData["Alerta"] = "E-mail já cadastrado. Tente novamente com outro e-mail.";
+                    return View("MinhaConta", usuarioSemSenha); // Retorna para a tela de criação caso o e-mail já exista.
                 }
 
                 // Cria um novo objeto de usuário com os dados atualizados
@@ -96,7 +124,7 @@ namespace DigitalStore.Controllers
                 // Em caso de erro, registra o erro e exibe mensagem para o usuário
                 _logger.LogError(ex, "Erro ao atualizar os dados do usuário.");
                 TempData["Alerta"] = "Ocorreu um erro ao atualizar os dados do usuário. Tente novamente mais tarde.";
-                return View(usuarioSemSenha);
+                return View("MinhaConta", usuarioSemSenha); 
             }
         }
 

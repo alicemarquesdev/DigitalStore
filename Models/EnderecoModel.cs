@@ -21,8 +21,5 @@ namespace DigitalStore.Models
 
         // Relação com a entidade Usuario
         public virtual UsuarioModel? Usuario { get; set; }
-
-        // Lista de pedidos associados ao endereço
-        public virtual IList<PedidoModel> Pedido { get; set; } = new List<PedidoModel>();
     }
 }

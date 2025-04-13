@@ -30,22 +30,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Genero">Gênero</label>
                             <select asp-for="Genero" asp-items="Html.GetEnumSelectList<GeneroEnum>()" class="form-select">
                                 <option value="">Selecione o Gênero</option>
                             </select>
                             <span class="text-danger">@Html.ValidationMessageFor(x => x.Genero)</span>
-                        </div>
-
-                        <div class=" mb-3">
-                            <select asp-for="Perfil" class="form-select">
-                                <option value="">Selecione o Perfil</option>
-                                <option value="@PerfilEnum.Admin">Administrador</option>
-                                <option value="@PerfilEnum.Cliente">Cliente</option>
-                            </select>
-                            <span class="text-danger">
-                                @Html.ValidationMessageFor(x => x.Perfil)
-                            </span>
                         </div>
 
                         <div class="form-floating mb-3">

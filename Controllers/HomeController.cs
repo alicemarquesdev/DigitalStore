@@ -13,6 +13,7 @@ namespace DigitalStore.Controllers
     // - ObterHomeViewModel(): Método auxiliar que retorna um modelo com as informações da página inicial,
     //   como status do usuário logado, seus favoritos e itens no carrinho.
     // - Categoria(string categoria): Exibe os produtos de uma determinada categoria.
+    // - Error: Exibe a página de erro.
     // - Index(): Carrega a página inicial com todos os produtos, últimas novidades e dados do site.
     // - Produto(int id): Exibe os detalhes de um produto específico.
     // - Suporte(): Exibe a página de suporte ao usuário.
@@ -109,6 +110,12 @@ namespace DigitalStore.Controllers
                 TempData["Alerta"] = "Houve um erro ao tentar acessar a página";
                 return RedirectToAction("Index");
             }
+        }
+
+        // Exibe a página de erro
+        public IActionResult Error()
+        {
+            return View();
         }
 
         // Método para carregar a página inicial com todos os produtos

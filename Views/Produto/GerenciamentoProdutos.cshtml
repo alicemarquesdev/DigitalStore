@@ -21,8 +21,8 @@
         </div>
     </div>
 
-    <div class="card-body">
-        <table id="table-produtos" class="table table-striped table-bordered">
+    <div class="card-body table-responsive-sm">
+        <table id="table-produtos" class="table table-striped table-bordered pt-2">
             <thead>
                 <tr>
                     <th scope="col">Produto</th>
@@ -81,47 +81,45 @@
             <div class="modal-body">
                 <form asp-controller="Produto" asp-action="AddProduto" method="post" enctype="multipart/form-data">
                     <div class="form-floating mb-3">
-                        <input class="form-control" type="text" asp-for="Produto.NomeProduto" id="NomeProduto" />
+                        <input class="form-control" type="text" asp-for="Produto.NomeProduto" />
                         <label for="NomeProduto">Nome do Produto</label>
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.NomeProduto) </span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input class="form-control" type="text" asp-for="Produto.Descricao" id="Descricao" />
+                        <input class="form-control" type="text" asp-for="Produto.Descricao" />
                         <label for="Descricao">Descrição</label>
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Descricao) </span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input class="form-control" type="text" asp-for="Produto.Categoria" id="Categoria" />
+                        <input class="form-control" type="text" asp-for="Produto.Categoria" />
                         <label for="Categoria">Categoria</label>
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Categoria) </span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input class="form-control" type="number" asp-for="Produto.QuantidadeEstoque" id="QuantidadeEstoque" placeholder="" />
+                        <input class="form-control" type="number" asp-for="Produto.QuantidadeEstoque" />
                         <label for="QuantidadeEstoque">Quantidade em Estoque</label>
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.QuantidadeEstoque) </span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input class="form-control" type="number" asp-for="Produto.Preco" id="Preco" placeholder="" />
+                        <input class="form-control" type="number" asp-for="Produto.Preco" />
                         <label for="Preco">Preço</label>
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Preco) </span>
                     </div>
 
-                    <div class="mb-3">
-                        <input class="form-control" id="ImagemFile" type="file" name="imagem"/>
+                    <div class="mb-2">
+                        <input class="form-control" id="ImagemFileAdd" type="file" name="imagem" />
                     </div>
 
-                    <div class="text-center">
-                        <label for="ImagemFile">
-                            <img id="img" style="max-width:300px; max-height:300px" />
-                        </label>
+                    <div class="d-flex justify-content-center">
+                        <img id="imgPreviewAdd" style="max-width:300px; max-height:300px" />
                     </div>
 
-                    <div class="mt-4 mb-0">
+                    <div class="mt-2 mb-0">
                         <button type="submit" class="btn btn-dark d-block w-100 mb-1">Adicionar Produto</button>
-                        <a class="btn btn-dark d-block w-100" asp-controller="PerfilAdmin" asp-action="GerenciamentoProdutos">Voltar</a>
+                        <a class="btn btn-dark d-block w-100" asp-controller="Produto" asp-action="GerenciamentoProdutos">Voltar</a>
                     </div>
                 </form>
             </div>
@@ -199,20 +197,18 @@
                         <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Preco) </span>
                     </div>
 
-                    <div class="mb-3">
-                        <input class="form-control" id="ImagemFile" type="file" name="novaImagem" accept="image/*" />
-                        <span>Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos. A imagem não pode exceder o tamanho de 1MB.</span>
+                    <div class="mb-1">
+                        <input class="form-control" id="ImagemFileUpdate" type="file" name="novaImagem" accept="image/*" />
+                        <small class="text-danger">Somente arquivos com as extensões jpg, jpeg e png são permitidos.</small>
                     </div>
 
-                    <div class="text-center">
-                        <label for="ImagemFile">
-                            <img id="imgPreview" src="@Url.Content(Model?.Produto?.ImagemUrl)" style="max-width: 300px; max-height: 300px;" />
-                        </label>
+                    <div class="d-flex justify-content-center">
+                        <img id="imgPreviewUpdate" src="@Url.Content(Model.Produto.ImagemUrl)" style="max-width: 300px; max-height: 300px;" />
                     </div>
 
-                    <div class="mt-4 mb-0">
+                    <div class="mt-2 mb-0">
                         <button type="submit" class="btn btn-dark d-block w-100 mb-1">Atualizar Produto</button>
-                        <a class="btn btn-dark d-block w-100" asp-controller="PerfilAdmin" asp-action="GerenciamentoProdutos">Voltar</a>
+                        <a class="btn btn-dark d-block w-100" asp-controller="Produto" asp-action="GerenciamentoProdutos">Voltar</a>
                     </div>
                 </form>
             </div>
@@ -223,4 +219,3 @@
 @section Scripts {
     <script src="~/js/gerenciamento-produtos.js"></script>
 }
-  

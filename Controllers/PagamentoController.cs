@@ -6,6 +6,7 @@ using DigitalStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using DigitalStore.Enums;
+using DigitalStore.Filters;
 
 namespace DigitalStore.Controllers
 {
@@ -23,6 +24,7 @@ namespace DigitalStore.Controllers
     Método Post - ProcessarPagamento:
      - ProcessarPagamento(StripeModel stripeModel): Processa o pagamento através do Stripe, cria o pedido, registra os itens, e envia a confirmação.
     */
+    [PaginaCliente]
     public class PagamentoController : Controller
     {
         // Declaração das dependências
@@ -101,10 +103,10 @@ namespace DigitalStore.Controllers
 
                 // Busca o carrinho do usuário
                 var carrinho = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(usuario.UsuarioId);
-                if (carrinho == null)
+                if (carrinho == null || carrinho.Count == 0)
                 {
-                    // Lança erro se o carrinho não for encontrado
-                    throw new Exception("Carrinho não encontrado.");
+                    TempData["Alerta"] = "Carrinho vazio, adicione produtos e siga para o pagamento.";
+                    return RedirectToAction("Carrinho", "Carrinho");
                 }
 
                 // Calcula o frete para o endereço fornecido

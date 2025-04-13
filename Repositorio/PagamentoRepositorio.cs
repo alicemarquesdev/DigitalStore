@@ -12,11 +12,13 @@ namespace DigitalStore.Repositorio
     public class PagamentoRepositorio : IPagamentoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<PagamentoRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados (BancoContext).
-        public PagamentoRepositorio(BancoContext context)
+        public PagamentoRepositorio(BancoContext context, ILogger<PagamentoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método que busca um pagamento pelo seu ID.
@@ -30,7 +32,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção que ocorrer e lança uma nova exceção com a mensagem detalhada do erro.
-                throw new Exception($"Erro ao buscar pagamento: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar pagamento com ID {PagamentoId}", id);
+                throw new Exception("Erro ao buscar pagamento.");
             }
         }
 
@@ -55,7 +58,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma nova exceção com a mensagem detalhada.
-                throw new Exception($"Erro ao adicionar pagamento: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar pagamento.");
+                throw new Exception("Erro ao adicionar pagamento.");
             }
         }
 
@@ -80,7 +84,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma nova exceção com a mensagem detalhada do erro.
-                throw new Exception($"Erro ao atualizar pagamento: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao atualizar pagamento.");
+                throw new Exception("Erro ao atualizar pagamento.");
             }
         }
     }

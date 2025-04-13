@@ -5,6 +5,7 @@ using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using DigitalStore.Helper;
+using DigitalStore.Filters;
 
 namespace DigitalStore.Controllers
 {
@@ -16,12 +17,11 @@ namespace DigitalStore.Controllers
         - (POST) AddOuRemoverCarrinho(CarrinhoRequest request): Adiciona ou remove um produto do carrinho via requisição AJAX.
         - (POST) AtualizarQuantidade(int produtoId, int usuarioId, string acao): Atualiza a quantidade de um produto no carrinho.
     */
-
+    [PaginaCliente]
     public class CarrinhoController : Controller
     {
         // Dependências do repositório e logger
         private readonly  string _googleApiKey;
-
         private readonly ICarrinhoRepositorio _carrinhoRepositorio;
         private readonly IProdutoRepositorio _produtoRepositorio;
         private readonly IEnderecoRepositorio _enderecoRepositorio;
@@ -56,14 +56,14 @@ namespace DigitalStore.Controllers
                 var usuario = _sessao.BuscarSessaoDoUsuario();
                 if (usuario == null)
                 {
-                    throw new ArgumentException($"Sessao do usuário é nula");
+                    throw new ArgumentException("Sessao do usuário é nula");
                 }
 
                 // Busca os itens do carrinho do usuário no repositório, retorna uma lista vazia se não houver itens
                 var carrinho = await _carrinhoRepositorio.BuscarCarrinhoDoUsuarioAsync(usuario.UsuarioId);
                 if (carrinho == null)
                 {
-                    throw new ArgumentException("Carrinho do usuario retornou null {UserId}");
+                    throw new ArgumentException("Carrinho do usuario retornou null");
                 }
 
                 // Inicializa um endereço vazio para o usuário

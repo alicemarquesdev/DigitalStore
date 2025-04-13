@@ -29,13 +29,9 @@ document.getElementById('btnProsseguir').addEventListener('click', function (e) 
         alert("Seu carrinho está vazio. Adicione produtos antes de prosseguir.");
         return;  // Sai da função, não permitindo a navegação
     }
-});
 
-// Atualiza o valor do atributo 'asp-route-id' do botão 'btnProsseguir' com o 'EnderecoId' selecionado
-document.querySelectorAll('input[name="EnderecoId"]').forEach(function (input) {
-    input.addEventListener('change', function () {
-        var enderecoId = this.value;  // Obtém o valor do endereço selecionado
-        var prosseguirLink = document.getElementById('btnProsseguir');  // Seleciona o botão 'Prosseguir'
-        prosseguirLink.setAttribute('asp-route-id', enderecoId);  // Atualiza o atributo 'asp-route-id' com o valor do endereço selecionado
-    });
+     var enderecoId = enderecoSelecionado.value;
+
+    // Redireciona manualmente
+    window.location.href = `/Pagamento/Pagamento/${enderecoId}`;
 });

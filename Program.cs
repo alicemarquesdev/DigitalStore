@@ -4,6 +4,7 @@ using DigitalStore.Helper.Interfaces;
 using DigitalStore.Repositorio;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace DigitalStore
 {
@@ -11,7 +12,15 @@ namespace DigitalStore
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console() // Logs no Console
+            .WriteTo.File("logs/app.log", rollingInterval: RollingInterval.Day) // Logs em arquivo
+            .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            // Adicionar Serilog como provedor de logs
+            builder.Host.UseSerilog();
 
             // Adicionar serviços à aplicação
             ConfigureServices(builder);
@@ -63,7 +72,7 @@ namespace DigitalStore
             // Configuração de session
             builder.Services.AddSession(o =>
             {
-                o.IdleTimeout = TimeSpan.FromMinutes(45);
+                o.IdleTimeout = TimeSpan.FromMinutes(30);
                 o.Cookie.HttpOnly = true;
                 o.Cookie.IsEssential = true;
             });
@@ -86,7 +95,7 @@ namespace DigitalStore
             builder.Services.AddScoped<IPagamentoRepositorio, PagamentoRepositorio>();
             builder.Services.AddScoped<ICaminhoImagem, CaminhoImagem>();
             builder.Services.AddScoped<IEnderecoFrete, EnderecoFrete>();
-            builder.Services.AddScoped<IAlteracaoSenhaRepositorio, AlteracaoSenhaRepositorio>();
+            builder.Services.AddScoped<IAlteracaoSenhaRepositorio, AlterarSenhaRepositorio>();
             builder.Services.AddScoped<ISessao, Sessao>();
             builder.Services.AddScoped<IEmail, Email>();
             builder.Services.AddScoped<StripeService>();
@@ -103,9 +112,14 @@ namespace DigitalStore
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Captura o erro 400 (Bad Request) devido à falha no token
+            app.UseStatusCodePagesWithRedirects("/Home/Error");
+
             app.UseRouting();
-            app.UseAuthorization();
             app.UseSession();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             // Adicionar compressão de resposta
             app.UseResponseCompression();

@@ -20,6 +20,6 @@ namespace DigitalStore.Models
 
         // Quantidade do produto no carrinho. Inicialmente, o valor é 0.
         [Range(0, 100, ErrorMessage = "A quantidade deve ser entre 0 e 100.")]
-        public int Quantidade { get; set; } = 0;
+        public int Quantidade { get; set; } = 1;
     }
 }

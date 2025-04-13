@@ -20,11 +20,13 @@ namespace DigitalStore.Repositorio
     public class ProdutoRepositorio : IProdutoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<ProdutoRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados.
-        public ProdutoRepositorio(BancoContext context)
+        public ProdutoRepositorio(BancoContext context, ILogger<ProdutoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Retorna uma lista com todas as categorias distintas de produtos.
@@ -41,7 +43,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar buscar as categorias.
-                throw new Exception($"Erro ao buscar categorias: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar categorias de produtos.");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -58,7 +61,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar buscar os produtos por categoria.
-                throw new Exception($"Erro ao buscar produtos pela categoria {categoria}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar produtos pela categoria");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -74,7 +78,8 @@ namespace DigitalStore.Repositorio
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao buscar produtos pela barra de pesquisa: {ex.Message}", ex);
+               _logger.LogError(ex, "Erro ao buscar produtos pela barra de pesquisa");
+                throw new Exception("Erro ao buscar pedido.");
             }
         }
 
@@ -90,7 +95,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar buscar o produto pelo ID.
-                throw new Exception($"Erro ao buscar o produto com ID {id}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar produto");
+                throw new Exception("Erro ao buscar o produto.");
             }
         }
 
@@ -105,7 +111,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar buscar todos os produtos.
-                throw new Exception($"Erro ao buscar todos os produtos: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar todos os produtos");
+                throw new Exception("Erro ao buscar todos os produtos");
             }
         }
 
@@ -122,7 +129,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar buscar os últimos produtos adicionados.
-                throw new Exception($"Erro ao buscar os últimos produtos adicionados: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar os últimos produtos adicionados");
+                throw new Exception("Erro ao buscar os últimos produtos adicionados");
             }
         }
 
@@ -131,6 +139,10 @@ namespace DigitalStore.Repositorio
         {
             try
             {
+                produto.NomeProduto = produto.NomeProduto.Trim();
+                produto.Descricao = produto.Descricao.Trim();
+                produto.Categoria = produto.Categoria.Trim();
+
                 // Adiciona o produto ao contexto.
                 _context.Produtos.Add(produto);
 
@@ -146,7 +158,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar adicionar o produto.
-                throw new Exception($"Erro ao adicionar o produto: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar produto");
+                throw new Exception("Erro ao adicionar o produto.");
             }
         }
 
@@ -156,17 +169,17 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Busca o produto pelo ID antes de atualizar.
-                ProdutoModel produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
+                ProdutoModel? produtoDb = await BuscarProdutoPorIdAsync(produto.ProdutoId);
 
                 if (produtoDb == null)
                     // Lança uma exceção caso o produto não seja encontrado.
                     throw new Exception("Produto não encontrado para atualização.");
 
                 // Atualiza os dados do produto existente.
-                produtoDb.NomeProduto = produto.NomeProduto;
-                produtoDb.Descricao = produto.Descricao;
+                produtoDb.NomeProduto = produto.NomeProduto.Trim();
+                produtoDb.Descricao = produto.Descricao.Trim();
                 produtoDb.Preco = produto.Preco;
-                produtoDb.Categoria = produto.Categoria;
+                produtoDb.Categoria = produto.Categoria.Trim();
                 produtoDb.QuantidadeEstoque = produto.QuantidadeEstoque;
                 produtoDb.ImagemUrl = produto.ImagemUrl;
 
@@ -185,7 +198,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar atualizar o produto.
-                throw new Exception($"Erro ao atualizar o produto: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao atualizar produto");
+                throw new Exception("Erro ao atualizar o produto.");
             }
         }
 
@@ -205,7 +219,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Lança uma exceção detalhando o erro ocorrido ao tentar remover o produto.
-                throw new Exception($"Erro ao remover o produto com ID: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao remover produto");
+                throw new Exception("Erro ao remover o produto.");
             }
         }
     }

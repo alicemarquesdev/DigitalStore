@@ -4,16 +4,41 @@
     ViewData["Title"] = "Alterar Senha";
 }
 
-<div class="container mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-5">
-            <div class="card shadow-lg border-0 rounded-lg mt-5">
 
-                <!-- Cabeçalho do formulário -->
-                <div class="card-header">
-                    <h3 class="text-center font-weight-light my-4">Alterar Senha</h3>
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Left -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-3">
+                    <ul class="list-unstyled">
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <hr>
+
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-list"></i> Meus Pedidos</a></li>
+                        <hr>
+                        <li><a asp-controller="Endereco" asp-action="Enderecos" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Enderecos</a></li>
+                        <hr>
+
+                        <li><a asp-controller="AlterarSenha" asp-action="AlterarSenha" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
+                        <hr>
+                        <li>
+                            <a class="text-decoration-none text-dark fw-bold d-block py-2" asp-controller="Login" asp-action="Sair">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+        </div>
 
+        <!-- Main Content: User Data -->
+        <div class="col-md-9">
+            <!-- Dados do Usuário -->
+            <div class="card shadow-sm border-0 rounded-3" id="meusDados">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Alterar Senha</h5>
+                </div>
                 <div class="card-body">
                     <form asp-controller="AlterarSenha" asp-action="AlterarSenha" method="post">
 
@@ -41,7 +66,6 @@
                         <!-- Botões de ação -->
                         <div class="mt-4 mb-0">
                             <button type="submit" class="btn btn-dark d-block w-100 mb-1">Alterar Senha</button>
-                            <a class="btn bg-transparent border-0 d-block w-100" asp-controller="Usuario" asp-action="MinhaConta">Voltar</a>
                         </div>
                     </form>
                 </div>

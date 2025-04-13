@@ -8,17 +8,20 @@ namespace DigitalStore.Repositorio
     // Implementa métodos relacionados a alteração de senha do Usuário
     // - AlterarSenhaAsync(AlterarSenhaModel alterarSenhaModel)
     // - RedefinirSenhaAsync(int id, string novasenha)
-    public class AlteracaoSenhaRepositorio : IAlteracaoSenhaRepositorio
+    public class AlterarSenhaRepositorio : IAlteracaoSenhaRepositorio
     {
         private readonly IUsuarioRepositorio _usuarioRepositorio;
         private readonly BancoContext _context;
+        private readonly ILogger<AlterarSenhaRepositorio> _logger;
 
         // Injeção de dependência do repositório de usuário e do contexto do banco de dados
-        public AlteracaoSenhaRepositorio(IUsuarioRepositorio usuarioRepositorio,
-                                        BancoContext context)
+        public AlterarSenhaRepositorio(IUsuarioRepositorio usuarioRepositorio,
+                                        BancoContext context, 
+                                        ILogger<AlterarSenhaRepositorio> logger)
         {
             _usuarioRepositorio = usuarioRepositorio;
             _context = context;
+            _logger = logger;
         }
 
         // Método para alterar a senha do usuário, usando criptografia SHA1
@@ -38,13 +41,13 @@ namespace DigitalStore.Repositorio
                 // Verifica se a senha atual está correta
                 if (!usuarioDB.SenhaValida(alterarSenhaModel.SenhaAtual))
                 {
-                    throw new ArgumentException("Senha atual não confere!");
+                    throw new InvalidOperationException("Senha atual não confere!");
                 }
 
                 // Verifica se a nova senha é diferente da senha atual
                 if (usuarioDB.SenhaValida(alterarSenhaModel.NovaSenha))
                 {
-                    throw new ArgumentException("Nova senha deve ser diferente da senha atual!");
+                    throw new InvalidOperationException("Nova senha deve ser diferente da senha atual!");
                 }
 
                 // Define a nova senha e criptografa
@@ -59,13 +62,19 @@ namespace DigitalStore.Repositorio
                 // Verifica se o número de alterações é 0, o que indicaria que nada foi alterado
                 if (result == 0)
                 {
-                    throw new InvalidOperationException("Falha ao atualizar a senha do usuário.");
+                    throw new Exception("Falha ao atualizar a senha do usuário.");
                 }
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Erro ao alterar senha.");
+                throw new InvalidOperationException(ex.Message);
             }
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception("Ocorreu um erro ao alterar a senha do usuário.", ex);
+                _logger.LogError(ex, "Erro ao alterar senha.");
+                throw new Exception("Ocorreu um erro ao alterar a senha.");
             }
         }
 
@@ -104,7 +113,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception("Ocorreu um erro ao redefinir a senha do usuário.", ex);
+                _logger.LogError(ex, "Erro ao redefinir senha.");
+                throw new Exception("Ocorreu um erro ao redefinir a senha.");
             }
         }
     }

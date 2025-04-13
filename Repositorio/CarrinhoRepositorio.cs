@@ -14,11 +14,13 @@ namespace DigitalStore.Repositorio
     public class CarrinhoRepositorio : ICarrinhoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<CarrinhoRepositorio> _logger;
 
         // Injeção de dependência para o contexto do banco de dados e os repositórios de Produto e Usuário
-        public CarrinhoRepositorio(BancoContext context)
+        public CarrinhoRepositorio(BancoContext context, ILogger<CarrinhoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método que retorna o carrinho de um usuário específico
@@ -27,25 +29,17 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Busca todos os itens no carrinho de um usuário específico, inclui detalhes de usuário e produto
-                var carrinho = await _context.Carrinho
+                return await _context.Carrinho
                     .Include(x => x.Usuario)
                     .Include(x => x.Produto)
                     .Where(x => x.UsuarioId == usuarioId)
-                    .ToListAsync();
-
-                // Verifica se não há itens no carrinho
-                if (!carrinho.Any())
-                {
-                    Console.WriteLine("Nenhum item encontrado no carrinho para o usuário de ID " + usuarioId);
-                    return new List<CarrinhoModel>();  // Retorna uma lista vazia
-                }
-
-                return carrinho;
+                    .ToListAsync();              
             }
             catch (Exception ex)
             {
                 // Captura exceções, caso ocorra algum erro na busca
-                throw new Exception($"Erro ao buscar o carrinho para o usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar o carrinho do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao buscar o carrinho.");
             }
         }
 
@@ -62,7 +56,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura exceções, caso ocorra algum erro na busca
-                throw new Exception($"Erro ao verificar produto no carrinho do usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao verificar produto no carrinho do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao verificar produto no carrinho.");
             }
         }
 
@@ -103,7 +98,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer erro e lança uma exceção com uma mensagem clara
-                throw new Exception($"Erro ao adicionar ou remover produto no carrinho do usuário com ID {usuarioId}. Detalhes: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar ou remover produto no carrinho do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao adicionar ou remover produto no carrinho.");
             }
         }
 
@@ -138,7 +134,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura exceções, caso ocorra algum erro na atualização
-                throw new Exception($"Erro ao atualizar a quantidade do produto no carrinho do usuário com ID {usuarioId}: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao atualizar a quantidade do produto no carrinho do usuário com ID {UsuarioId}", usuarioId);
+                throw new Exception("Erro ao atualizar a quantidade do produto no carrinho.");
             }
         }
     }

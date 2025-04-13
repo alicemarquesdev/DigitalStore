@@ -11,11 +11,13 @@ namespace DigitalStore.Repositorio
     public class SiteRepositorio : ISiteRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<SiteRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados.
-        public SiteRepositorio(BancoContext context)
+        public SiteRepositorio(BancoContext context, ILogger<SiteRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Busca os dados do site no banco de dados.
@@ -32,7 +34,9 @@ namespace DigitalStore.Repositorio
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao buscar dados do site: {ex.Message}", ex);
+                // Lança uma exceção detalhando o erro ocorrido ao tentar buscar os dados do site.
+                _logger.LogError(ex, "Erro ao buscar dados do site");
+                throw new Exception("Erro ao buscar dados do site.");
             }
         }
 
@@ -44,9 +48,9 @@ namespace DigitalStore.Repositorio
                 var siteDb = await BuscarDadosDoSiteAsync();
 
                 // Atualiza apenas os campos necessários
-                siteDb.NomeSite = site.NomeSite;
+                siteDb.NomeSite = site.NomeSite.Trim();
                 siteDb.Banner = site.Banner;
-                siteDb.Frase = site.Frase;
+                siteDb.Frase = site.Frase.Trim();
 
                 // Salva as alterações e verifica se a atualização ocorreu
                 var resultado = await _context.SaveChangesAsync();
@@ -55,7 +59,9 @@ namespace DigitalStore.Repositorio
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao atualizar os dados do site: {ex.Message}", ex);
+                // Lança uma exceção detalhando o erro ocorrido ao tentar atualizar os dados do site.
+                _logger.LogError(ex, "Erro ao atualizar dados do site");
+                throw new Exception("Erro ao atualizar os dados do site.");
             }
         }
     }

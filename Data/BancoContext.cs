@@ -23,7 +23,7 @@ namespace DigitalStore.Data
         public DbSet<PedidoModel> Pedidos { get; set; }
         public DbSet<ItensDoPedidoModel> ItensDoPedido { get; set; }
         public DbSet<PagamentoModel> Pagamentos { get; set; }
-        public DbSet<EnderecoModel> Endereco { get; set; }
+        public DbSet<EnderecoModel> Enderecos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -119,6 +119,11 @@ namespace DigitalStore.Data
               .HasOne(ac => ac.Pedido)
               .WithOne(c => c.Pagamento)
               .HasForeignKey<PagamentoModel>(ac => ac.PedidoId);
+
+            // Valor decimal pode ter até 8 dígitos inteiros e 2 decimais
+            modelBuilder.Entity<PagamentoModel>()
+               .Property(p => p.Valor)
+               .HasColumnType("decimal(10,2)");
 
             base.OnModelCreating(modelBuilder);
         }

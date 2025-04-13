@@ -1,8 +1,8 @@
 ﻿using DigitalStore.Helper.Interfaces;
-using DigitalStore.Models;
 using DigitalStore.ViewModels;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using DigitalStore.Filters;
 
 namespace DigitalStore.Controllers
 {
@@ -11,6 +11,7 @@ namespace DigitalStore.Controllers
      - Favoritos(int id): Exibe os favoritos e o carrinho de um usuário.
      - AddOuRemoverFavorito(FavoritoRequest request): Adiciona ou remove um produto dos favoritos do usuário.
     */
+    [PaginaCliente]
     public class FavoritoController : Controller
     {
         // Declaração das dependências dos repositórios

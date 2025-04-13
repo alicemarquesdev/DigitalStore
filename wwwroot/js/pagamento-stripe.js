@@ -12,7 +12,10 @@
     - Envia os dados de pagamento (token, valor, endereço, etc.) para o backend via requisição AJAX.
     - Redireciona o usuário para a página de sucesso ou exibe um erro caso o pagamento falhe.
 */
-
+if(typeof stripeKey === 'undefined' || !stripeKey) {
+    alert("Chave Stripe não definida.");
+    throw new Error("stripeKey não está definida.");
+}
 
 // Inicialização do Stripe com a chave pública
 var stripe = Stripe(stripeKey);  // Usando a chave pública passada da View

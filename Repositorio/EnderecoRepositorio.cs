@@ -2,6 +2,7 @@
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace DigitalStore.Repositorio
 {
@@ -14,20 +15,22 @@ namespace DigitalStore.Repositorio
     public class EnderecoRepositorio : IEnderecoRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<EnderecoRepositorio> _logger;
 
         // Construtor que injeta o contexto do banco de dados
-        public EnderecoRepositorio(BancoContext context)
+        public EnderecoRepositorio(BancoContext context, ILogger<EnderecoRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método para buscar um endereço pelo seu ID
-        public async Task<EnderecoModel> BuscarEnderecoPorIdAsync(int enderecoId)
+        public async Task<EnderecoModel?> BuscarEnderecoPorIdAsync(int enderecoId)
         {
             try
             {
                 // Tenta buscar o endereço pelo ID
-                var endereco = await _context.Endereco.FirstOrDefaultAsync(x => x.EnderecoId == enderecoId);
+                var endereco = await _context.Enderecos.FirstOrDefaultAsync(x => x.EnderecoId == enderecoId);
 
                 // Se o endereço não for encontrado, lança uma exceção 
                 if (endereco == null)
@@ -40,7 +43,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception($"Erro ao buscar o endereço: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar o endereço com ID {EnderecoId}", enderecoId);
+                throw new Exception("Erro ao buscar o endereço.");
             }
         }
 
@@ -50,20 +54,15 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Tenta buscar todos os endereços relacionados ao usuário
-                var enderecos = await _context.Endereco.Where(x => x.UsuarioId == id).ToListAsync();
+               return await _context.Enderecos.Where(x => x.UsuarioId == id).ToListAsync();
 
-                // Se não encontrar nenhum endereço, retorna uma lista vazia
-                if (enderecos == null || !enderecos.Any())
-                {
-                    return new List<EnderecoModel>();
-                }
-
-                return enderecos;
+             
             }
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception($"Erro ao buscar os endereços do usuário: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao buscar os endereços do usuário com ID {UsuarioId}", id);
+                throw new Exception("Erro ao buscar os endereços.");
             }
         }
 
@@ -73,7 +72,7 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Adiciona o novo endereço no banco de dados
-                _context.Endereco.Add(endereco);
+                _context.Enderecos.Add(endereco);
 
                 // Salva as mudanças no banco de dados
                 var result = await _context.SaveChangesAsync();
@@ -87,7 +86,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception($"Erro ao adicionar o endereço: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao adicionar o endereço.");
+                throw new Exception("Erro ao adicionar o endereço.");
             }
         }
 
@@ -106,7 +106,7 @@ namespace DigitalStore.Repositorio
                 }
 
                 // Remove o endereço do banco de dados
-                _context.Endereco.Remove(endereco);
+                _context.Enderecos.Remove(endereco);
 
                 // Salva as mudanças no banco de dados
                 var result = await _context.SaveChangesAsync();
@@ -117,7 +117,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
-                throw new Exception($"Erro ao remover o endereço: {ex.Message}", ex);
+                _logger.LogError(ex, "Erro ao remover o endereço com ID {EnderecoId}", id);
+                throw new Exception("Erro ao remover o endereço.");
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using DigitalStore.Helper.Interfaces;
+﻿using DigitalStore.Filters;
+using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace DigitalStore.Controllers
     // Controlador responsável pela personalização do site
     // - Personalizacao(): Exibe a tela de personalização do site.
     // - AtualizarSiteAsync(SiteModel site, IFormFile? banner): Atualiza os dados e banners do site.
+    [PaginaAdmin]
     public class SiteController : Controller
     {
         private readonly ISiteRepositorio _siteRepositorio;

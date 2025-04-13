@@ -11,7 +11,6 @@
 
 */
 
-
 document.addEventListener("DOMContentLoaded", function () {
     // Seleciona todos os botões cujo ID começa com 'btnStatus'
     const buttons = document.querySelectorAll('[id^="btnStatus"]');

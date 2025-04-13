@@ -14,11 +14,13 @@ namespace DigitalStore.Repositorio
     public class UsuarioRepositorio : IUsuarioRepositorio
     {
         private readonly BancoContext _context;
+        private readonly ILogger<UsuarioRepositorio> _logger;
 
         // Construtor que recebe o contexto do banco de dados
-        public UsuarioRepositorio(BancoContext context)
+        public UsuarioRepositorio(BancoContext context, ILogger<UsuarioRepositorio> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Método para buscar usuário pelo email 
@@ -34,7 +36,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, registra a exceção e retorna null
-                throw new ApplicationException("Erro ao buscar o usuário por email.", ex);
+                _logger.LogError(ex, "Erro ao buscar usuário por email: {Email}", email);
+                throw new Exception("Erro ao buscar o usuário por email.");
             }
         }
 
@@ -50,7 +53,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, registra a exceção
-                throw new ApplicationException("Erro ao buscar o usuário por ID.", ex);
+                _logger.LogError(ex, "Erro ao buscar usuário por ID: {UsuarioId}", id);
+                throw new Exception("Erro ao buscar o usuário.");
             }
         }
 
@@ -61,6 +65,8 @@ namespace DigitalStore.Repositorio
             {
                 // Define a senha criptografada antes de adicionar
                 usuario.SetSenhaHash();
+                usuario.Nome = usuario.Nome.Trim();
+                usuario.Email = usuario.Email.ToLower().Trim();
 
                 // Adiciona o novo usuário ao banco de dados
                 _context.Usuarios.Add(usuario);
@@ -74,7 +80,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, registra a exceção
-                throw new ApplicationException("Erro ao adicionar novo usuário.", ex);
+                _logger.LogError(ex, "Erro ao adicionar novo usuário: {Usuario}", usuario);
+                throw new Exception("Erro ao adicionar novo usuário.");
             }
         }
 
@@ -93,8 +100,10 @@ namespace DigitalStore.Repositorio
                 }
 
                 // Atualiza os dados do usuário no banco
-                usuarioDb.Nome = usuario.Nome;
-                usuarioDb.Email = usuario.Email;
+                usuarioDb.Nome = usuario.Nome.Trim();
+                usuarioDb.Email = usuario.Email.Trim().ToLower();
+                usuarioDb.DataNascimento = usuario.DataNascimento;
+                usuarioDb.Genero = usuario.Genero;
 
                 _context.Usuarios.Update(usuarioDb);
                 var result = await _context.SaveChangesAsync();
@@ -107,7 +116,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, registra a exceção
-                throw new ApplicationException("Erro ao atualizar usuário.", ex);
+                _logger.LogError(ex, "Erro ao atualizar usuário: {Usuario}", usuario);
+                throw new Exception("Erro ao atualizar usuário.");
             }
         }
 
@@ -126,7 +136,8 @@ namespace DigitalStore.Repositorio
             catch (Exception ex)
             {
                 // Em caso de erro, registra a exceção
-                throw new ApplicationException("Erro ao remover usuário.", ex);
+                _logger.LogError(ex, "Erro ao remover usuário: {Usuario}", usuario);
+                throw new Exception("Erro ao remover usuário.");
             }
         }
     }

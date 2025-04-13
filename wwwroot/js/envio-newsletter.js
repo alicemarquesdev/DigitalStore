@@ -23,14 +23,14 @@ $(document).ready(function () {
         // Verifica se o campo de e-mail está vazio
         if (email === "") {
             // Exibe uma mensagem de erro caso o campo de e-mail esteja vazio
-            $("#newsletterMessage").html('<div class="alert alert-danger">O e-mail não pode estar vazio.</div>');
+            $("#newsletterMessage").html('<small class="text-danger">Digite seu email e fique por dentro de todas as novidades.</small>');
             return; // Impede a execução do restante do código
         }
 
         // Verifica se o checkbox de autorização foi marcado
         if (!$("#authorizeCheck").prop("checked")) {
             // Exibe uma mensagem de erro caso o usuário não tenha autorizado o envio de e-mails
-            $("#newsletterMessage").html('<div class="text-danger">Você precisa autorizar o envio de e-mails promocionais.</div>');
+            $("#newsletterMessage").html('<small class="text-danger">Você precisa autorizar o envio de e-mails promocionais.</small>');
             return; // Impede a execução do restante do código
         }
 
@@ -45,17 +45,17 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     // Se a resposta for bem-sucedida, exibe a mensagem de sucesso
-                    $("#newsletterMessage").html('<div class="text-dark">' + response.message + '</div>');
+                    $("#newsletterMessage").html('<small class="text-dark">' + response.message + '</small>');
                 } else {
                     // Caso contrário, exibe a mensagem de erro
-                    $("#newsletterMessage").html('<div class="text-danger">' + response.message + '</div>');
+                    $("#newsletterMessage").html('<small class="text-danger">' + response.message + '</small>');
                 }
             },
 
             // Função executada caso ocorra algum erro na requisição
             error: function () {
                 // Exibe uma mensagem de erro caso a requisição falhe
-                $("#newsletterMessage").html('<div class="alert alert-danger">Erro ao processar a requisição.</div>');
+                $("#newsletterMessage").html('<small class="text-danger">Erro ao processar a requisição.</small>');
             }
         });
     });

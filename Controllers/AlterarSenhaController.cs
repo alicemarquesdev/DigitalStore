@@ -1,4 +1,5 @@
-﻿using DigitalStore.Helper.Interfaces;
+﻿using DigitalStore.Filters;
+using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +13,17 @@ namespace DigitalStore.Controllers
         - AlterarSenha(): Exibe a página de alteração de senha.
         - (POST) AlterarSenha(AlterarSenhaModel alterarSenhaModel): Processa a alteração de senha.
     */
-    public class AlteracaoSenhaController : Controller
+    public class AlterarSenhaController : Controller
     {
         // Injeção de dependências para repositório de alteração de senha, logger e sessão
         private readonly IAlteracaoSenhaRepositorio _alteracaoSenhaRepositorio;
-        private readonly ILogger<AlteracaoSenhaController> _logger;
+        private readonly ILogger<AlterarSenhaController> _logger;
         private readonly ISessao _sessao;
 
         // Construtor para injeção de dependências
-        public AlteracaoSenhaController(
+        public AlterarSenhaController(
                                 IAlteracaoSenhaRepositorio alteracaoSenhaRepositorio,
-                                ILogger<AlteracaoSenhaController> logger,
+                                ILogger<AlterarSenhaController> logger,
                                 ISessao sessao)
         {
             // Garantia de que as dependências não sejam nulas
@@ -42,7 +43,7 @@ namespace DigitalStore.Controllers
                 {
                     // Caso o usuário não esteja logado, redireciona para a tela de login
                     TempData["Alerta"] = "Sessão expirada. Faça login novamente.";
-                    return RedirectToAction("Login", "Usuario");
+                    return RedirectToAction("Login", "Login");
                 }
 
                 // Preenche o modelo para a página de alteração de senha
@@ -89,13 +90,21 @@ namespace DigitalStore.Controllers
                 await _alteracaoSenhaRepositorio.AlterarSenhaAsync(alterarSenhaModel);
                 // Exibe mensagem de sucesso e redireciona para a página "Minha Conta"
                 TempData["Alerta"] = "Senha alterada com sucesso!";
+
                 return RedirectToAction("MinhaConta", "Usuario");
             }
             catch (Exception ex)
             {
                 // Registra o erro no log e exibe uma mensagem de erro para o usuário
                 _logger.LogError(ex, "Erro ao atualizar a senha.");
-                TempData["Alerta"] = "Erro ao alterar a senha. Por favor, tente novamente mais tarde.";
+                if (ex.InnerException is InvalidOperationException || ex is InvalidOperationException)
+                {
+                    TempData["Alerta"] = ex.Message;  // Exibe a mensagem amigável
+                }
+                else
+                {
+                    TempData["Alerta"] = "Erro ao alterar a senha. Por favor, tente novamente mais tarde.";
+                }
                 return View("AlterarSenha", alterarSenhaModel);  // Retorna para a página de alteração de senha
             }
         }
