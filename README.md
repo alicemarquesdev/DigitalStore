@@ -1,7 +1,6 @@
-﻿# 🌍 Digital Store
- [Veja a aplicação em ação](mailto:alicemarques.dev@hotmail.com)
+﻿# 🌍 Digital Store - [Live Digital Store](https://digitalstore-g0b6gvhba2g4fkcu.brazilsouth-01.azurewebsites.net/)
 
-![DigitalStore](wwwroot/assets/digital-store.png)
+![DigitalStore](./wwwroot/assets/digital-store.png)
 
 Digital Store é uma plataforma de e-commerce com dois tipos de perfis: administrador e cliente.
 
@@ -16,77 +15,100 @@ e controle de acesso para garantir uma navegação segura e confiável.
 
 ## Principais Funcionalidades
 
-- **CRUD Completo para Produtos e Pedidos**: Gerenciamento de produtos com nome, descrição, preço, imagem e categoria. Controle total dos pedidos realizados na plataforma.
-- **Personalização da Loja (Admin)**: O administrador pode editar o nome do site, banner e frase de destaque, tornando a loja flexível para qualquer nicho.
-- **Sistema de Login Seguro**: Autenticação baseada em cookies, com verificação de identidade e proteção contra acessos não autorizados.
-- **Gerenciamento de Usuário (Cliente e Admin)**: Separação de permissões e funcionalidades por perfil, com controle de acesso via filtros de autorização.
-- **Carrinho de Compras (Cliente)**: Adição, remoção e edição de produtos no carrinho, com cálculo automático do total.
-- **Favoritos (Cliente)**: Possibilidade de favoritar produtos para consulta futura.
-- **Histórico de Pedidos (Cliente)**: Visualização de pedidos anteriores com detalhes completos.
-- **Pagamentos com Stripe**: Integração com Stripe para pagamentos com cartão de crédito de forma segura.
-- **Endereço com Google Maps API**: Autocompletar de endereço via API do Google, facilitando o cadastro de endereços.
-- **Redefinição de Senha via Email (SMTP)**: Envio de nova senha ao email cadastrado em caso de esquecimento.
-- **Alteração de Senha Segura**: Troca de senha com verificação da senha atual e validação de segurança.
-- **Segurança Avançada**: Proteção contra SQL Injection, XSS, validações no Razor e uso seguro do Entity Framework.
-- **Entity Framework Core ORM**: Migrations automáticas com SQL Server.
-- **Criptografia de Senhas**: Armazenamento das senhas criptografadas utilizando SHA-1.
-- **Sessão de Usuário com Cookies**: Armazenamento seguro da sessão para manter autenticação durante toda a navegação.
-- **Logs de Atividade com Serilog**: Registro de ações dos usuários para monitoramento e auditoria do sistema.
+📦 CRUD Completo para Produtos e Pedidos: Gerenciamento de produtos com nome, descrição, preço, imagem e categoria. Controle total dos pedidos realizados na plataforma.
+
+🖥️ Personalização da Loja (Admin): O administrador pode editar o nome do site, banner e frase de destaque, tornando a loja flexível para qualquer nicho.
+
+🔐 Sistema de Login Seguro: Autenticação baseada em cookies, com verificação de identidade e proteção contra acessos não autorizados.
+
+👥 Gerenciamento de Usuário (Cliente e Admin): Separação de permissões e funcionalidades por perfil, com controle de acesso via filtros de autorização.
+
+🛒 Carrinho de Compras (Cliente): Adição, remoção e edição de produtos no carrinho, com cálculo automático do total.
+
+❤️ Favoritos (Cliente): Possibilidade de favoritar produtos para consulta futura.
+
+📜 Histórico de Pedidos (Cliente): Visualização de pedidos anteriores com detalhes completos.
+
+💳 Pagamentos com Stripe: Integração com Stripe para pagamentos com cartão de crédito de forma segura.
+
+📍 Endereço com Google Maps API: Autocompletar de endereço via API do Google, facilitando o cadastro de endereços.
+
+📧 Redefinição de Senha via Email (SMTP): Envio de nova senha ao email cadastrado em caso de esquecimento.
+
+🔒 Alteração de Senha Segura: Troca de senha com verificação da senha atual e validação de segurança.
+
+🛡️ Segurança Avançada: Proteção contra SQL Injection, XSS, validações no Razor e uso seguro do Entity Framework.
+
+⚙️ Entity Framework Core ORM: Migrations automáticas com SQL Server.
+
+🔑 Criptografia de Senhas: Armazenamento das senhas criptografadas utilizando SHA-1.
+
+🍪 Sessão de Usuário com Cookies: Armazenamento seguro da sessão para manter autenticação durante toda a navegação.
+
+📊 Logs de Atividade com Serilog: Registro de ações dos usuários para monitoramento e auditoria do sistema.
+
 
 ## Tecnologias Usadas
 
 ### **Back-End**
-C# | ASP.NET Core MVC | Entity Framework Core | SQL Server
+![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white) | ![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white) | ![Entity Framework Core](https://img.shields.io/badge/Entity_Framework_Core-86B9D9?style=for-the-badge&logo=dotnet&logoColor=white) | ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
 
 ### **Front-End**
-HTML | CSS | Bootstrap | jQuery | JavaScript
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) | ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white) | ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white) | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
 ### Integrações e Serviços
-- **Stripe API** – Processamento de pagamentos
-- **Google Maps API** – Autocomplete de endereço no cadastro
-- **SMTP** – Envio de emails para redefinição de senha e newsletter
-- **Serilog** – Registro de logs e atividades
+
+💳 Stripe API – Processamento de pagamentos com cartão de crédito de forma segura.
+
+🌍 Google Maps API – Autocomplete de endereço no cadastro, facilitando o processo de preenchimento.
+
+📧 SMTP – Envio de emails para redefinição de senha e newsletter.
+
+📝 Serilog – Registro de logs e atividades para monitoramento e auditoria do sistema.
 
 ## Instalação
 
-### **Pré-Requisitos**
+### ✅ Pré-requisitos
 
-Antes de rodar o projeto, é necessário ter as seguintes ferramentas instaladas:
+Antes de rodar o projeto, você precisa ter:
 
-- **Visual Studio 2022 ou superior** com o suporte para **ASP.NET Core e .NET 8.0**.
-- **.NET SDK 8.0** (necessário para compilar o projeto).
-- **SQL Server** (necessário para o banco de dados relacional).
-- Compátivel com **Windows** | **macOS** | **Linux**.
-- Conta no Stripe – Para ativar e testar pagamentos com cartão
-- Conta no Google Cloud – Para Integração com APIs do Google
+- [Visual Studio 2022+](https://visualstudio.microsoft.com/) com suporte para **ASP.NET Core** e **.NET 8.0**
+- [.NET SDK 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) instalado e rodando localmente
+- [Conta no Stripe](https://stripe.com) – Para ativar e testar pagamentos com cartão
+- [Conta no Google Cloud](https://cloud.google.com) – Para integração com APIs do Google
+- Compatível com: **Windows**, **macOS** e **Linux**
 
-### **Passo a Passo para Executar o Projeto Localmente**
+### 🧩 Passo a passo
 
-1. **Clonar o Repositório**  
-   Primeiro, você precisa clonar o repositório do projeto para sua máquina local. Utilize o Git para isso:
+#### 1️⃣ Clone o repositório
 
 ```bash
 git clone https://github.com/alicemarquesdev/DigitalStore.git
 ```
 
-2. **Instalar as Dependências do Projeto**
-
-Execute o comando abaixo para restaurar pacotes NuGet
+#### 2️⃣ Restaure os pacotes NuGet
 
 ```bash
 dotnet restore
 ```
 
-- Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation (8.0.8) | Microsoft.EntityFrameworkCore (8.0.8) | Microsoft.EntityFrameworkCore.Design (8.0.8) |
-Microsoft.EntityFrameworkCore.SqlServer (8.0.8) | Microsoft.EntityFrameworkCore.Tools (8.0.8) | Newtonsoft.Json (13.0.3) |
-Serilog (4.2.0) | Serilog.AspNetCore (9.0.0) | Serilog.Sinks.Console (6.0.0) | Serilog.Sinks.File (6.0.0) |
-SixLabors.ImageSharp (3.1.7) | Stripe.net (47.3.0)
+Pacotes NuGet utilizados:
 
-3. **Configuração appsettings**
-Verifique se você possui um arquivo appsettings.json com as configurações corretas para o banco de dados e outras variáveis.
-Certifique-se de ter o SQL Server instalado e configurado. Crie um banco de dados para o projeto e configure a string de conexão no arquivo.
-Configure também as credenciais SMTP.
-Exemplo de configuração:
+- Microsoft.EntityFrameworkCore (9.0.3)
+- Microsoft.EntityFrameworkCore.Design (9.0.3)
+- Microsoft.EntityFrameworkCore.SqlServer (9.0.3)
+- Microsoft.EntityFrameworkCore.Tools (9.0.3)
+- Newtonsoft.Json (13.0.3)
+- Serilog.AspNetCore (9.0.0)
+- Serilog.Sinks.Console (6.0.0)
+- Serilog.Sinks.File (6.0.0)
+- SixLabors.ImageSharp (3.1.7)
+- Stripe.net (47.3.0)
+
+#### 3️⃣ Configure o appsettings.json
+
+Crie ou edite o arquivo appsettings.json com suas informações de conexão e SMTP:
 
 ```bash
 {
@@ -116,7 +138,7 @@ Exemplo de configuração:
     "DataBase": "Server=localhost;Database=NomeDoBanco;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
 },
   "EmailSettings": {
-    "SmtpServer": "smtp.gmail.com", // utilizando gmail
+    "SmtpServer": "smtp.gmail.com",
     "SmtpPort": 587,
     "SenderEmail": "seuemail@dominio.com",
     "SenderPassword": "suasenha"
@@ -134,35 +156,38 @@ Exemplo de configuração:
 }
 ```
 
-4. **Aplicar as Migrations**
-Aplicar as migrations para criar o esquema do banco de dados. Execute o seguinte comando no Package Manager Console ou Terminal:
+#### 4️⃣ Aplicar as Migrations
+
+Aplicar as migrations para criar o esquema do banco de dados:
 
 ```bash
+dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-5. **Executar o Projeto**
-Clique em Run ou Iniciar sem Depuração (F5) para rodar o servidor localmente. O projeto será executado no navegador padrão.
+#### 5️⃣ Execute o projeto
 
-6. **Verificação**
-Após a execução, o projeto estará disponível em http://localhost:5000 (ou a porta configurada no launchSettings.json). 
-Verifique se o sistema está funcionando conforme esperado.
+No Visual Studio, clique em Iniciar (F5) ou use: 
+```bash
+dotnet run
+```
+
+#### 6️⃣ Acesse no navegador
+
+O projeto estará disponível em:
+```bash
+http://localhost:5001
+```
+Ou a porta definida no launchSettings.json.
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE.md](LICENSE.md) para mais detalhes.
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE.txt](LICENSE.txt) para mais detalhes.
 
 ## Contato
 
-Você pode entrar em contato comigo através do e-mail [alicemarques.dev@hotmail.com](mailto:alicemarques.dev@hotmail.com).
-
-Link do Projeto: [GitHub - DigitalStore](https://github.com/alicemarquesdev/MasterIdiomas.git)
-
-
-
-
-
-
-
+🔗[**LinkedIn**](https://linkedin.com/in/alicemarquesdev)  |
+ 📧 [**E-mail**](mailto:alicemarques.dev@hotmail.com)  |
+🌐 [**Portfólio**](https://alicemarquesdev.github.io/portfolio-AM/) 
 
 
