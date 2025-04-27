@@ -1,5 +1,6 @@
 ﻿using DigitalStore.Filters;
 using DigitalStore.Helper;
+using DigitalStore.Helper.Interfaces;
 using DigitalStore.Models;
 using DigitalStore.Repositorio.Interfaces;
 using DigitalStore.ViewModels;
@@ -22,35 +23,39 @@ namespace DigitalStore.Controllers
         // Declaração das dependências injetadas no controlador
         private readonly string _googleApiKey;
         private readonly IEnderecoRepositorio _enderecoRepositorio;
+        private readonly ISessao _sessao;
         private readonly ILogger<EnderecoController> _logger;  // ILogger para registrar logs de erro e sucesso.
 
         // Construtor do controlador. Recebe o repositório de endereços e o ILogger como dependências.
         // Adiciona checagem para garantir que as dependências não sejam nulas.
-        public EnderecoController(IOptions<GoogleAPISettings> googleApiKey, IEnderecoRepositorio enderecoRepositorio, ILogger<EnderecoController> logger)
+        public EnderecoController(IOptions<GoogleAPISettings> googleApiKey, IEnderecoRepositorio enderecoRepositorio, ISessao sessao, ILogger<EnderecoController> logger)
         {
             _googleApiKey = googleApiKey.Value.ApiKey ?? throw new ArgumentNullException(nameof(googleApiKey.Value.ApiKey));
             _enderecoRepositorio = enderecoRepositorio ?? throw new ArgumentNullException(nameof(enderecoRepositorio));
+            _sessao = sessao ?? throw new ArgumentNullException(nameof(sessao));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // Método GET para exibir os endereços do usuário e o formulário de adicionar um novo endereço.
-        public async Task<IActionResult> Enderecos(int id)
+        [HttpGet]
+        public async Task<IActionResult> Enderecos()
         {
             try
             {
-                // Valida o ID do usuário. Se for inválido, lança uma exceção.
-                if (id <= 0)
+                // Busca a sessão do usuário logado.
+                var usuario = _sessao.BuscarSessaoDoUsuario();
+                if (usuario == null)
                 {
-                    throw new ArgumentException("ID do usuário inválido.");
+                    throw new ArgumentException("Sessao do usuário é nula");
                 }
 
                 // Busca todos os endereços do usuário a partir do repositório.
-                var enderecos = await _enderecoRepositorio.BuscarTodosOsEnderecosDoUsuarioAsync(id);
+                var enderecos = await _enderecoRepositorio.BuscarTodosOsEnderecosDoUsuarioAsync(usuario.UsuarioId);
 
                 // Criação de um modelo de endereço vazio para preenchimento na view.
                 var endereco = new EnderecoModel
                 {
-                    UsuarioId = id,
+                    UsuarioId = usuario.UsuarioId,
                     EnderecoCompleto = string.Empty
                 };
 
@@ -58,7 +63,7 @@ namespace DigitalStore.Controllers
                 var viewModel = new EnderecoViewModel
                 {
                     GoogleApiKey = _googleApiKey,
-                    UsuarioId = id,
+                    UsuarioId = usuario.UsuarioId,
                     Enderecos = enderecos,
                     Endereco = endereco
                 };
