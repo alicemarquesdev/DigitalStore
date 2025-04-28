@@ -44,10 +44,16 @@ namespace DigitalStore.Helper
             { "Tocantins", "TO" }
         };
 
-                // Buscando o estado do endereço
-                string estado = estadosMapeados
-                    .FirstOrDefault(kvp => endereco.Contains(kvp.Key))
-                    .Value;
+                // Primeiro tenta pelo nome completo
+                var estado = estadosMapeados
+                    .FirstOrDefault(kvp => endereco.Contains(kvp.Key)).Value;
+
+                // Se não encontrar, tenta pela sigla
+                if (string.IsNullOrEmpty(estado))
+                {
+                    estado = estadosMapeados
+                        .FirstOrDefault(kvp => endereco.Contains(kvp.Value)).Value;
+                }
 
                 if (string.IsNullOrEmpty(estado))
                 {
