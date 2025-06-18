@@ -1,0 +1,221 @@
+﻿@model GerenciamentoProdutoViewModel
+
+@{
+    ViewData["Title"] = "Gerenciamento de Produtos";
+}
+
+<div class="container p-2">
+    <h2 class="mb-4 mt-5">Gerenciamento de Produtos</h2>
+</div>
+
+<div class="container card mb-5 p-0">
+    <div class="card-header d-flex justify-content-between align-items-center fw-bold">
+        <div>
+            Lista Geral de Produtos
+        </div>
+        <div class="ms-auto">
+            <!-- Botão para abrir o modal -->
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addProdutoModal">
+                <i class="bi bi-plus-circle"> Adicionar Produto</i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body table-responsive-sm">
+        <table id="table-produtos" class="table table-striped table-bordered pt-2">
+            <thead>
+                <tr>
+                    <th scope="col">Produto</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Quantidade em Estoque</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Produtos != null && Model.Produtos.Any())
+                {
+                    foreach (var produto in Model.Produtos)
+                    {
+                        <tr>
+                            <th scope="row">@produto.NomeProduto</th>
+                            <td>@produto.Categoria</td>
+                            <td>@produto.Descricao</td>
+                            <td>@produto.QuantidadeEstoque</td>
+                            <td>R$@produto.Preco</td>
+                            <td class="d-flex justify-content-center px-1">
+                                <!-- Botão de atualização (editar) -->
+                                <button type="button" class="bg-transparent border-0 d-flex align-items-center justify-content-center me-2" data-bs-toggle="modal" data-bs-target="#updateProdutoModal"
+                                        data-produto-id="@produto.ProdutoId"
+                                        data-nomeproduto="@produto.NomeProduto"
+                                        data-descricao="@produto.Descricao"
+                                        data-categoria="@produto.Categoria"
+                                        data-quantidade="@produto.QuantidadeEstoque"
+                                        data-preco="@produto.Preco"
+                                        data-imagem="@produto.ImagemUrl">
+                                    <i class="bi bi-pencil-square text-dark fs-5"></i>
+                                </button>
+                                <!-- Botão de remoção -->
+                                <button type="button" class="bg-transparent border-0 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#removeProdutoModal" data-produto-id="@produto.ProdutoId">
+                                    <i class="bi bi-trash text-dark fs-5"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Adicionar Produto -->
+<div class="modal fade" id="addProdutoModal" tabindex="-1" aria-labelledby="addProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProdutoModalLabel">Adicionar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Produto" asp-action="AddProduto" method="post" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" asp-for="Produto.NomeProduto" />
+                        <label for="NomeProduto">Nome do Produto</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.NomeProduto) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" asp-for="Produto.Descricao" />
+                        <label for="Descricao">Descrição</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Descricao) </span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" asp-for="Produto.Categoria" />
+                        <label for="Categoria">Categoria</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Categoria) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="number" asp-for="Produto.QuantidadeEstoque" />
+                        <label for="QuantidadeEstoque">Quantidade em Estoque</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.QuantidadeEstoque) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="number" asp-for="Produto.Preco" />
+                        <label for="Preco">Preço</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Preco) </span>
+                    </div>
+
+                    <div class="mb-2">
+                        <input class="form-control" id="ImagemFileAdd" type="file" name="imagem" />
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <img id="imgPreviewAdd" style="max-width:300px; max-height:300px" />
+                    </div>
+
+                    <div class="mt-2 mb-0">
+                        <button type="submit" class="btn btn-dark d-block w-100 mb-1">Adicionar Produto</button>
+                        <a class="btn btn-dark d-block w-100" asp-controller="Produto" asp-action="GerenciamentoProdutos">Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Remover Produto -->
+<div class="modal fade" id="removeProdutoModal" tabindex="-1" aria-labelledby="removeProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeProdutoModalLabel">Confirmar Remoção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja remover este produto?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- Formulário para remover produto -->
+                <form asp-controller="Produto" asp-action="RemoverProduto" method="post" id="removeProdutoForm">
+                    <input type="hidden" name="id" id="produtoId" />
+                    <button type="submit" class="btn btn-danger">Remover Produto</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de Atualizar Produto -->
+<div class="modal fade" id="updateProdutoModal" tabindex="-1" aria-labelledby="updateProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProdutoModalLabel">Atualizar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Produto" asp-action="AtualizarProduto" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Produto.ProdutoId" id="ProdutoId" />
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" asp-for="Produto.NomeProduto" id="NomeProduto" />
+                        <label for="NomeProduto">Nome do Produto</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.NomeProduto) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" asp-for="Produto.Descricao" id="Descricao" />
+                        <label for="Descricao">Descrição</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Descricao) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <select class="form-select" asp-for="Produto.Categoria" id="Categoria">
+                            <option value="">Selecione uma Categoria</option>
+                            @foreach (var categoria in Model.Categorias)
+                            {
+                                <option value="@categoria">@categoria</option>
+                            }
+                        </select>
+                        <label for="Categoria">Categoria</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Categoria) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="number" asp-for="Produto.QuantidadeEstoque" id="QuantidadeEstoque" />
+                        <label for="QuantidadeEstoque">Quantidade em Estoque</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.QuantidadeEstoque) </span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="number" asp-for="Produto.Preco" id="Preco" />
+                        <label for="Preco">Preço</label>
+                        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Produto.Preco) </span>
+                    </div>
+
+                    <div class="mb-1">
+                        <input class="form-control" id="ImagemFileUpdate" type="file" name="novaImagem" accept="image/*" />
+                        <small class="text-danger">Somente arquivos com as extensões jpg, jpeg e png são permitidos.</small>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <img id="imgPreviewUpdate" src="@Url.Content(Model.Produto.ImagemUrl)" style="max-width: 300px; max-height: 300px;" />
+                    </div>
+
+                    <div class="mt-2 mb-0">
+                        <button type="submit" class="btn btn-dark d-block w-100 mb-1">Atualizar Produto</button>
+                        <a class="btn btn-dark d-block w-100" asp-controller="Produto" asp-action="GerenciamentoProdutos">Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/gerenciamento-produtos.js"></script>
+}

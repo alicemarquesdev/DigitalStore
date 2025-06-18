@@ -1,0 +1,72 @@
+﻿@model LoginModel
+
+@{
+    Layout = "_LayoutDeslogado"; // Define o layout que será utilizado (layout para usuários não autenticados)
+    ViewData["Title"] = "Login"; 
+}
+
+<!-- Container principal para o conteúdo da página -->
+<div class="container mt-2">
+</div>
+
+<!-- Container que envolve o formulário de login -->
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <!-- Centraliza o conteúdo na página -->
+        <div class="col-lg-5">
+            <!-- Define o tamanho da coluna para dispositivos grandes -->
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <!-- Card para o formulário -->
+                <div class="card-header">
+                    <!-- Título do formulário -->
+                    <h3 class="text-center font-weight-light my-4">Login</h3>
+                </div>
+
+                <div class="card-body">
+                    <!-- Corpo do card onde o formulário é inserido -->
+                    <form asp-controller="Login" asp-action="Entrar" method="post">
+                        <!-- Formulário com o método POST para enviar os dados de login -->
+                        <!-- Campo de E-mail -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="email" asp-for="Email" />
+                            <label for="Email">Email</label>
+                            <!-- Mensagem de erro exibida se houver problemas com o campo -->
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Email) </span>
+                        </div>
+
+                        <!-- Campo de Senha -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="Senha" asp-for="Senha" type="password" />
+                            <label for="Senha">Senha</label>
+                            <!-- Mensagem de erro exibida se houver problemas com o campo -->
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Senha) </span>
+                        </div>
+
+                        <!-- Botões abaixo do formulário -->
+                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <!-- Link para página de redefinição de senha -->
+                            <a class="small" asp-controller="Login" asp-action="RedefinirSenha">Esqueceu a senha?</a>
+                            <!-- Botão de login -->
+                            <button type="submit" class="btn btn-dark">Login</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Rodapé do card com link para criação de conta -->
+                <div class="card-footer text-center py-3">
+                    <div class="small">
+                        <!-- Link para redirecionar para a página de criação de conta -->
+                        <a asp-controller="Login" asp-action="CriarUsuario">Não tem uma conta? Crie sua conta!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info alert-sm">
+                <small>
+                    <strong>Modo de teste - Administrador:</strong><br />
+                    Login: admin@hotmail.com<br />
+                    Senha: 12345678
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

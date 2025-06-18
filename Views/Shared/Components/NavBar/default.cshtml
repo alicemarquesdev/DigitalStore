@@ -1,0 +1,147 @@
+﻿@model NavBarViewModel
+
+<!-- Barra de navegação principal -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container px-3">
+        <!-- Nome do site -->
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            <h4 class="m-0 py-1">@Model.NomeSite</h4>
+        </a>
+
+        @if(!Model.PerfilUsuarioCliente)
+        {
+            <!-- Botão hamburguer (mobile) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        }
+        
+        <!-- Itens que colapsam no hamburguer -->
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav flex-column flex-lg-row align-items-end align-items-lg-center ms-auto">
+                @if (!Model.UsuarioLogado)
+                {
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Login" asp-action="Login">Login</a>
+                    </li>
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Home" asp-action="Suporte">Suporte</a>
+                    </li>
+                }
+                else if (!Model.PerfilUsuarioCliente)
+                {
+                    <!-- Só esses entram no hamburguer se não for cliente -->
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Produto" asp-action="GerenciamentoProdutos">Gerenciamento de Produtos</a>
+                    </li>
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Pedido" asp-action="PedidosEPagamentos">Pedidos e Pagamentos</a>
+                    </li>
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Site" asp-action="Personalizacao">Personalização</a>
+                    </li>
+                    <li class="nav-item py-2">
+                        <a class="nav-link" asp-controller="Login" asp-action="Sair">Sair</a>
+                    </li>
+
+                }
+            </ul>
+        </div>
+
+        <!-- Itens que SEMPRE aparecem (carrinho, coração, conta) -->
+        @if (Model.PerfilUsuarioCliente)
+        {
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                <!-- Favoritos -->
+                <li class="nav-item me-4 position-relative">
+                    <a class="nav-link p-0" asp-controller="Favorito" asp-action="Favoritos" asp-route-id="@Model.UsuarioLogadoId">
+                        <i class="bi-heart-fill text-light fs-5 me-1"></i>
+                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                            @Model.FavoritosQuantidadeDeProdutos
+                        </span>
+                    </a>
+                </li>
+
+                <!-- Carrinho -->
+                <li class="nav-item me-3 position-relative">
+                    <a class="nav-link p-0" asp-controller="Carrinho" asp-action="Carrinho">
+                        <i class="bi-cart-fill text-light fs-5 me-1"></i>
+                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill ">
+                            @Model.CarrinhoQuantidadeDeProdutos
+                        </span>
+                    </a>
+                </li>
+                <!-- Minha Conta -->
+                <li class="nav-item dropdown position-relative">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Minha Conta
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="navbarDropdown"
+                        style="position: absolute; top: 100%; right: 0; width: max-content; min-width: 10rem; z-index: 1050;">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.UsuarioLogadoId">
+                                <i class="bi bi-bag-fill fs-5 me-1"></i> Meus Pedidos
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.UsuarioLogadoId">
+                                <i class="bi bi-person-fill fs-5 me-1"></i> Minha Conta
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Suporte">Suporte</a></li>
+                        <li><a class="dropdown-item" asp-controller="Login" asp-action="Sair">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        }
+    </div>
+</nav>
+
+<!-- Segunda barra de navegação para categorias -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-0 m-0 shadow-sm">
+    <div class="container-fluid">
+        <button class="navbar-toggler mx-3 my-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCategorias"
+                aria-controls="navbarCategorias" aria-expanded="false" aria-label="Toggle categories">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-center" id="navbarCategorias">
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2" asp-controller="Home" asp-action="Index">INÍCIO</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-3 py-2" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">TODAS AS CATEGORIAS</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="TodosOsProdutos">Todos os produtos</a></li>
+                        @if (Model.Categorias != null && Model.Categorias.Any())
+                        {
+                            foreach (var categoria in Model.Categorias)
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria">@categoria</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+                @if (Model.Categorias != null && Model.Categorias.Any())
+                {
+                    foreach (var categoria in Model.Categorias.Take(5))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link px-3 py-2" asp-controller="Home" asp-action="Categoria" asp-route-categoria="@categoria">@categoria.ToUpper()</a>
+                        </li>
+                    }
+                }
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2" asp-controller="Home" asp-action="UltimasNovidades">ÚLTIMAS NOVIDADES</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

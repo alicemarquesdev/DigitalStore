@@ -1,0 +1,185 @@
+﻿@model CarrinhoViewModel
+
+@{
+    ViewData["Title"] = "Carrinho"; // Definindo o título da página como "Carrinho"
+}
+
+<div class="container my-lg-5 pb-md-5">
+    <div class="row">
+        <!-- Seção esquerda: Meu Carrinho -->
+        <div class="col-md-7">
+            <h3 class="fw-bold text-uppercase pt-3 pb-5">Meu Carrinho</h3>
+
+            <!-- Verifica se o carrinho contém itens -->
+            @if (Model.Carrinho != null && Model.Carrinho.Any())
+            {
+                // Itera sobre cada item do carrinho
+                foreach (var produto in Model.Carrinho)
+                {
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="row g-0 mb-3">
+                            <!-- Imagem do Produto -->
+                            <div class="col-md-3 d-flex align-items-center justify-content-center">
+                                <!-- Link para visualizar o produto -->
+                                <a asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
+                                    <img src="@Url.Content(produto?.Produto?.ImagemUrl)" class="img-fluid rounded-start" alt="Produto" style="object-fit: cover; height: 180px; width: 100%;">
+                                </a>
+                            </div>
+
+                            <!-- Informações do Produto -->
+                            <div class="col-md-6 d-flex flex-column justify-content-center">
+                                <!-- Link para o produto -->
+                                <a class="text-decoration-none text-dark" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold text-dark mb-1">@produto?.Produto?.NomeProduto</h5>
+                                        <p class="card-text text-muted small mb-2">@produto?.Produto?.Descricao</p>
+                                        <h5 class="fw-bold mb-3">R$ @produto?.Produto?.Preco</h5>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Seção de quantidade -->
+                            <div class="col-12 col-md-3 d-flex flex-column align-items-center justify-content-center position-relative">
+                                <!-- Botão no canto superior direito -->
+                                <div class="w-100 d-flex justify-content-center">
+                                    <!-- Lógica para alterar o ícone do carrinho (adicionar/remover) -->
+                                    <button type="button" class="btn bg-transparent border-0 btn-sm carrinho-btn @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                    data-produto-id="@produto.ProdutoId">
+                                        <i class="bi @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Campo de quantidade -->
+                                <div class="input-group border-1 border-secondary w-100 justify-content-center" style="max-width: 200px;">
+                                    <div class="border border-secondary rounded">
+                                        <!-- Botão para diminuir quantidade -->
+                                        <button type="button" class="bg-transparent border-0 btnDiminuir" data-produto-id="@produto.ProdutoId">
+                                            <i class="bi bi-dash-circle text-secondary"></i>
+                                        </button>
+
+                                        <!-- Campo de quantidade, que é somente leitura -->
+                                        <input type="text" name="Quantidade" class="text-center border-0"
+                                        value="@(Model?.Carrinho?.FirstOrDefault(x => x.ProdutoId == produto.ProdutoId)?.Quantidade ?? 0)"
+                                        style="font-size: 1rem; width: 60px;" readonly
+                                        data-produto-id="@produto.ProdutoId" />
+
+                                        <!-- Botão para aumentar quantidade -->
+                                        <button type="button" class="bg-transparent border-0 btnAumentar" data-produto-id="@produto.ProdutoId">
+                                            <i class="bi bi-plus-circle text-secondary"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center text-muted">Nenhum produto no carrinho.</p>
+
+            }
+            <div class="text-center py-3">
+                <hr class="w-75 mx-auto border-2 border-secondary">
+            </div>
+        </div>
+
+        <!-- Seção direita: Resumo de Compra -->
+        <div class="col-md-5">
+            <h4 class="mb-3 pt-3">Endereço de Envio</h4>
+
+            <!-- Card para exibição dos endereços -->
+            <div class="card shadow-sm mb-4 mt-2">
+                <div class="card-body">
+                    @if (Model?.Enderecos != null && Model.Enderecos.Any())
+                    {
+                        <h5 class="card-title mb-3">Selecione um Endereço</h5>
+                        @foreach (var endereco in Model.Enderecos)
+                        {
+                            <div class="d-flex justify-content-between mb-2 align-items-start">
+                                <!-- Exibe a lista de endereços cadastrados com radio buttons para selecionar o endereço de envio -->
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="EnderecoId" value="@endereco.EnderecoId" id="endereco_@endereco.EnderecoId" />
+                                    <label class="form-check-label" for="endereco_@endereco.EnderecoId">
+                                        <p>@endereco.EnderecoCompleto</p>
+                                    </label>
+                                </div>
+
+                                <!-- Formulário para remover o endereço -->
+                                <form asp-controller="Endereco" asp-action="RemoverEndereco" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@endereco.EnderecoId" />
+                                    <button type="submit" class="btn btn-link text-dark" title="Remover Endereço">
+                                        <i class="bi bi-trash"></i> <!-- Ícone de lixeira -->
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Você ainda não possui endereços cadastrados.</p>
+                    }
+
+                    <!-- Formulário para adicionar novo endereço -->
+                    <div class="mt-1">
+                        <h6 class="card-title">Adicionar Novo Endereço</h6>
+                        <form asp-controller="Endereco" asp-action="AddEndereco" method="post">
+                            <input type="hidden" name="UsuarioId" value="@Model?.Endereco?.UsuarioId" />
+                            <div class="form-floating mb-2">
+                                <!-- Uso da API AutoComplete do Google -->
+                                <input class="form-control" type="text" name="EnderecoCompleto" id="endereco" asp-for="@Model.Endereco.EnderecoCompleto" placeholder="Digite o endereço completo" required />
+                                <label for="EnderecoCompleto">Endereço Completo</label>
+                            </div>
+
+                            <div class="mt-1 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-outline-dark btn-sm">Adicionar Endereço</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumo da Compra -->
+            <h5 class="mb-4">Resumo da Compra</h5>
+            <div class="card shadow-sm pb-3">
+                <div class="card-body">
+                    <!-- Itens no carrinho -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <h6 class="fw-bold">Itens no carrinho:</h6>
+                        <span>@(Model?.Carrinho?.Sum(x => x.Quantidade) ?? 0)</span>
+                    </div>
+                    <hr>
+                    <!-- Total da compra -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6 class="fw-bold">Total:</h6>
+                        <h6 class="fw-bold">R$ @((Model?.Carrinho?.Sum(x => x.Produto?.Preco * x.Quantidade) ?? 0))</h6>
+                    </div>
+
+                    <!-- Botão para prosseguir para pagamento -->
+                    <a id="btnProsseguir" href="#" class="btn btn-dark w-100">
+                        Prosseguir para Pagamento <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Variável carrinhoVazio indica se o carrinho está vazio ou não, para o javascript carrinho-view.js -->
+    <script>
+        var carrinhoVazio = @((Model?.Carrinho != null && Model.Carrinho.Any()) ? "false" : "true")
+    </script>
+    <script>
+        var googleApiKey = '@Model?.GoogleApiKey'; // Chave da API do Google
+               var script = document.createElement('script');
+               script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=places&callback=initAutocomplete`;
+               script.async = true;
+               script.defer = true;
+               document.head.appendChild(script);
+    </script>
+    <script src="~/js/google-api-endereco.js"></script>
+    <script src="~/js/carrinho-view.js"></script>
+    <script src="~/js/atualizar-quantidade-carrinho.js"></script>
+}

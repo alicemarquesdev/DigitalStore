@@ -1,0 +1,100 @@
+﻿@model EnderecoViewModel
+
+@{
+    ViewData["Title"] = "Endereços";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Left -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-3">
+                    <ul class="list-unstyled">
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <hr>
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-list"></i> Meus Pedidos</a></li>
+                        <hr>
+                        <li><a asp-controller="Endereco" asp-action="Enderecos"  class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Endereços</a></li>
+                        <hr>
+                        <li><a asp-controller="AlterarSenha" asp-action="AlterarSenha" asp-route-id="@Model.UsuarioId" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
+                        <hr>
+                                               <li>
+                            <a class="text-decoration-none text-dark fw-bold d-block py-2" asp-controller="Login" asp-action="Sair">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: User Data -->
+        <div class="col-md-9">
+            <!-- Card Principal -->
+            <div class="card shadow-sm mb-4 mt-2">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Endereços</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Conteúdo Condicional -->
+                    @if (Model.Enderecos != null && Model.Enderecos.Any())
+                    {
+                        @foreach (var endereco in Model.Enderecos)
+                        {
+                            <div class="d-flex justify-content-between mb-1 align-items-start">
+                                <!-- Exibe a lista de endereços do usuário com radio buttons para selecionar o endereço de envio -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="hidden" name="EnderecoId" value="@endereco.EnderecoId" id="endereco_@endereco.EnderecoId" />
+                                    <label class="form-check-label" for="endereco_@endereco.EnderecoId">
+                                        <p>@endereco.EnderecoCompleto</p>
+                                    </label>
+                                </div>
+
+                                <!-- Formulário para remover o endereço -->
+                                <form asp-controller="Endereco" asp-action="RemoverEndereco" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@endereco.EnderecoId" />
+                                    <button type="submit" class="btn btn-link text-dark" title="Remover Endereço">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted">Você ainda não possui endereços cadastrados.</p>
+                    }
+
+                    <!-- Formulário para Adicionar Novo Endereço -->
+                    <div class="mt-1">
+                        <h6 class="card-title">Adicionar Novo Endereço</h6>
+                        <form asp-controller="Endereco" asp-action="AddEndereco" method="post">
+                            <input type="hidden" name="UsuarioId" value="@Model.Endereco.UsuarioId" />
+                            <div class="form-floating mb-2">
+                                <input class="form-control" type="text" name="EnderecoCompleto" id="endereco" asp-for="@Model.Endereco.EnderecoCompleto" placeholder="Digite o endereço completo" required />
+                                <label for="EnderecoCompleto">Endereço Completo</label>
+                            </div>
+
+                            <div class="mt-1 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-outline-dark btn-sm">Adicionar Endereço</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var googleApiKey = '@Model?.GoogleApiKey'; // Chave da API do Google
+               var script = document.createElement('script');
+               script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=places&callback=initAutocomplete`;
+               script.async = true;
+               script.defer = true;
+               document.head.appendChild(script);
+    </script>    
+    <script src="~/js/google-api-endereco.js"></script>
+}

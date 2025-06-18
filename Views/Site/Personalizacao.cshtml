@@ -1,0 +1,54 @@
+﻿@model SiteModel
+
+@{
+    ViewData["Title"] = "Personalização";
+}
+
+<div class="container my-5">
+    <h2 class="mb-4">Personalização do Site</h2>
+
+    <form method="post" enctype="multipart/form-data" asp-action="AtualizarSite" asp-controller="Site">
+        <div class="card shadow-sm mb-4">
+     
+            <div class="card-body">
+                <!-- Nome do Site -->
+                <div class="mb-4">
+                    <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
+                    <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" maxlength="20" required>
+                    <span asp-validation-for="NomeSite" class="text-danger"></span>
+                    <small class="text-danger">Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos.</small>
+                </div>
+
+                <!-- Banner -->
+                <div class="mb-3">
+                    <label for="ImagemFile" class="form-label fw-bold">Selecione os Banners:</label>
+                    <input class="form-control" id="ImagemFile" type="file" name="banner" />
+                </div>
+                <div class="text-center">
+                    <label for="ImagemFile">
+                        <img id="imgPreview" style="max-width:300px; max-height:300px" />
+                    </label>
+                </div>
+
+                <!-- Frase da Home Page -->
+                <div class="mb-3">
+                    <label asp-for="Frase" class="form-label fw-bold">Digite a frase para a página inicial:</label>
+                    <textarea asp-for="Frase" rows="3" class="form-control" maxlength="40" ></textarea>
+                    <span asp-validation-for="Frase" class="text-danger"></span>
+                </div>
+
+                <!-- Botão de Salvar -->
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark w-25">
+                        <i class="bi bi-check-circle"> </i> Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/personalizacao.js"></script>
+}
+

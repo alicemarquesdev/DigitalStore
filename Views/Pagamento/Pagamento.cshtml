@@ -1,0 +1,129 @@
+﻿@model PagamentoViewModel
+
+@{
+    ViewData["Title"] = "Pagamento"; // Define o título da página para "Pagamento"
+}
+
+<div class="container my-lg-5 pb-md-5">
+    <!-- Breadcrumb para navegação -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none text-dark" asp-controller="Carrinho" asp-action="Carrinho">
+                <i class="bi bi-arrow-left"></i>Carrinho
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Pagamento</li>
+    </ol>
+
+    <div class="row mb-4">
+        <!-- Left Section: Pagamento -->
+        <div class="col-md-7">
+            <h4 class="mb-4">Pagamento</h4>
+
+            <!-- Cartão de Crédito -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-credit-card"></i> Cartão de Crédito</h5>
+                    <form id="payment-form" method="post" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerText = 'Processando...';">
+
+                        <div class="alert alert-info alert-sm">
+                            <small>
+                                <strong>Modo de Teste:</strong><br />
+                                Cartão: 4242 4242 4242 4242<br />
+                                Expiração: qualquer futuro (ex: 12/34)<br />
+                                CVC: qualquer (ex: 123)
+                            </small>
+                        </div>
+                        <!-- Campo para Nome no Cartão -->
+                        <div class="form-group mb-3">
+                            <label for="card-name">Nome no Cartão</label>
+                            <input type="text" id="card-name" class="form-control" placeholder="Nome no Cartão" style="border-radius: 5px; padding: 10px;" required>
+                        </div>
+
+                        <!-- Campo para Número do Cartão -->
+                        <div class="form-group mb-3">
+                            <label for="card-number">Número do Cartão</label>
+                            <div id="card-number" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                        </div>
+
+                        <!-- Linha de inputs para Expiração e CVC -->
+                        <div class="row mb-4">
+                            <!-- Expiração -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-expiry">Mês e Ano de Expiração</label>
+                                    <div id="card-expiry" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                                </div>
+                            </div>
+
+                            <!-- CVC com ícone -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-cvc">CVC</label>
+                                    <div id="card-cvc" class="form-control" style="border-radius: 5px; padding: 10px;" required></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Div para exibir mensagens de erro -->
+                        <div id="card-errors" role="alert" class="text-danger"></div>
+
+                        <!-- Botão para submeter o pagamento -->
+                        <div class="container d-flex justify-content-end">
+                            <button type="submit" class="btn btn-dark w-100">Efetuar Pagamento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section: Resumo do Pedido -->
+        <div class="col-md-5">
+            <h5 class="mb-4 mt-1">Endereço de Entrega</h5>
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    @if (Model.Endereco != null)
+                    {
+                        <!-- Exibe o endereço completo -->
+                        <p><strong>@Model.Endereco.EnderecoCompleto</strong></p>
+                    }
+                </div>
+            </div>
+
+            <h4 class="mb-3">Resumo do Pedido</h4>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- Exibe o subtotal -->
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Subtotal</p>
+                        <p class="mb-2 fw-bold">R$ @Model.CarrinhoTotal</p>
+                    </div>
+                    <!-- Exibe o valor do frete -->
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Valor do Frete:</p>
+                        <p class="mb-2 fw-bold">R$ @Model.Frete</p>
+                    </div>
+                    <hr>
+                    <!-- Exibe o total -->
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold">Total</h6>
+                        <h6 class="fw-bold">R$ @Model.Valor</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Passando dados para o arquivo js pagamento-stripe.js -->
+    <script>
+        window.usuarioId = @Model?.Endereco?.UsuarioId ?? 0; // ID do usuário (se existir)
+        window.endereco = '@Model?.Endereco?.EnderecoCompleto'; // Endereço completo
+        window.valor = @Model?.Valor ?? 0; // Valor da compra
+        window.stripeKey = '@Model?.StripeKey'; // Chave pública do Stripe
+    </script>
+    <!-- Inclusão do Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="~/js/pagamento-stripe.js"></script>
+}

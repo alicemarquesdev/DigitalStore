@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"]</title> <!-- Título da página, que pode ser definido nas views específicas -->
+    <!-- Links para os arquivos de estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" /> <!-- Estilos do DataTables -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />  <!-- Ícones do Bootstrap -->
+    <!-- Estilos personalizados -->
+    <link href="~/css-bootstrap/styles.css" rel="stylesheet"/>
+</head>
+
+<body>
+    <!-- Cabeçalho com navegação -->
+    <header>
+        @await Component.InvokeAsync("NavBar") <!-- Componente de barra de navegação, reutilizável em todas as páginas -->
+    </header>
+
+    <!-- Área principal da página -->
+    <main class="container-fluid m-0 p-0" role="main">
+        <!-- Exibição de mensagens temporárias (sucesso ou erro) -->
+        @if (TempData["Alerta"] != null)
+        {
+            <div class="alert alert-dark mx-5 d-flex justify-content-between align-items-center" role="alert">
+                <span>@(TempData["Alerta"])</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Corpo da página gerado pelas views específicas -->
+        @RenderBody() <!-- Este método renderiza o conteúdo específico de cada página (views) -->
+    </main>
+
+    <!-- Rodapé com informações adicionais -->
+    <footer class="bg-dark text-white pt-2">
+        <div class="container py-3">
+            <div class="row text-center align-items-center flex-column flex-md-row">
+                <!-- Promoção 1 -->
+                <div class="col-12 col-md-4 d-flex flex-row align-items-center justify-content-center py-3 py-md-0">
+                    <i class="bi bi-truck fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">FRETE GRÁTIS</h6>
+                        <p class="mb-0">Em produtos selecionados</p>
+                    </div>
+                </div>
+
+                <!-- Promoção 2 -->
+                <div class="col-12 col-md-4 d-flex flex-row align-items-center justify-content-center py-3 py-md-0">
+                    <i class="bi bi-lightning-charge fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">ENTREGA EXPRESSA</h6>
+                        <p class="mb-0">A partir de 2 dias úteis</p>
+                    </div>
+                </div>
+
+                <!-- Promoção 3 -->
+                <div class="col-12 col-md-4 d-flex flex-row align-items-center justify-content-center py-3 py-md-0">
+                    <i class="bi bi-credit-card fs-2 text-white me-3"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0">EM ATÉ 10X SEM JUROS</h6>
+                        <p class="mb-0">Parcelamento facilitado</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="row text-center text-md-start">
+                <!-- Sobre nós -->
+                <div class="col-12 col-md-4 mb-3">
+                    <h6 class="text-uppercase">Sobre nós</h6>
+                    <p class="small">
+                        A Digital Store oferece uma ampla variedade de eletrônicos de alta qualidade com entrega rápida e suporte excepcional.
+                        Nossa missão é fornecer os melhores produtos com a melhor experiência de compra online.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div class="col-12 col-md-4 mb-3">
+                    <h6 class="text-uppercase">Links úteis</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Política de Devoluções</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Ajuda & Suporte</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contato -->
+                <div class="col-12 col-md-4 mb-3">
+                    <h6 class="text-uppercase">Contato</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Telefone:</strong> (81) 4002-1234</li>
+                        <li><strong>E-mail:</strong> <a href="mailto:suporte@digitalstore.com" class="text-white text-decoration-none">suporte@digitalstore.com</a></li>
+                        <li><strong>WhatsApp:</strong> <a href="https://wa.me/5511999998888" target="_blank" class="text-white text-decoration-none">(11) 99999-8888</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-2" />
+
+            <div class="text-center">
+                <p class="small mb-0">&copy; 2025 Digital Store. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Scripts JS essenciais -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script> <!-- Bootstrap Bundle com Popper.js -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> <!-- DataTables JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script> <!-- Validação de formulário com jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script> <!-- Validação unobtrusive (semelhante ao jQuery Validation, mas com integração MVC) -->
+   
+    <!-- Scripts personalizados -->
+    <script src="~/js/add-remove-carrinho.js"></script> <!-- Script para manipulação de carrinho -->
+    <script src="~/js/add-remove-favoritos.js"></script> <!-- Script para manipulação de favoritos -->
+    <script src="~/js/datatable.js"></script> <!-- Tabelas -->
+
+
+    <!-- Section para inclusão de scripts adicionais nas páginas específicas -->
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

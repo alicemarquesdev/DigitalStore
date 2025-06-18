@@ -1,0 +1,137 @@
+﻿@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Produto";
+}
+
+<!-- Início da seção de exibição do produto -->
+<div class="container pt-5">
+    <section class="py-1">
+        <div class="container px-4 px-lg-5 my-3">
+            <div class="row gx-3 gx-lg-4 align-items-start">
+
+                <!-- Coluna de imagem do produto -->
+                <div class="col-md-5">
+                    <img class="card-img-top mb-3" src="@Url.Content(Model.Produto.ImagemUrl)" alt="Produto"
+                         style="max-width: 100%; height: auto; border-radius: 8px;" />
+                </div>
+
+                <!-- Coluna de informações do produto -->
+                <div class="col-md-6">
+                    <h2 class="fw-bold fs-4">@Model.Produto.NomeProduto</h2>
+                    <div class="mb-2">
+                        <h5 class="fw-semibold">R$ @Model.Produto.Preco</h5>
+                        <p class="text-muted" style="font-size: 0.9rem;">em 10x sem juros no cartão</p>
+                    </div>
+                    <p class="text-muted" style="font-size: 0.9rem; line-height: 1.3;">@Model.Produto.Descricao</p>
+
+                    <div class="d-flex gap-3 p-3">
+                        <!-- Botões para adicionar aos favoritos e carrinho -->
+                        @if (!Model.UsuarioLogado)
+                        {
+
+                            <!-- Caso o usuário não esteja logado -->
+                            <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                <i class="bi bi-heart fs-5"></i>
+                            </a>
+                            <div class="border-end"></div>
+                            <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                <i class="bi bi-cart3 fs-5"></i>
+                            </a>
+
+                        }
+                        else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
+                        {
+
+                            <button type="button"
+                                    class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(Model.Produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                    data-produto-id="@Model.Produto.ProdutoId">
+                                <i class="bi @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(Model.Produto.ProdutoId) ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
+                            </button>
+
+                            <div class="border-end"></div>
+
+                            <button type="button"
+                                    class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(Model.Produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                    data-produto-id="@Model.Produto.ProdutoId">
+                                <i class="bi @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(Model.Produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Seção de itens novidades -->
+<section class="py-1">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Últimas Novidades</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var produto in Model.Produtos.Take(5))
+            {
+                <div class="col mb-5">
+                    <div class="card h-100 border-0 rounded-4 shadow position-relative">
+                        <!-- Link para página de produto -->
+                        <a class="text-decoration-none" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
+                            <img src="@Url.Content(produto.ImagemUrl)" class="card-img-top" alt="@produto.NomeProduto" style="height: 250px; object-fit: cover; border-radius: 4px;" />
+                            <div class="card-body text-dark text-center">
+                                <h6 class="card-title fw-bold mb-0">@produto.NomeProduto</h6>
+                                <p class="fw-bold mb-0">R$ @produto.Preco</p>
+                            </div>
+                        </a>
+
+                        <!-- Botões para adicionar aos favoritos e carrinho -->
+                        <div>
+
+                            @if (!Model.UsuarioLogado)
+                            {
+                                <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
+                                    <div class="d-flex flex-column gap-2">
+                                        <!-- Caso o usuário não esteja logado -->
+                                        <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                            <i class="bi bi-heart fs-5"></i>
+                                        </a>
+                                        <div class="border-top mt-1"></div>
+                                        <a class="btn bg-transparent border-0 p-0" asp-controller="Login" asp-action="Login">
+                                            <i class="bi bi-cart3 fs-5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            else if (Model.UsuarioLogado && Model.PerfilUsuarioCliente)
+                            {
+                                <div class="position-absolute top-0 end-0 m-1 bg-light border rounded-3 p-2">
+                                    <div class="d-flex flex-column gap-2">
+                                        <!-- Caso o usuário esteja logado e seja cliente -->
+                                        <div class="d-flex flex-column gap-2">
+                                            <button type="button"
+                                                    class="btn bg-transparent border-0 p-0 favorito-btn @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                    data-produto-id="@produto.ProdutoId">
+                                                <i class="bi @(Model.FavoritosDoUsuario != null && Model.FavoritosDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
+                                            </button>
+
+                                            <div class="border-top mt-1"></div>
+
+                                            <button type="button"
+                                                    class="btn bg-transparent border-0 p-0 carrinho-btn @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
+                                                    data-produto-id="@produto.ProdutoId">
+                                                <i class="bi @(Model.CarrinhoDoUsuario != null && Model.CarrinhoDoUsuario.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Scripts específicos -->
+@section Scripts {
+    <script src="~/js/atualizar-quantidade-carrinho.js"></script>
+}

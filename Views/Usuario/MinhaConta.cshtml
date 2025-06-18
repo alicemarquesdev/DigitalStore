@@ -1,0 +1,108 @@
+﻿@model UsuarioSemSenhaModel
+
+@{
+    ViewData["Title"] = "Minha Conta";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Left -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-3">
+                    <ul class="list-unstyled">
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <hr>
+
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-list"></i> Meus Pedidos</a></li>
+                        <hr>
+                        <li><a asp-controller="Endereco" asp-action="Enderecos" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Enderecos</a></li>
+                        <hr>
+
+                        <li><a asp-controller="AlterarSenha" asp-action="AlterarSenha" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
+                        <hr>
+
+                        <li>
+                            <a href="#" class="text-decoration-none text-dark fw-bold d-block py-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                                <i class="bi bi-trash"></i> Apagar Conta
+                            </a>
+                        </li>
+                        <hr>
+
+                        <li>
+                            <a class="text-decoration-none text-dark fw-bold d-block py-2" asp-controller="Login" asp-action="Sair">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: User Data -->
+        <div class="col-md-9">
+            <!-- Dados do Usuário -->
+            <div class="card shadow-sm border-0 rounded-3" id="meusDados">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Meus Dados</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Usuario" asp-action="EditarUsuario" method="post">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="NomeUsuario" class="form-label fw-semibold">Nome</label>
+                                <input type="text" class="form-control" id="NomeUsuario" asp-for="Nome" maxlength="30">
+                                <span class="text-danger"> @Html.ValidationMessageFor(x => x.Nome) </span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="EmailUsuario" class="form-label fw-semibold">E-mail</label>
+                                <input type="email" class="form-control" id="EmailUsuario" asp-for="Email" maxlength="80">
+                                <span class="text-danger"> @Html.ValidationMessageFor(x => x.Email) </span>
+                            </div>
+                        </div>
+                        <!-- Exibir Data de Nascimento -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="DataNascimento" class="form-label fw-semibold">Data de Nascimento</label>
+                                <input type="text" class="form-control" id="DataNascimento" asp-for="DataNascimento" />
+                                <span class="text-danger"> @Html.ValidationMessageFor(x => x.DataNascimento) </span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Genero" class="form-label fw-semibold">Gênero</label>
+                                <select asp-for="Genero" asp-items="Html.GetEnumSelectList<GeneroEnum>()" class="form-select">
+                                    <option value="">Selecione o Gênero</option>
+                                </select>
+                                <span class="text-danger">@Html.ValidationMessageFor(x => x.Genero)</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light text-dark">
+                <h6 class="modal-title fw-bold" id="confirmDeleteModalLabel">Confirmar Exclusão</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="fw-semibold">@Model.Nome, deseja realmente apagar sua conta?</p>
+                <p class="text-muted">Essa ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer d-flex flex-column">
+                <form asp-controller="Usuario" asp-action="RemoverUsuario" asp-route-id="@Model.Id" method="post" class="w-100">
+                    <button type="submit" class="btn btn-dark w-100">Apagar Conta</button>
+                </form>
+                <button type="button" class="btn bg-transparent text-dark border-0 w-100 mt-2" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

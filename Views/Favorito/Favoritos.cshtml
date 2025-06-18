@@ -1,0 +1,67 @@
+﻿@model FavoritoViewModel
+
+@{
+    ViewData["Title"] = "Favoritos";
+}
+
+<div class="container my-5 px-3 px-md-5">
+    <h3 class="fw-bold text-uppercase pt-3 pb-5">Meus Favoritos</h3>
+
+    @if (Model.Favoritos != null && Model.Favoritos.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var produto in Model.Favoritos)
+            {
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column flex-md-row gap-3">
+
+                            <!-- Imagem do Produto -->
+                            <div class="text-center">
+                                <a asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
+                                    <img src="@Url.Content(produto.Produto.ImagemUrl)" class="img-fluid rounded object-fit-cover w-100 w-md-auto" alt="Produto">
+                                </a>
+                            </div>
+
+                            <!-- Informações e Botões -->
+                            <div class="d-flex flex-column justify-content-between flex-grow-1">
+                                <a class="text-decoration-none text-dark" asp-controller="Home" asp-action="Produto" asp-route-id="@produto.ProdutoId" target="_blank">
+                                    <div class="pb-2">
+                                        <h5 class="card-title fw-bold">@produto.Produto.NomeProduto</h5>
+                                        <p class="card-text text-muted small text-truncate">@produto.Produto.Descricao</p>
+                                    </div>
+                                </a>
+                                <div class="d-flex">
+                                    <h6 class="card-text fw-bold">R$ @produto.Produto.Preco</h6>
+                                    <!-- Botões -->
+                                    <div class="d-flex justify-content-end justify-content-md-start gap-2 ms-auto bg-light">
+                                        <button type="button" class="btn bg-transparent border-0 btn-sm favorito-btn @(Model.Favoritos?.Any(x => x.ProdutoId == produto.ProdutoId) == true ? "text-danger" : "text-dark")"
+                                                data-produto-id="@produto.ProdutoId" title="Adicionar aos favoritos">
+                                            <i class="bi @(Model.Favoritos?.Any(x => x.ProdutoId == produto.ProdutoId) == true ? "bi-heart-fill fs-5" : "bi-heart fs-5")"></i>
+                                        </button>
+                                        <div class="border-end"></div>
+
+                                        <button type="button" class="btn bg-transparent border-0 btn-sm carrinho-btn @(Model.Carrinho?.Any(x => x.ProdutoId == produto.ProdutoId) == true ? "text-danger" : "text-dark")"
+                                                data-produto-id="@produto.ProdutoId" title="Adicionar ao carrinho">
+                                            <i class="bi @(Model.Carrinho?.Any(x => x.ProdutoId == produto.ProdutoId) == true ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">Nenhum produto favoritado.</p>
+    }
+
+    <div class="text-center py-3">
+        <hr class="w-75 mx-auto border-2 border-secondary">
+    </div>
+</div>

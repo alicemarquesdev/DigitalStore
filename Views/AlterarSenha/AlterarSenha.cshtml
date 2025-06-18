@@ -1,0 +1,75 @@
+﻿@model AlterarSenhaModel
+
+@{
+    ViewData["Title"] = "Alterar Senha";
+}
+
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Left -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-3">
+                    <ul class="list-unstyled">
+                        <li><a asp-controller="Usuario" asp-action="MinhaConta" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-person"></i> Meus Dados</a></li>
+                        <hr>
+
+                        <li><a asp-controller="Pedido" asp-action="MeusPedidos" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-list"></i> Meus Pedidos</a></li>
+                        <hr>
+                        <li><a asp-controller="Endereco" asp-action="Enderecos" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-box-seam"></i> Enderecos</a></li>
+                        <hr>
+
+                        <li><a asp-controller="AlterarSenha" asp-action="AlterarSenha" asp-route-id="@Model.Id" class="text-decoration-none text-dark fw-bold d-block py-2"><i class="bi bi-lock"></i> Alterar Senha</a></li>
+                        <hr>
+                        <li>
+                            <a class="text-decoration-none text-dark fw-bold d-block py-2" asp-controller="Login" asp-action="Sair">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: User Data -->
+        <div class="col-md-9">
+            <!-- Dados do Usuário -->
+            <div class="card shadow-sm border-0 rounded-3" id="meusDados">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Alterar Senha</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="AlterarSenha" asp-action="AlterarSenha" method="post">
+
+                        <!-- Campo para senha atual -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="password" asp-for="SenhaAtual" />
+                            <label for="SenhaAtual">Senha Atual</label>
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.SenhaAtual) </span>
+                        </div>
+
+                        <!-- Campo para nova senha -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="NovaSenha" asp-for="NovaSenha" type="password" />
+                            <label for="NovaSenha">Nova Senha</label>
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.NovaSenha) </span>
+                        </div>
+
+                        <!-- Campo para confirmação da nova senha -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="ConfirmarNovaSenha" asp-for="ConfirmarNovaSenha" type="password" />
+                            <label for="ConfirmarNovaSenha">Confirmar nova senha</label>
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.ConfirmarNovaSenha) </span>
+                        </div>
+
+                        <!-- Botões de ação -->
+                        <div class="mt-4 mb-0">
+                            <button type="submit" class="btn btn-dark d-block w-100 mb-1">Alterar Senha</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

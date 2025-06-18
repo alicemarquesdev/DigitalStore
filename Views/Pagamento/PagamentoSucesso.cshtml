@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Pagamento Confirmado";
+}
+
+<!-- Container principal com layout flex para centralizar o conteúdo na tela -->
+<div class="d-flex flex-column align-items-center justify-content-center my-5 p-5">
+
+    <!-- Cartão que irá conter a mensagem de confirmação -->
+    <div class="card shadow p-4 text-center" style="max-width: 450px;">
+        <div class="card-body">
+
+            <!-- Ícone de confirmação de pagamento (check verde) centralizado -->
+            <div class="d-flex justify-content-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 30px;">
+                    <!-- Ícone do Bootstrap (check) indicando sucesso -->
+                    <i class="bi bi-check fs-1" style="color: white;"></i>
+                </div>
+            </div>
+
+            <!-- Título principal de confirmação -->
+            <h1 class="h4 fw-bold text-dark">Pagamento Confirmado!</h1>
+
+            <!-- Mensagem de sucesso para o pagamento -->
+            <p class="text-muted">Seu pagamento foi processado com sucesso e seu pedido está sendo preparado.</p>
+
+            <!-- Mensagem informando sobre o e-mail de confirmação -->
+            <p class="text-secondary">Você receberá um e-mail de confirmação com os detalhes da compra.</p>
+
+            <!-- Link para consultar os detalhes do pedido -->
+            <div class="mt-4">
+                <!-- Botão/link para redirecionar para a página de pedidos -->
+                <a asp-controller="Pedido" asp-action="MeusPedidos" class="text-decoration-none fw-bold text-dark">Conferir Detalhes do Pedido</a>
+            </div>
+        </div>
+    </div>
+</div>

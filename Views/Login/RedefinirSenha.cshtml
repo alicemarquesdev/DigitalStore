@@ -1,0 +1,59 @@
+﻿@model RedefinirSenhaModel
+
+@{
+    Layout = "_LayoutDeslogado"; // Layout específico para usuários não autenticados
+    ViewData["Title"] = "Redefinir Senha"; // Título da página no navegador
+}
+
+<!-- Container principal da página -->
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <!-- Centraliza o conteúdo -->
+        <div class="col-lg-5">
+            <!-- Define o tamanho da coluna para telas grandes -->
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <!-- Card para o conteúdo do formulário -->
+
+                <div class="card-header">
+                    <!-- Título do card -->
+                    <h3 class="text-center font-weight-light my-4">Esqueceu sua senha?</h3>
+                </div>
+
+                <div class="card-body">
+                    <!-- Texto explicativo acima do formulário -->
+                    <div class="small mb-3 text-muted">
+                        Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.
+                    </div>
+
+                    <!-- Formulário para enviar o e-mail para redefinição de senha -->
+                    <form asp-controller="Login" asp-action="EnviarLinkParaRedefinirSenha" method="post" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerText = 'Enviando...';">
+                        
+                        <!-- Campo de e-mail -->
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="inputEmail" type="email" asp-for="Email" maxlength="100"/>
+                            <label for="inputEmail">Email</label>
+                            <!-- Mensagem de erro para o campo Email -->
+                            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Email) </span>
+                        </div>
+
+                        <!-- Botões de navegação e envio do formulário -->
+                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <!-- Link para voltar à página de login -->
+                            <a class="small" asp-controller="Login" asp-action="Login">Voltar ao login</a>
+                            <!-- Botão de envio para redefinir a senha -->
+                            <button type="submit" class="btn btn-dark">Redefinir Senha</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Rodapé do card com link para criação de conta -->
+                <div class="card-footer text-center py-3">
+                    <div class="small">
+                        <!-- Link para página de criação de conta -->
+                        <a asp-controller="Login" asp-action="CriarUsuario">Precisa de uma conta? Cadastre-se!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
