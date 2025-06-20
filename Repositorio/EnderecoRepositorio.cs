@@ -54,9 +54,7 @@ namespace DigitalStore.Repositorio
             try
             {
                 // Tenta buscar todos os endereços relacionados ao usuário
-               return await _context.Enderecos.Where(x => x.UsuarioId == id).ToListAsync();
-
-             
+                return await _context.Enderecos.Where(x => x.UsuarioId == id).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -87,7 +85,7 @@ namespace DigitalStore.Repositorio
             {
                 // Captura qualquer exceção e lança uma exceção genérica com a mensagem de erro
                 _logger.LogError(ex, "Erro ao adicionar o endereço.");
-                throw new Exception("Erro ao adicionar o endereço.");
+                throw new Exception( "Erro ao adicionar o endereço.");
             }
         }
 

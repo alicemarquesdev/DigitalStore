@@ -111,7 +111,8 @@ namespace DigitalStore.Controllers
             {
                 // Captura exceções inesperadas e registra o erro.
                 _logger.LogError(ex, "Erro ao adicionar o endereço.");
-                TempData["Alerta"] = "Ocorreu um erro ao tentar adicionar o endereço, tente novamente.";
+                //TempData["Alerta"] = "Ocorreu um erro ao tentar adicionar o endereço, tente novamente.";
+                TempData["Alerta"] = $"Erro: {ex.Message}";
                 return Redirect(Request.Headers["Referer"].ToString()); // Redireciona para a página anterior
             }
         }

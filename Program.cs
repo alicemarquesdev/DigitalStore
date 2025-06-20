@@ -127,7 +127,7 @@ namespace DigitalStore
             // Roteamento da aplicação
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}");
         }
 
         // Método para aplicar migrações automáticas no banco de dados
@@ -136,7 +136,7 @@ namespace DigitalStore
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<BancoContext>();
-                //dbContext.Database.Migrate(); // Aplica a migração automaticamente no banco de dados
+                // dbContext.Database.Migrate(); // Aplica a migração automaticamente no banco de dados
             }
         }
     }

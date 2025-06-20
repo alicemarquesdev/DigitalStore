@@ -16,13 +16,13 @@
                     <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
                     <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" maxlength="20" required>
                     <span asp-validation-for="NomeSite" class="text-danger"></span>
-                    <small class="text-danger">Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos.</small>
                 </div>
 
                 <!-- Banner -->
                 <div class="mb-3">
                     <label for="ImagemFile" class="form-label fw-bold">Selecione os Banners:</label>
                     <input class="form-control" id="ImagemFile" type="file" name="banner" />
+                    <small class="text-danger">Somente arquivos com as extensões .jpg, .jpeg e .png são permitidos.</small>
                 </div>
                 <div class="text-center">
                     <label for="ImagemFile">

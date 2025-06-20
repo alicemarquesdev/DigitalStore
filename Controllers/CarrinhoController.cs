@@ -44,8 +44,6 @@ namespace DigitalStore.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
-
         // Método para exibir o carrinho de um usuário específico
         // Uso de ViewModel para exibir os dados do carrinho e endereços
         public async Task<IActionResult> Carrinho()
@@ -89,7 +87,6 @@ namespace DigitalStore.Controllers
                 _logger.LogError(ex, "Erro ao carregar o carrinho do usuário");
                 TempData["Alerta"] = "Houve um erro ao carregar o carrinho.";
                 return RedirectToAction("Index", "Home");
-
             }
         }
 
@@ -177,7 +174,7 @@ namespace DigitalStore.Controllers
                         // Verifica se há estoque disponível antes de aumentar a quantidade
                         if (produtoNoCarrinho.Quantidade < produtoEstoque.QuantidadeEstoque)
                         {
-                            produtoNoCarrinho.Quantidade += 1;
+                            produtoNoCarrinho.Quantidade ++;
                         }
                         else
                         {
@@ -189,7 +186,7 @@ namespace DigitalStore.Controllers
                         // Garante que a quantidade do produto não seja menor que 1
                         if (produtoNoCarrinho.Quantidade > 1)
                         {
-                            produtoNoCarrinho.Quantidade -= 1;
+                            produtoNoCarrinho.Quantidade --;
                         }
                         else
                         {
@@ -214,6 +211,5 @@ namespace DigitalStore.Controllers
                 return Json(new { success = false, message = "Erro ao atualizar a quantidade." });
             }
         }
-
     }
 }
