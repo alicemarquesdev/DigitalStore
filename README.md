@@ -2,7 +2,7 @@
 
 ![DigitalStore](./wwwroot/assets/digital-store.png)
 
-👉 [🔗 Ver projeto em produção][https://digital-store-gwgzd5f9gpesavab.brazilsouth-01.azurewebsites.net/]
+👉 [🔗 Ver projeto em produção](https://digital-store-gwgzd5f9gpesavab.brazilsouth-01.azurewebsites.net/)
 
 Digital Store é uma plataforma de e-commerce com dois tipos de perfis: administrador e cliente.
 
