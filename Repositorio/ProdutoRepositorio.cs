@@ -144,7 +144,7 @@ namespace DigitalStore.Repositorio
                 produto.Categoria = produto.Categoria.Trim();
 
                 // Adiciona o produto ao contexto.
-                _context.Produtos.Add(produto);
+                await _context.Produtos.AddAsync(produto);
 
                 // Salva as alterações no banco e verifica se foi salvo.
                 var result = await _context.SaveChangesAsync();
