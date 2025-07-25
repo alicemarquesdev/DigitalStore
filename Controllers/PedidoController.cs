@@ -139,7 +139,7 @@ namespace DigitalStore.Controllers
 
                 await _pedidoRepositorio.AtualizarPedidoAsync(pedido);
 
-                TempData["Sucesso"] = "Status do pedido atualizado com sucesso.";
+                TempData["Alerta"] = "Status do pedido atualizado com sucesso.";
                 return RedirectToAction("PedidosEPagamentos");
             }
             catch (Exception ex)
