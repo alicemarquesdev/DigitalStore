@@ -12,13 +12,15 @@ namespace DigitalStore.Models
 
         // Nome do site com limite de 20 caracteres
         [StringLength(20, ErrorMessage = "O nome do site deve ter no máximo 20 caracteres.")]
-        public string NomeSite { get; set; } = "DigitalStore";
+        [Required(ErrorMessage = "O campo não pode ser vazio")]
+        public required string NomeSite { get; set; } = "DigitalStore";
 
         // Caminho para o banner do site, valor padrão para a imagem do banner
-        public string Banner { get; set; } = "~/image/banner.jpg";
+        public string? Banner { get; set; } = "~/image/banner.jpg";
 
         // Frase de destaque para o site, com limite de 40 caracteres
         [StringLength(40, ErrorMessage = "A frase deve ter no máximo 40 caracteres.")]
-        public string Frase { get; set; } = "Tudo que você procura em um só lugar";
+        [Required(ErrorMessage = "O campo não pode ser vazio")]
+        public string Frase { get; set; }
     }
 }
