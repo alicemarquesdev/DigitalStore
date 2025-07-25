@@ -9,13 +9,13 @@
 
     <form method="post" enctype="multipart/form-data" asp-action="AtualizarSite" asp-controller="Site">
         <div class="card shadow-sm mb-4">
-
+     
             <div class="card-body">
                 <!-- Nome do Site -->
                 <div class="mb-4">
                     <label asp-for="NomeSite" class="form-label fw-bold">Digite o nome do site:</label>
                     <input asp-for="NomeSite" class="form-control" placeholder="Nome do site" maxlength="20" required>
-                    <span class="text-danger"> @Html.ValidationMessageFor(x => x.NomeSite) </span>
+                    <span asp-validation-for="NomeSite" class="text-danger"></span>
                 </div>
 
                 <!-- Banner -->
@@ -33,8 +33,8 @@
                 <!-- Frase da Home Page -->
                 <div class="mb-3">
                     <label asp-for="Frase" class="form-label fw-bold">Digite a frase para a página inicial:</label>
-                    <input type="text" asp-for="Frase" class="form-control" maxlength="40">
-                    <span class="text-danger"> @Html.ValidationMessageFor(x => x.Frase) </span>
+                    <textarea asp-for="Frase" rows="3" class="form-control" maxlength="40" ></textarea>
+                    <span asp-validation-for="Frase" class="text-danger"></span>
                 </div>
 
                 <!-- Botão de Salvar -->

@@ -7,19 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\**" />
     <Compile Remove="Views\Favoritos\**" />
     <Compile Remove="wwwroot\image\Imagens\**" />
     <Compile Remove="wwwroot\image\products\**" />
-    <Content Remove="Migrations\**" />
     <Content Remove="Views\Favoritos\**" />
     <Content Remove="wwwroot\image\Imagens\**" />
     <Content Remove="wwwroot\image\products\**" />
-    <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="Views\Favoritos\**" />
     <EmbeddedResource Remove="wwwroot\image\Imagens\**" />
     <EmbeddedResource Remove="wwwroot\image\products\**" />
-    <None Remove="Migrations\**" />
     <None Remove="Views\Favoritos\**" />
     <None Remove="wwwroot\image\Imagens\**" />
     <None Remove="wwwroot\image\products\**" />

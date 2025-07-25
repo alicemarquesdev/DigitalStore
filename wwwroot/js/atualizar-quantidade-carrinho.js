@@ -36,6 +36,9 @@ function atualizarQuantidade(produtoId, acao) {
 
                 // Atualiza o valor do input com a nova quantidade retornada do servidor
                 inputQuantidade.val(response.novaQuantidade);
+            } else {
+                // Se a resposta indicar falha, exibe a mensagem de erro recebida do servidor
+                alert(response.message);
             }
         },
         error: function () {

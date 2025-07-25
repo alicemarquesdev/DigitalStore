@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data.forEach(item => {
                             // Cria um novo link de sugestão para cada item retornado
                             let option = document.createElement("a");
-                            option.href = `/Home/Produto?id=${item.id}`; // Define o link para a página do produto
+                            option.href = `/Home/Produto/${item.id}`; // Define o link para a página do produto (ajuste conforme sua rota)
                             option.classList.add("dropdown-item"); // Adiciona a classe para estilo
                             option.textContent = item.nome; // Define o nome do item como o texto do link
                             searchDropdown.appendChild(option); // Adiciona o novo item ao dropdown
