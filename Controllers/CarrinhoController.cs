@@ -190,7 +190,7 @@ namespace DigitalStore.Controllers
                         }
                         else
                         {
-                            return Json(new { success = false, message = "A quantidade do produto não pode ser menor que 1." });
+                            return Json(new { success = false });
                         }
                         break;
 
