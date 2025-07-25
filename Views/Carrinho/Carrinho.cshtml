@@ -45,7 +45,7 @@
                                     <!-- Lógica para alterar o ícone do carrinho (adicionar/remover) -->
                                     <button type="button" class="btn bg-transparent border-0 btn-sm carrinho-btn @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "text-danger" : "text-dark")"
                                     data-produto-id="@produto.ProdutoId">
-                                        <i class="bi @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-cart-fill fs-5" : "bi-cart-plus fs-5")"></i>
+                                        <i class="bi @(Model.Carrinho != null && Model.Carrinho.Select(x => x.ProdutoId).Contains(produto.ProdutoId) ? "bi-trash3-fill fs-5" : "bi-trash3 fs-5")"></i>
                                     </button>
                                 </div>
 
@@ -156,6 +156,7 @@
                     </div>
 
                     <!-- Botão para prosseguir para pagamento -->
+                    <!-- carrinho-view.js  -->
                     <a id="btnProsseguir" href="#" class="btn btn-dark w-100">
                         Prosseguir para Pagamento <i class="bi bi-arrow-right"></i>
                     </a>
@@ -169,7 +170,7 @@
 @section Scripts {
     <!-- Variável carrinhoVazio indica se o carrinho está vazio ou não, para o javascript carrinho-view.js -->
     <script>
-        var carrinhoVazio = @((Model?.Carrinho != null && Model.Carrinho.Any()) ? "false" : "true")
+        var carrinhoVazio = @(Model?.Carrinho?.Any() == true ? "false" : "true");
     </script>
     <script>
         var googleApiKey = '@Model?.GoogleApiKey'; // Chave da API do Google
