@@ -34,6 +34,10 @@ $(document).ready(function () {
             return; // Impede a execução do restante do código
         }
 
+        $("#enviarNewsletter").prop("disabled", true);
+        $("#iconNewsletter").removeClass("bi-send").addClass("spinner-border spinner-border-sm");
+
+
         // Envia os dados via AJAX para a URL '/Home/EnviarNewsletter'
         $.ajax({
             url: "/Home/EnviarNewsletter", // URL para onde os dados serão enviados
@@ -50,12 +54,19 @@ $(document).ready(function () {
                     // Caso contrário, exibe a mensagem de erro
                     $("#newsletterMessage").html('<small class="text-danger">' + response.message + '</small>');
                 }
+
+                $("#enviarNewsletter").prop("disabled", false);
+                $("#iconNewsletter").removeClass("spinner-border spinner-border-sm").addClass("bi-send");
+
             },
 
             // Função executada caso ocorra algum erro na requisição
             error: function () {
                 // Exibe uma mensagem de erro caso a requisição falhe
                 $("#newsletterMessage").html('<small class="text-danger">Erro ao processar a requisição.</small>');
+                $("#enviarNewsletter").prop("disabled", false);
+                $("#iconNewsletter").removeClass("spinner-border spinner-border-sm").addClass("bi-send");
+
             }
         });
     });
