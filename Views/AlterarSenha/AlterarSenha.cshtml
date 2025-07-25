@@ -42,6 +42,7 @@
                 <div class="card-body">
                     <form asp-controller="AlterarSenha" asp-action="AlterarSenha" method="post">
 
+                        <input type="hidden" asp-for="Id"/>
                         <!-- Campo para senha atual -->
                         <div class="form-floating mb-3">
                             <input class="form-control" type="password" asp-for="SenhaAtual" />
