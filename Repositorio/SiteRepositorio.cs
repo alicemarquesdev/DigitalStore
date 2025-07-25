@@ -28,7 +28,15 @@ namespace DigitalStore.Repositorio
                 var site = await _context.Site.FirstOrDefaultAsync();
 
                 if (site == null)
-                    throw new Exception("Nenhum dado do site encontrado no banco de dados.");
+                {
+                    _logger.LogWarning("Nenhum dado do site encontrado. Usando valores padrão.");
+                    return new SiteModel
+                    {
+                        NomeSite = "DigitalStore",
+                        Frase = "Tudo que você procura em um só lugar",
+                        Banner = "~/image/banner.jpg"
+                    };
+                }
 
                 return site;
             }
@@ -53,6 +61,7 @@ namespace DigitalStore.Repositorio
                 siteDb.Frase = site.Frase.Trim();
 
                 // Salva as alterações e verifica se a atualização ocorreu
+                _context.Site.Update(siteDb);
                 var resultado = await _context.SaveChangesAsync();
                 if (resultado == 0)
                     throw new Exception("Nenhuma alteração foi realizada ao atualizar os dados do site.");
