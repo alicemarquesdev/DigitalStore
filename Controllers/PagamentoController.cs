@@ -80,12 +80,7 @@ namespace DigitalStore.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    throw new ArgumentNullException("ID inválido.");
-                }
-
-                // Busca o usuário na sessão
+                               // Busca o usuário na sessão
                 var usuario = _sessao.BuscarSessaoDoUsuario();
                 if (usuario == null)
                 {
