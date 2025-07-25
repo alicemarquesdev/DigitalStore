@@ -100,20 +100,17 @@ namespace DigitalStore.Controllers
                     return View("MinhaConta", usuarioSemSenha); // Retorna para a tela de criação caso o e-mail já exista.
                 }
 
-                // Cria um novo objeto de usuário com os dados atualizados
-                var usuario = new UsuarioModel()
-                {
-                    UsuarioId = usuarioSemSenha.Id,
-                    Nome = usuarioSemSenha.Nome,
-                    Email = usuarioSemSenha.Email,
-                    DataNascimento = usuarioSemSenha.DataNascimento,
-                    Genero = usuarioSemSenha.Genero,
-                    Perfil = usuarioDb.Perfil,
-                    Senha = usuarioDb.Senha
-                };
+                usuarioDb.UsuarioId = usuarioSemSenha.Id;
+                usuarioDb.Nome = usuarioSemSenha.Nome;
+                usuarioDb.Email = usuarioSemSenha.Email;
+                usuarioDb.DataNascimento = usuarioSemSenha.DataNascimento;
+                usuarioDb.Genero = usuarioSemSenha.Genero;
+                usuarioDb.Perfil = usuarioDb.Perfil;
+                usuarioDb.Senha = usuarioDb.Senha;
+
 
                 // Atualiza o usuário no banco de dados
-                await _usuarioRepositorio.AtualizarUsuarioAsync(usuario);
+                await _usuarioRepositorio.AtualizarUsuarioAsync(usuarioDb);
 
                 // Exibe mensagem de sucesso
                 TempData["Alerta"] = "Os dados do usuário foram atualizados com sucesso!";
@@ -124,7 +121,7 @@ namespace DigitalStore.Controllers
                 // Em caso de erro, registra o erro e exibe mensagem para o usuário
                 _logger.LogError(ex, "Erro ao atualizar os dados do usuário.");
                 TempData["Alerta"] = "Ocorreu um erro ao atualizar os dados do usuário. Tente novamente mais tarde.";
-                return View("MinhaConta", usuarioSemSenha); 
+                return View("MinhaConta", usuarioSemSenha);
             }
         }
 
