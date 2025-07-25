@@ -55,7 +55,7 @@ namespace DigitalStore.Controllers
                 {
                     var siteDb = await _siteRepositorio.BuscarDadosDoSiteAsync();
 
-                    // Atualiza a imagem se for fornecida e apaga a antoga imagem do servidor
+                    // Atualiza a imagem se for fornecida e apaga a antiga imagem do servidor
                     if (banner != null)
                     {
                         var caminhoImagem = await _caminhoImagem.GerarCaminhoArquivoAsync(banner);
@@ -74,6 +74,7 @@ namespace DigitalStore.Controllers
                     // Atualiza os dados do site
                     siteDb.NomeSite = site.NomeSite;
                     siteDb.Frase = site.Frase;
+                    siteDb.Banner = siteDb.Banner;
 
                     await _siteRepositorio.AtualizarSiteAsync(siteDb);
                     TempData["Alerta"] = "Dados do site atualizados com sucesso!";
