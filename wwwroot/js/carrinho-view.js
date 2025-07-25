@@ -24,7 +24,7 @@ document.getElementById('btnProsseguir').addEventListener('click', function (e) 
     }
 
     // Verifica se o carrinho está vazio usando a variável 'carrinhoVazio' passada pela View
-    if (carrinhoVazio === "true") {
+    if (carrinhoVazio === true) {
         e.preventDefault();  // Impede a navegação do botão
         alert("Seu carrinho está vazio. Adicione produtos antes de prosseguir.");
         return;  // Sai da função, não permitindo a navegação
@@ -33,5 +33,5 @@ document.getElementById('btnProsseguir').addEventListener('click', function (e) 
      var enderecoId = enderecoSelecionado.value;
 
     // Redireciona manualmente
-    window.location.href = `/Pagamento/Pagamento/${enderecoId}`;
+    window.location.href = `/Pagamento/Pagamento?id=${enderecoId}`;
 });

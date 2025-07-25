@@ -136,7 +136,7 @@ namespace DigitalStore
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<BancoContext>();
-                // dbContext.Database.Migrate(); // Aplica a migração automaticamente no banco de dados
+                 dbContext.Database.Migrate(); // Aplica a migração automaticamente no banco de dados
             }
         }
     }
