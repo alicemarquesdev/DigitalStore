@@ -2,6 +2,8 @@
 
 ![DigitalStore](./wwwroot/assets/digital-store.png)
 
+📽️ [Assista à demonstração do projeto](https://drive.google.com/file/d/1Ud0PU4a5jCWK9DoZZQFFBuFtXJUh5NTd/view?usp=sharing)
+
 Digital Store é uma plataforma de e-commerce com dois tipos de perfis: administrador e cliente.
 
 - O administrador pode personalizar o site (nome, banner e frase de destaque), além de gerenciar
